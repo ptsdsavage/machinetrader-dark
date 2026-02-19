@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Features — MachineTrader | Your Personal Algo-Trading Platform</title>
+  <meta name="description" content="Explore MachineTrader's full feature set: visual Node-RED programming, AI strategy generation, dedicated cloud servers, real-time data, backtesting, NLP news sentiment, and more." />
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#fff8f0',
+              100: '#ffe8cc',
+              200: '#ffd199',
+              300: '#ffb366',
+              400: '#ff9533',
+              500: '#ff6b00',
+              600: '#e05e00',
+              700: '#b84d00',
+              800: '#8f3c00',
+              900: '#662b00',
+              950: '#3d1a00',
+            },
+            accent: {
+              500: '#489fd9',
+              600: '#3a87be',
+            },
+            mt: {
+              green: '#4dbd90',
+              purple: '#8668ab',
+              blue: '#489fd9',
+              pink: '#fde5e5',
+              lavender: '#dde7ed',
+            },
+            dark: {
+              900: '#0a0f1a',
+              800: '#111827',
+              700: '#1f2937',
+              600: '#374151',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-white text-gray-900 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-white flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-gray-900">MachineTrader</h1>
+        <p class="text-gray-500 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <div class="relative">
+          <input
+            id="password-input"
+            type="password"
+            placeholder="Password"
+            autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm"
+          />
+        </div>
+        <button
+          type="submit"
+          class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl"
+        >
+          Enter
+        </button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="index.html" class="flex items-center gap-3 group">
+          <img src="images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-gray-900">MachineTrader</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="index.html" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 transition">Home</a>
+          <a href="features.html" class="nav-link text-sm font-medium text-brand-500 transition">Features</a>
+          <a href="index.html#how-it-works" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 transition">How It Works</a>
+          <a href="index.html#pricing" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 transition">Pricing</a>
+          <a href="index.html#faq" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 transition">FAQ</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span class="hamburger-line w-6 h-0.5 bg-gray-900 rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-gray-900 rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-gray-900 rounded transition-all"></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-white/95 backdrop-blur-xl border-t border-gray-100">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+        <a href="index.html" class="mobile-nav-link text-base font-medium text-gray-600 hover:text-gray-900 py-2">Home</a>
+        <a href="features.html" class="mobile-nav-link text-base font-medium text-brand-500 py-2">Features</a>
+        <a href="index.html#how-it-works" class="mobile-nav-link text-base font-medium text-gray-600 hover:text-gray-900 py-2">How It Works</a>
+        <a href="index.html#pricing" class="mobile-nav-link text-base font-medium text-gray-600 hover:text-gray-900 py-2">Pricing</a>
+        <div class="flex flex-col gap-3 pt-4 border-t border-gray-200">
+          <a href="/pricing" class="btn-primary text-center text-base font-semibold px-6 py-3 rounded-full">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO (dark, matching index.html hero) ============ -->
+  <section class="relative pt-32 pb-20 overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div class="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-brand-500/15 rounded-full blur-[128px]"></div>
+    <div class="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-mt-purple/10 rounded-full blur-[100px]"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/20 mb-8">
+        <span class="text-sm font-medium text-brand-300">Platform Capabilities</span>
+      </div>
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] mb-6 text-white">
+        A Complete <span class="text-gradient">Trading Platform</span><br />Built for You
+      </h1>
+      <p class="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+        MachineTrader™ was designed to serve serious traders who want to automate trading ideas 
+        but lack the full-stack programming skills to build their own platforms. It's also incredibly 
+        efficient for experienced programmers developing and testing new algorithms.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ CORE PLATFORM (white bg) ============ -->
+  <section class="py-24 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <p class="text-brand-500 font-semibold text-sm uppercase tracking-widest mb-4">Core Platform</p>
+        <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 text-gray-900">
+          Visual programming meets automated trading
+        </h2>
+        <p class="text-lg text-gray-600 leading-relaxed">
+          MachineTrader™ was built using Node-RED, a flow-based development tool for visual programming. 
+          The browser-based editor codes automatically as you drag and drop nodes from the palette. 
+          Non-programmers build trading algorithms without writing code, while experienced programmers 
+          find it many times faster than writing code from scratch.
+        </p>
+      </div>
+
+      <!-- Feature grid — large cards -->
+      <div class="grid lg:grid-cols-2 gap-8 mb-16">
+
+        <!-- Card: Visual Programming -->
+        <div class="group bg-white border border-gray-200 rounded-2xl p-8 lg:p-10 hover:border-brand-300 hover:shadow-lg transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 border border-brand-200 flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-3 text-gray-900">No-Code / Low-Code Visual Editor</h3>
+          <p class="text-gray-600 leading-relaxed mb-6">
+            Node-RED uses a drag-and-drop interface where you connect pre-built nodes to create 
+            workflows — no syntax, no debugging, just visual logic. The JavaScript code is written 
+            automatically as you build. Flows are deployed to the runtime in a single click.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Drag-and-drop node palette with wide range of pre-built nodes</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Rich text editor for custom JavaScript functions</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Built-in library to save functions, templates, and flows for re-use</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Flows stored as JSON — easy to share, import, and export</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card: AI Strategy Generation -->
+        <div class="group bg-white border border-gray-200 rounded-2xl p-8 lg:p-10 hover:border-mt-purple/40 hover:shadow-lg transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-mt-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-3 text-gray-900">AI-Powered Strategy Creation</h3>
+          <p class="text-gray-600 leading-relaxed mb-6">
+            Trading strategies can be quickly developed using Claude, Gemini, or OpenAI. Simply 
+            describe what you want your strategy to do, and AI generates the code for you. It's 
+            increasingly easy to use AI models to write Node-RED nodes and JavaScript to power 
+            your MachineTrader instances.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Choose from Claude (Anthropic), GPT-4 (OpenAI), or Gemini (Google)</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Plain English descriptions → complete trading flows</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Gemini documentation library with step-by-step guides</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Machine learning libraries at the intersection of AI and statistics</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card: Dedicated Cloud Server -->
+        <div class="group bg-white border border-gray-200 rounded-2xl p-8 lg:p-10 hover:border-mt-green/40 hover:shadow-lg transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-mt-green" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-3 text-gray-900">Your Own Cloud Instance</h3>
+          <p class="text-gray-600 leading-relaxed mb-6">
+            Each subscriber receives their own exclusive cloud instance using Kubernetes, which 
+            expands according to your unique requirements. Even experienced programmers recognize 
+            the limitations of using a personal computer for automated trading. MachineTrader™ gives 
+            you data center reliability at a fraction of the hassle and cost of setting up an AWS cloud service.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Proprietary, password-protected virtual server</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Runs 24/7 in a data center without failures</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">All client data completely private — your algorithms remain proprietary to you</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Modify your instance at will — build your own features instead of asking</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card: Commission-Free Trading -->
+        <div class="group bg-white border border-gray-200 rounded-2xl p-8 lg:p-10 hover:border-yellow-400/40 hover:shadow-lg transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-yellow-50 border border-yellow-200 flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-3 text-gray-900">Full-Function Commission-Free Trading</h3>
+          <p class="text-gray-600 leading-relaxed mb-6">
+            MachineTrader™ is an independent trading platform that hands trades off to the broker-dealer 
+            of your choice through their API. We currently integrate with Alpaca Markets, which offers 
+            commission-free trading on 10,000+ U.S. listed securities and low-cost commissions on crypto trades.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">10,000+ equities and several dozen cryptos</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Open a paper account in minutes without depositing any funds</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Commission-free for U.S. equities*</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Integrated via Alpaca Markets API</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DATA & INTELLIGENCE (lavender bg) ============ -->
+  <section class="py-24 bg-mt-lavender border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <p class="text-accent-500 font-semibold text-sm uppercase tracking-widest mb-4">Data & Intelligence</p>
+        <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 text-gray-900">
+          Institutional-grade data at your fingertips
+        </h2>
+        <p class="text-lg text-gray-600 leading-relaxed">
+          We know how critical accurate, reliable, real-time data is to your trading. 
+          MachineTrader™ provides prebuilt widgets that import time series data from trusted 
+          data suppliers, with powerful charting and popular technical indicators.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Time-Series Data -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-accent-500/30 hover:shadow-lg transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-5">
+            <span class="text-2xl">📊</span>
+          </div>
+          <h3 class="text-lg font-bold mb-2 text-gray-900">Real-Time Time-Series Data</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Prebuilt widgets import real-time data from Polygon.io and Alpaca Markets, enabling 
+            trading in one-minute and one-second increments for equities and cryptos. Includes 
+            financial reports and company information for all publicly-traded U.S. companies.
+          </p>
+        </div>
+
+        <!-- News & NLP -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-accent-500/30 hover:shadow-lg transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-5">
+            <span class="text-2xl">📰</span>
+          </div>
+          <h3 class="text-lg font-bold mb-2 text-gray-900">News with Sentiment Analysis</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Our headline news feed scans 80+ business publications, providing hundreds of postings 
+            per hour with ~4 minute lag time. Proprietary NLP software produces sentiment scores and 
+            digital indicators for use with algorithmic trading programs.
+          </p>
+        </div>
+
+        <!-- FRED Economic Data -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-accent-500/30 hover:shadow-lg transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-5">
+            <span class="text-2xl">🏛️</span>
+          </div>
+          <h3 class="text-lg font-bold mb-2 text-gray-900">FRED Economic Data</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            30+ FRED (Federal Reserve Economic Data) reports from the Research Department at the 
+            Federal Reserve Bank of St. Louis, providing the latest insight into future inflation 
+            rates and other economic indicators.
+          </p>
+        </div>
+
+        <!-- Data Center -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-accent-500/30 hover:shadow-lg transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-5">
+            <span class="text-2xl">📈</span>
+          </div>
+          <h3 class="text-lg font-bold mb-2 text-gray-900">MachineTrader Data Center</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Charts performance of trading strategies in Live and Paper accounts. Real-time reporting 
+            of top and worst performing stocks updated in 5-minute increments throughout the trading day. 
+            Reports identify fast-moving stocks outperforming their average trading volumes.
+          </p>
+        </div>
+
+        <!-- Backtesting -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-accent-500/30 hover:shadow-lg transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-5">
+            <span class="text-2xl">🧪</span>
+          </div>
+          <h3 class="text-lg font-bold mb-2 text-gray-900">Backtesting Engine</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Test your latest ideas with our proprietary MachineTrader™ SuperTest. Your subscription 
+            includes access to prewritten trading strategies that have been backtested and run in paper 
+            accounts, giving you a head start.
+          </p>
+        </div>
+
+        <!-- Data Pipelines -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-accent-500/30 hover:shadow-lg transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-5">
+            <span class="text-2xl">⚙️</span>
+          </div>
+          <h3 class="text-lg font-bold mb-2 text-gray-900">Data Pipelines & Feature Engineering</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Manage massive amounts of historical data and analyze millions of data points in real-time. 
+            Create relationships between data elements to identify potential correlations with equity 
+            prices using proprietary feature engineering.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ YOUR PERSONAL PLATFORM (white bg) ============ -->
+  <section class="py-24 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div>
+          <p class="text-brand-500 font-semibold text-sm uppercase tracking-widest mb-4">Personal Dashboard</p>
+          <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 text-gray-900">
+            Your personal trading platform
+          </h2>
+          <p class="text-lg text-gray-600 leading-relaxed mb-8">
+            MachineTrader™ provides you a powerful user interface, tracking your current account 
+            balances, positions, trades, and strategy performance, along with charts, company 
+            financials, news, and reporting from the Federal Reserve Bank of St. Louis.
+          </p>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Real-time portfolio tracking & P&L</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Interactive charts with technical indicators</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Company financials & news integration</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-mt-green flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-gray-700">Strategy performance monitoring — Live & Paper accounts</span>
+            </div>
+          </div>
+          <a href="https://publicdemo.machinetrader.io" target="_blank" class="btn-primary text-sm font-semibold px-6 py-3 rounded-full inline-flex items-center gap-2">
+            Visit the Live Demo
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </a>
+        </div>
+        <!-- Dashboard mockup (kept dark — it's a screen) -->
+        <div class="relative">
+          <div class="bg-dark-700 rounded-2xl border border-gray-300 p-1 shadow-2xl">
+            <div class="bg-dark-700 border-b border-white/10 px-4 py-2.5 flex items-center gap-2 rounded-t-xl">
+              <div class="flex gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-green-500/80"></span>
+              </div>
+              <div class="flex-1 text-center">
+                <span class="text-[10px] text-gray-500 font-mono">publicdemo.machinetrader.io</span>
+              </div>
+            </div>
+            <div class="bg-dark-800 rounded-b-xl p-6 space-y-4">
+              <!-- Portfolio header -->
+              <div class="flex justify-between items-center">
+                <div>
+                  <div class="text-xs text-gray-500">Portfolio Value</div>
+                  <div class="text-2xl font-bold text-white">$127,483.21</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-gray-500">Today's P&L</div>
+                  <div class="text-lg font-bold text-green-400">+$1,247.38</div>
+                </div>
+              </div>
+              <!-- Mini chart -->
+              <div class="bg-dark-900/50 rounded-xl p-4">
+                <svg class="w-full h-20" viewBox="0 0 400 80" fill="none">
+                  <polyline points="0,60 30,55 60,58 90,45 120,48 150,35 180,40 210,30 240,32 270,25 300,28 330,20 360,22 400,15" stroke="rgba(34,197,94,0.8)" stroke-width="2" fill="none"/>
+                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(34,197,94,0.2)"/>
+                    <stop offset="100%" stop-color="rgba(34,197,94,0)"/>
+                  </linearGradient>
+                  <polygon points="0,60 30,55 60,58 90,45 120,48 150,35 180,40 210,30 240,32 270,25 300,28 330,20 360,22 400,15 400,80 0,80" fill="url(#chartGrad)"/>
+                </svg>
+              </div>
+              <!-- Positions -->
+              <div class="space-y-2">
+                <div class="flex justify-between items-center text-xs bg-dark-900/30 rounded-lg px-3 py-2 text-white">
+                  <span class="font-medium">AAPL</span>
+                  <span class="text-gray-400">50 shares</span>
+                  <span class="text-green-400">+2.4%</span>
+                </div>
+                <div class="flex justify-between items-center text-xs bg-dark-900/30 rounded-lg px-3 py-2 text-white">
+                  <span class="font-medium">NVDA</span>
+                  <span class="text-gray-400">25 shares</span>
+                  <span class="text-green-400">+5.1%</span>
+                </div>
+                <div class="flex justify-between items-center text-xs bg-dark-900/30 rounded-lg px-3 py-2 text-white">
+                  <span class="font-medium">TSLA</span>
+                  <span class="text-gray-400">30 shares</span>
+                  <span class="text-red-400">-1.2%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-12 bg-brand-500/20 blur-3xl rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SHARING & COMMUNITY (pink bg) ============ -->
+  <section class="py-24 bg-mt-pink border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <!-- JSON sharing visual (kept dark — it's a code block) -->
+        <div class="order-2 lg:order-1">
+          <div class="bg-dark-700 rounded-2xl border border-gray-300 p-6 shadow-xl">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="text-xs font-mono text-gray-400">strategy-momentum-rsi.json</span>
+              <span class="ml-auto text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">exportable</span>
+            </div>
+            <pre class="text-xs text-gray-400 font-mono leading-relaxed overflow-hidden"><code>{
+  <span class="text-brand-400">"id"</span>: <span class="text-green-400">"flow-momentum-rsi"</span>,
+  <span class="text-brand-400">"label"</span>: <span class="text-green-400">"RSI Momentum Strategy"</span>,
+  <span class="text-brand-400">"nodes"</span>: [
+    { <span class="text-brand-400">"type"</span>: <span class="text-green-400">"market-data"</span>, <span class="text-brand-400">"ticker"</span>: <span class="text-green-400">"AAPL"</span> },
+    { <span class="text-brand-400">"type"</span>: <span class="text-green-400">"rsi-indicator"</span>, <span class="text-brand-400">"period"</span>: <span class="text-yellow-400">14</span> },
+    { <span class="text-brand-400">"type"</span>: <span class="text-green-400">"trade-executor"</span>, <span class="text-brand-400">"broker"</span>: <span class="text-green-400">"alpaca"</span> }
+  ],
+  <span class="text-brand-400">"wires"</span>: [[<span class="text-yellow-400">0</span>,<span class="text-yellow-400">1</span>],[<span class="text-yellow-400">1</span>,<span class="text-yellow-400">2</span>]]
+}</code></pre>
+          </div>
+        </div>
+        <div class="order-1 lg:order-2">
+          <p class="text-brand-500 font-semibold text-sm uppercase tracking-widest mb-4">Sharing & Community</p>
+          <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 text-gray-900">
+            Share strategies in one click
+          </h2>
+          <p class="text-lg text-gray-600 leading-relaxed mb-6">
+            Flows are stored using JSON (JavaScript Object Notation) and can be easily duplicated 
+            for re-use and sharing. Keep your algorithms private, or share to rapidly build a community 
+            of algo traders with a range of coding skills.
+          </p>
+          <p class="text-lg text-gray-600 leading-relaxed">
+            Your subscription includes access to prewritten trading strategies that have been 
+            backtested and run in paper accounts — giving you ready-made starting points to learn 
+            from and customize.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LEARNING & EDUCATION (white bg) ============ -->
+  <section class="py-24 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <p class="text-mt-purple font-semibold text-sm uppercase tracking-widest mb-4">Education</p>
+        <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 text-gray-900">
+          Learn algo trading for free
+        </h2>
+        <p class="text-lg text-gray-600 leading-relaxed">
+          MachineTrader™ offers free training courses designed to teach you how to trade stocks 
+          and options algorithmically without writing code.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <a href="https://www.udemy.com/course/algorithmic-trading-for-non-programmers-h/?referralCode=8297231CA14056A6CAEB" target="_blank" 
+           class="group bg-white border border-gray-200 rounded-2xl p-7 hover:border-mt-purple/30 hover:shadow-lg transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center mb-5">
+            <span class="text-2xl">🎓</span>
+          </div>
+          <h3 class="text-lg font-bold mb-2 text-gray-900 group-hover:text-mt-purple transition">Free Udemy Course</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Comprehensive introduction to Node-RED for automating tasks and integrating APIs. 
+            Learn to trade algorithmically without writing code.
+          </p>
+          <span class="text-mt-purple text-sm font-medium mt-4 inline-flex items-center gap-1">
+            Start learning →
+          </span>
+        </a>
+
+        <a href="/learn-articles/learn-to-backtest-with-machinetrader.html"
+           class="group bg-white border border-gray-200 rounded-2xl p-7 hover:border-mt-purple/30 hover:shadow-lg transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center mb-5">
+            <span class="text-2xl">🧪</span>
+          </div>
+          <h3 class="text-lg font-bold mb-2 text-gray-900 group-hover:text-mt-purple transition">Learn to Backtest</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Step-by-step guide to backtesting your trading strategies using the MachineTrader™ 
+            platform and historical data.
+          </p>
+          <span class="text-mt-purple text-sm font-medium mt-4 inline-flex items-center gap-1">
+            Read guide →
+          </span>
+        </a>
+
+        <a href="/learn-articles/exploring-technical-indicators"
+           class="group bg-white border border-gray-200 rounded-2xl p-7 hover:border-mt-purple/30 hover:shadow-lg transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center mb-5">
+            <span class="text-2xl">📐</span>
+          </div>
+          <h3 class="text-lg font-bold mb-2 text-gray-900 group-hover:text-mt-purple transition">Technical Indicators</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Explore popular technical indicators including RSI, moving averages, MACD, and more — 
+            all available as pre-built nodes in your editor.
+          </p>
+          <span class="text-mt-purple text-sm font-medium mt-4 inline-flex items-center gap-1">
+            Explore →
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TECHNOLOGY SUMMARY (lavender bg) ============ -->
+  <section class="py-24 bg-mt-lavender border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <p class="text-brand-500 font-semibold text-sm uppercase tracking-widest mb-4">Under the Hood</p>
+        <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 text-gray-900">
+          Built on proven technology
+        </h2>
+        <p class="text-lg text-gray-600 leading-relaxed">
+          The lightweight runtime is built on Node.js, taking full advantage of its event-driven, 
+          non-blocking model. Cloud architecture uses Kubernetes for automatic scaling.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center hover:shadow-lg transition">
+          <div class="text-2xl mb-3">⬡</div>
+          <div class="text-sm font-semibold text-gray-900">Node-RED</div>
+          <div class="text-[11px] text-gray-500 mt-1">Visual Programming</div>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center hover:shadow-lg transition">
+          <div class="text-2xl mb-3">⚡</div>
+          <div class="text-sm font-semibold text-gray-900">Node.js</div>
+          <div class="text-[11px] text-gray-500 mt-1">Event-Driven Runtime</div>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center hover:shadow-lg transition">
+          <div class="text-2xl mb-3">☸️</div>
+          <div class="text-sm font-semibold text-gray-900">Kubernetes</div>
+          <div class="text-[11px] text-gray-500 mt-1">Cloud Orchestration</div>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center hover:shadow-lg transition">
+          <div class="text-2xl mb-3">📊</div>
+          <div class="text-sm font-semibold text-gray-900">Polygon.io</div>
+          <div class="text-[11px] text-gray-500 mt-1">Market Data</div>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center hover:shadow-lg transition">
+          <div class="text-2xl mb-3">🦙</div>
+          <div class="text-sm font-semibold text-gray-900">Alpaca</div>
+          <div class="text-[11px] text-gray-500 mt-1">Broker-Dealer</div>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center hover:shadow-lg transition">
+          <div class="text-2xl mb-3">{ }</div>
+          <div class="text-sm font-semibold text-gray-900">JSON</div>
+          <div class="text-[11px] text-gray-500 mt-1">Flow Storage</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA (dark, like hero) ============ -->
+  <section class="py-24 lg:py-32 relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div class="absolute inset-0 bg-gradient-to-b from-brand-500/5 to-transparent"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-brand-500/10 rounded-full blur-[128px]"></div>
+    <div class="relative z-10 max-w-4xl mx-auto px-6 lg:px-8 text-center">
+      <h2 class="text-4xl lg:text-6xl font-extrabold tracking-tight mb-6 text-white">
+        Ready to automate<br />your trading?
+      </h2>
+      <p class="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+        Start with a 30-day free trial to test the MachineTrader platform. 
+        Open a paper account in minutes without depositing any funds.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/pricing" class="btn-primary text-lg font-semibold px-10 py-4 rounded-full w-full sm:w-auto">
+          Start 30-Day Free Trial
+          <svg class="inline-block ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+        <a href="https://publicdemo.machinetrader.io" target="_blank" class="btn-secondary-light text-lg font-semibold px-10 py-4 rounded-full w-full sm:w-auto">
+          Try the Demo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER (light gray like original) ============ -->
+  <footer class="bg-gray-50 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+        <div class="col-span-2 md:col-span-1">
+          <a href="index.html" class="flex items-center gap-2 mb-4">
+            <img src="images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-gray-900">MachineTrader</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">
+            Automate your trading strategies using our low-code/no-code MachineTrader™ software.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="features.html" class="hover:text-gray-900 transition">Features</a></li>
+            <li><a href="/pricing" class="hover:text-gray-900 transition">Pricing</a></li>
+            <li><a href="/data-center" class="hover:text-gray-900 transition">Data Center</a></li>
+            <li><a href="/trading-flows" class="hover:text-gray-900 transition">Trading Scripts</a></li>
+            <li><a href="/backtests" class="hover:text-gray-900 transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="/blog-articles" class="hover:text-gray-900 transition">Blog</a></li>
+            <li><a href="/learn" class="hover:text-gray-900 transition">Learn</a></li>
+            <li><a href="/history" class="hover:text-gray-900 transition">History</a></li>
+            <li><a href="/about-us" class="hover:text-gray-900 transition">About Us</a></li>
+            <li><a href="/video-tutorials" class="hover:text-gray-900 transition">Video Tutorials</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="/privacy-policy" class="hover:text-gray-900 transition">Privacy Policy</a></li>
+            <li><a href="/terms-of-service" class="hover:text-gray-900 transition">Terms of Service</a></li>
+            <li><a href="/cookie-policy" class="hover:text-gray-900 transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-400">
+          © 2022–2026 MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="mailto:info@machinetrader.io" class="text-gray-400 hover:text-gray-900 transition text-sm">info@machinetrader.io</a>
+        </div>
+      </div>
+    </div>
+    <div class="bg-gray-100 border-t border-gray-200">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-400 leading-relaxed">
+          <strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading. 
+          All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a 
+          registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC, 
+          member FINRA/SIPC. *Commission-free for U.S. equities. Please read all risk disclosures before trading.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    const EXPECTED_HASH = '8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    (async () => {
+      const lockScreen = document.getElementById('lock-screen');
+      const pageContent = document.getElementById('page-content');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (sessionStorage.getItem('mt-auth') === EXPECTED_HASH) {
+        lockScreen.classList.add('hidden');
+        pageContent.classList.remove('hidden');
+      } else { input.focus(); }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const hash = await sha256(input.value);
+        if (hash === EXPECTED_HASH) {
+          sessionStorage.setItem('mt-auth', EXPECTED_HASH);
+          lockScreen.style.transition = 'opacity 0.4s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => { lockScreen.classList.add('hidden'); pageContent.classList.remove('hidden'); }, 400);
+        } else {
+          error.classList.remove('hidden'); input.classList.add('!border-red-500'); input.value = ''; input.focus();
+          setTimeout(() => { error.classList.add('hidden'); input.classList.remove('!border-red-500'); }, 3000);
+        }
+      });
+    })();
+  </script>
+  <script src="js/main.js"></script>
+</body>
+</html>
