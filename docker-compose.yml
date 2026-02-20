@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    container_name: machinetrader-web
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.machinetrader.rule=Host(`machinetrader.io`) || Host(`www.machinetrader.io`)"
+      - "traefik.http.routers.machinetrader.entrypoints=websecure"
+      - "traefik.http.routers.machinetrader.tls.certresolver=myresolver"
+      - "traefik.http.services.machinetrader.loadbalancer.server.port=80"
+    # --- ADDED VOLUMES SECTION ---
+    volumes:
+      - .:/usr/share/nginx/html:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    # -----------------------------
+    networks:
+      - traefik-net
+
+networks:
+  traefik-net:
+    external: true
