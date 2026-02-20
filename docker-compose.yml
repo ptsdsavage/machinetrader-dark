@@ -10,11 +10,11 @@ services:
       - "traefik.http.routers.machinetrader.entrypoints=websecure"
       - "traefik.http.routers.machinetrader.tls.certresolver=myresolver"
       - "traefik.http.services.machinetrader.loadbalancer.server.port=80"
-    # --- ADDED VOLUMES SECTION ---
-    volumes:
-      - .:/usr/share/nginx/html:ro
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-    # -----------------------------
+      # Redirect www → apex (optional, uncomment if desired)
+      # - "traefik.http.middlewares.machinetrader-www.redirectregex.regex=^https://www\\.machinetrader\\.io/(.*)"
+      # - "traefik.http.middlewares.machinetrader-www.redirectregex.replacement=https://machinetrader.io/$${1}"
+      # - "traefik.http.middlewares.machinetrader-www.redirectregex.permanent=true"
+      # - "traefik.http.routers.machinetrader.middlewares=machinetrader-www"
     networks:
       - traefik-net
 

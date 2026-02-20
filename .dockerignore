@@ -1,0 +1,10 @@
+.git
+.gitignore
+.dockerignore
+*.bak
+*.py
+*.md
+.DS_Store
+*.textClipping
+Dockerfile
+docker-compose.yml
