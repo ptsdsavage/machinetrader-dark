@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Profile | MachineTrader</title>
+  <link rel="canonical" href="https://www.machinetrader.io/learn-articles/your-profile" />
+  <meta name="description" content="Learn how to manage your MachineTrader profile settings. Customize your account preferences and trading configuration." />
+  <meta property="og:title" content="Your Profile | MachineTrader" />
+  <meta property="og:description" content="Learn how to manage your MachineTrader profile settings. Customize your account preferences and trading configuration." />
+  <meta property="og:type" content="website" />
+  <meta property="twitter:title" content="Your Profile | MachineTrader" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="google-site-verification" content="google6132bb2f08408978.html" />
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fff8f0',100:'#ffe8cc',200:'#ffd199',300:'#ffb366',400:'#ff9533',500:'#ff6b00',600:'#e05e00',700:'#b84d00',800:'#8f3c00',900:'#662b00',950:'#3d1a00' },
+            accent: { 500:'#489fd9',600:'#3a87be' },
+            mt: { green:'#4dbd90',purple:'#8668ab',blue:'#489fd9',pink:'#fde5e5',lavender:'#dde7ed' },
+            dark: { 900:'#0a0f1a',800:'#111827',700:'#1f2937',600:'#374151' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set','developer_id.dZGVlNj',true);gtag('js',new Date());gtag('config','G-G9L6L77LNM');</script>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1830322441099552');fbq('track','PageView');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+  <style>
+    .sidebar-link { display: block; padding: 0.5rem 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; color: #9ca3af; transition: all 0.2s; }
+    .sidebar-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .sidebar-link.active { color: #ff6b00; background: rgba(255,107,0,0.1); }
+    .sidebar-category { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7280; margin-top: 1.5rem; margin-bottom: 0.5rem; padding-left: 0.75rem; }
+    .sidebar-category:first-child { margin-top: 0; }
+    .article-content p { color: #d1d5db; line-height: 1.8; margin-bottom: 1.25rem; }
+    .article-content a { color: #489fd9; text-decoration: underline; text-underline-offset: 2px; }
+    .article-content a:hover { color: #ff6b00; }
+    .article-content strong { color: #fff; }
+    .article-content em { color: #e5e7eb; }
+    .article-content h2 { color: #fff; font-size: 1.5rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; }
+    .article-content h3 { color: #fff; font-size: 1.25rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+    .article-content h4 { color: #e5e7eb; font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    .article-content ul, .article-content ol { color: #d1d5db; margin-bottom: 1.25rem; padding-left: 1.5rem; }
+    .article-content li { margin-bottom: 0.5rem; line-height: 1.7; }
+    .article-content ul { list-style-type: disc; }
+    .article-content ol { list-style-type: decimal; }
+    .article-content img { border-radius: 0.75rem; border: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0; max-width: 100%; height: auto; }
+    .article-content blockquote { border-left: 3px solid #ff6b00; padding-left: 1rem; color: #9ca3af; font-style: italic; margin: 1.25rem 0; }
+    .article-content pre, .article-content code { background: rgba(255,255,255,0.05); border-radius: 0.375rem; padding: 0.125rem 0.375rem; font-size: 0.875rem; color: #e5e7eb; }
+    .article-content pre { padding: 1rem; overflow-x: auto; margin: 1.25rem 0; }
+  </style>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="../images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <div class="relative">
+          <input id="password-input" type="password" placeholder="Password" autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm" />
+        </div>
+        <button type="submit" class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl">Enter</button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="../index.html" class="flex items-center gap-3 group">
+          <img src="../images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="../index.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Home</a>
+          <a href="../features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="../learn.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition text-brand-500">Learn</a>
+          <a href="../data-center.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Data Center</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+        <a href="../index.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Home</a>
+        <a href="../features.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Features</a>
+        <a href="../learn.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Learn</a>
+        <a href="../data-center.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Data Center</a>
+        <div class="flex flex-col gap-3 pt-4 border-t border-white/10">
+          <a href="/pricing" class="btn-primary text-center text-base font-semibold px-6 py-3 rounded-full">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ ARTICLE HERO ============ -->
+  <section class="relative pt-32 pb-10 overflow-hidden">
+    <div class="absolute top-20 left-1/4 w-[500px] h-[500px] bg-mt-green/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-4">
+        <a href="../learn.html" class="text-sm text-gray-500 hover:text-white transition">← Back to Learn</a>
+      </div>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 text-brand-500 text-xs font-semibold">
+          ⚙️ Customization
+        </span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">Your Profile</h1>
+    </div>
+  </section>
+
+  <!-- ============ MAIN CONTENT: SIDEBAR + ARTICLE ============ -->
+  <section class="border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="flex flex-col lg:flex-row gap-10">
+
+        <!-- SIDEBAR -->
+        <aside class="lg:w-72 flex-shrink-0">
+          <div class="lg:sticky lg:top-28">
+            <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-5">
+
+              <div class="sidebar-category" style="margin-top:0">General</div>
+              <a href="tech-features.html" class="sidebar-link">Technology and Features</a>
+              <a href="welcome-machinetrader.html" class="sidebar-link">Welcome to MachineTrader™</a>
+              <a href="introduction.html" class="sidebar-link">Introduction</a>
+
+              <div class="sidebar-category">Indicators</div>
+              <a href="fred-data.html" class="sidebar-link">FRED Data</a>
+              <a href="markets.html" class="sidebar-link">Markets</a>
+              <a href="news-nlp.html" class="sidebar-link">News &amp; NLP</a>
+
+              <div class="sidebar-category">Customization</div>
+              <a href="connecting-your-alpaca-and-machinetrader-accounts.html" class="sidebar-link">Connecting Alpaca Account</a>
+              <a href="customizing-account-information.html" class="sidebar-link">Customizing Account Info</a>
+              <a href="your-profile.html" class="sidebar-link active">Your Profile</a>
+              <a href="importing-flow-from-machinetrader-community-in-github.html" class="sidebar-link">Importing Flows from GitHub</a>
+
+              <div class="sidebar-category">Trading</div>
+              <a href="how-to-trade.html" class="sidebar-link">How to Trade</a>
+              <a href="backtesting.html" class="sidebar-link">Backtesting</a>
+
+              <div class="sidebar-category">Courses</div>
+              <a href="free-algorithmic-trading-course.html" class="sidebar-link">Free Algorithmic Trading Course</a>
+              <a href="learn-to-backtest-with-machinetrader.html" class="sidebar-link">Learn to Backtest</a>
+              <a href="advanced-algorithmic-trading-part1.html" class="sidebar-link">Advanced Algo Trading: Part 1</a>
+              <a href="exploring-technical-indicators.html" class="sidebar-link">Exploring Technical Indicators</a>
+              <a href="calculating-the-relative-strength-index-of-an-asset-in-machinetrader.html" class="sidebar-link">Calculating RSI in MachineTrader</a>
+              <a href="one-on-one-training.html" class="sidebar-link">One-on-One Training</a>
+
+            </div>
+          </div>
+        </aside>
+
+        <!-- ARTICLE CONTENT -->
+        <div class="flex-1 min-w-0">
+          <article class="bg-gray-900/60 border border-white/10 rounded-2xl p-8 lg:p-10">
+            <div class="article-content">
+              <p>Configure your MachineTrader™ profile to enable trading through our partner broker-dealer, Alpaca Markets, and set your watchlist as the list of tickers you'll want to use as market indicators.</p><p>There are two methods for adding your Alpaca API keys to MachineTrader™. The first method involves simply retrieving the API keys from Alpaca and pasting them into MachineTrader™. However, this requires regenerating your "Secret Key," which means you will need to update any application currently running using your API keys. The second method is to use the Alpaca "OAuth" method described below.</p><p>To copy and paste  your Alpaca keys, navigate to the "Overview" page (https://app.alpaca.markets/brokerage/dashboard/overview), and start by selecting the "live" account. Look for the API keys at the top right of the page. </p><figure class="my-6"><div><img class="rounded-lg border border-white/10 my-6 max-w-full" alt="6256D88090F2181A0Ed99668 Screen%20Shot%202022 04 13%20At%209.58.08%20Am" height="auto" loading="lazy" src="https://uploads-ssl.webflow.com/625141e01490d1570e40bc16/6256d88090f2181a0ed99668_Screen%20Shot%202022-04-13%20at%209.58.08%20AM.png" width="auto"/></div></figure><p>Open your MachineTrader™ profile page in another tab. </p><figure class="my-6"><div><img class="rounded-lg border border-white/10 my-6 max-w-full" alt="6256D8C14208D85Ce58C87D5 Screen%20Shot%202022 04 13%20At%209.51.01%20Am" height="auto" loading="lazy" src="https://uploads-ssl.webflow.com/625141e01490d1570e40bc16/6256d8c14208d85ce58c87d5_Screen%20Shot%202022-04-13%20at%209.51.01%20AM.png" width="auto"/></div></figure><p>Start by copying the Live Account Key ID and Secret Key, and pasting into the appropriate fields on your profile page. Once the Live Account keys are copied, switch to your Paper Account and copy those keys as well. </p><p>The "OAuth" method also starts from the Alpaca Overview page by navigation from the OAuth Apps link in the left navigation. You then need to add MachineTrader™ as a new app to your account. You will have to complete the form using the language provided below, except for the Application Website address, which should be entered as the home page of your unique MachineTrader™ client.</p><figure class="my-6"><div><img class="rounded-lg border border-white/10 my-6 max-w-full" alt="6256Db0B8F1F00C60E42Ec73 Screen%20Shot%202022 04 13%20At%2010.12.41%20Am" height="auto" loading="lazy" src="https://uploads-ssl.webflow.com/625141e01490d1570e40bc16/6256db0b8f1f00c60e42ec73_Screen%20Shot%202022-04-13%20at%2010.12.41%20AM.png" width="auto"/></div></figure><p>After you have added your Alpaca keys, you will want to set up your Watchlist and to overwrite the default Market Indicators (if you choose). To add tickers or crypto pairs to the Watchlist, simply paste a comma separated list of tickers in the Watchlist field on your profile page. Later, you will be able to edit the list from the Watchlist detail page. Note that if you have entered the tickers or cryptos incorrectly, they will not appear. </p><p>The Market Indicators are set by default to SPY (S&amp;P 500 ETF), QQQ (Nasdaq), VXX (volatility index), and BTCUSD (Bitcoin). You can add any market indicators you'd like to use by inserting them in the market indicator field.</p><figure class="my-6"><div><img class="rounded-lg border border-white/10 my-6 max-w-full" alt="6256E02Ba8142C78409F8618 Watchlist" height="auto" loading="lazy" src="https://uploads-ssl.webflow.com/625141e01490d1570e40bc16/6256e02ba8142c78409f8618_watchlist.png" width="auto"/></div></figure>
+            </div>
+          </article>
+
+          <!-- Back to Learn CTA -->
+          <div class="mt-10 text-center">
+            <a href="../learn.html" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Back to all articles
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="border-t border-white/5 py-24 text-center">
+    <div class="max-w-3xl mx-auto px-6">
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-6 text-white">Ready to Start Trading?</h2>
+      <p class="text-gray-400 text-lg mb-10">Put what you've learned into practice with MachineTrader's low-code platform.</p>
+      <a href="/pricing" class="btn-primary text-lg font-semibold px-10 py-4 rounded-full inline-flex items-center gap-2">
+        Start Free Trial
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-gray-950 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+        <div class="col-span-2 md:col-span-1">
+          <a href="../index.html" class="flex items-center gap-2 mb-4">
+            <img src="../images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">Automate your trading strategies using our low-code/no-code MachineTrader™ software.</p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="/pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="../data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="../trading-flows/index.html" class="hover:text-white transition">Trading Scripts</a></li>
+            <li><a href="../backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="../terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="../cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">© 2022–2026 MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005</div>
+        <div class="flex items-center gap-6">
+          <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+        </div>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed">
+          <strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading. All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC, member FINRA/SIPC. *Commission-free for U.S. equities.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    const EXPECTED_HASH = '8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    (async () => {
+      const lockScreen = document.getElementById('lock-screen');
+      const pageContent = document.getElementById('page-content');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (sessionStorage.getItem('mt-auth') === EXPECTED_HASH) {
+        lockScreen.classList.add('hidden');
+        pageContent.classList.remove('hidden');
+      } else { input.focus(); }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const hash = await sha256(input.value);
+        if (hash === EXPECTED_HASH) {
+          sessionStorage.setItem('mt-auth', EXPECTED_HASH);
+          lockScreen.style.transition = 'opacity 0.4s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => { lockScreen.classList.add('hidden'); pageContent.classList.remove('hidden'); }, 400);
+        } else {
+          error.classList.remove('hidden'); input.classList.add('!border-red-500'); input.value = ''; input.focus();
+          setTimeout(() => { error.classList.add('hidden'); input.classList.remove('!border-red-500'); }, 3000);
+        }
+      });
+    })();
+  </script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

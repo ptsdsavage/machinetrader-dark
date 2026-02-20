@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iron Butterfly Strategy | MachineTrader</title>
+  <link rel="canonical" href="https://www.machinetrader.io/strategies/iron-butterfly" />
+  <meta name="description" content="Iron Butterfly options strategy documentation. Node-RED implementation with Alpaca API for automated trading." />
+  <meta property="og:title" content="Iron Butterfly Strategy | MachineTrader" />
+  <meta property="og:description" content="Iron Butterfly options strategy documentation with Node-RED and Alpaca API." />
+  <meta property="og:type" content="website" />
+  <meta property="twitter:title" content="Iron Butterfly Strategy | MachineTrader" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="google-site-verification" content="google6132bb2f08408978.html" />
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fff8f0',100:'#ffe8cc',200:'#ffd199',300:'#ffb366',400:'#ff9533',500:'#ff6b00',600:'#e05e00',700:'#b84d00',800:'#8f3c00',900:'#662b00',950:'#3d1a00' },
+            accent: { 500:'#489fd9',600:'#3a87be' },
+            mt: { green:'#4dbd90',purple:'#8668ab',blue:'#489fd9',pink:'#fde5e5',lavender:'#dde7ed' },
+            dark: { 900:'#0a0f1a',800:'#111827',700:'#1f2937',600:'#374151' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set','developer_id.dZGVlNj',true);gtag('js',new Date());gtag('config','G-G9L6L77LNM');</script>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1830322441099552');fbq('track','PageView');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+  <style>
+    .strategy-nav a.active { color: #ff6b00; background: rgba(255,107,0,0.1); }
+    .diagram-box { background: #0d1117; border-radius: 0.75rem; padding: 1.5rem; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5; color: #7ee787; border: 1px solid rgba(255,255,255,0.05); }
+    .flow-step { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; background: rgba(255,255,255,0.03); border-radius: 0.5rem; margin: 0.375rem 0; border: 1px solid rgba(255,255,255,0.05); }
+    .flow-num { width: 2rem; height: 2rem; background: linear-gradient(135deg, #8668ab, #6366f1); color: white; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+    .flow-arrow { text-align: center; color: #6b7280; font-size: 1.25rem; line-height: 1; }
+    .alert-box { padding: 1rem 1.25rem; border-radius: 0.75rem; margin: 1rem 0; border-left: 4px solid; }
+    .alert-warning { background: rgba(245,158,11,0.08); border-color: #f59e0b; }
+    .alert-danger { background: rgba(239,68,68,0.08); border-color: #ef4444; }
+    .alert-success { background: rgba(16,185,129,0.08); border-color: #10b981; }
+    .alert-info { background: rgba(99,102,241,0.08); border-color: #8668ab; }
+  </style>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="../images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <div class="relative">
+          <input id="password-input" type="password" placeholder="Password" autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm" />
+        </div>
+        <button type="submit" class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl">Enter</button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="../index.html" class="flex items-center gap-3 group">
+          <img src="../images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="../index.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Home</a>
+          <a href="../features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="../index.html#how-it-works" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">How It Works</a>
+          <a href="../index.html#pricing" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Pricing</a>
+          <a href="../index.html#faq" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">FAQ</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden text-gray-400 hover:text-white transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden lg:hidden bg-gray-950/95 backdrop-blur border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-4 space-y-3">
+        <a href="../index.html" class="block text-sm text-gray-400 hover:text-white transition">Home</a>
+        <a href="../features.html" class="block text-sm text-gray-400 hover:text-white transition">Features</a>
+        <a href="../index.html#how-it-works" class="block text-sm text-gray-400 hover:text-white transition">How It Works</a>
+        <a href="../index.html#pricing" class="block text-sm text-gray-400 hover:text-white transition">Pricing</a>
+        <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full mt-2 inline-block">Start Free Trial</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 pb-20 overflow-hidden">
+    <div class="absolute top-20 left-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-8">
+        <span>🦋</span> Options Strategy Documentation
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+        <span class="text-white">Iron Butterfly</span>
+        <br />
+        <span class="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">Strategy</span>
+      </h1>
+      <p class="text-lg text-gray-400 max-w-2xl mx-auto mb-10">Node-RED implementation with Alpaca API for automated neutral options trading.</p>
+      <!-- Sticky section nav -->
+      <div class="strategy-nav flex flex-wrap justify-center gap-2 mt-6">
+        <a href="#overview" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Overview</a>
+        <a href="#comparison" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">vs Iron Condor</a>
+        <a href="#files" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Files</a>
+        <a href="#setup" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Setup</a>
+        <a href="#api-keys" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">API Keys</a>
+        <a href="#order-structure" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Orders</a>
+        <a href="#exit-management" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Exit</a>
+        <a href="#pnl" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">P&amp;L</a>
+        <a href="#troubleshooting" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Troubleshooting</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OVERVIEW ============ -->
+  <section id="overview" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+          <span class="text-purple-400">📊</span> Strategy Overview
+        </h2>
+        <p class="text-gray-400 mb-6">The <strong class="text-white">Iron Butterfly</strong> is a neutral options strategy that profits when the underlying stays near a specific price (the ATM strike) at expiration.</p>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Position Structure</h3>
+        <div class="diagram-box mb-6">
+          PROFIT ZONE
+          ▲
+          │
+          ──────────────────────┬──────────────────────
+                                │  Max Profit (at ATM)
+                               /│\
+                              / │ \
+                             /  │  \
+          ─────────────────/────┼────\─────────────────
+          Long Put        /     │     \        Long Call
+          (Protection)   /      │      \     (Protection)
+                        /       │       \
+          Breakeven ───/────────┼────────\─── Breakeven
+                                │
+                     Short Put + Short Call
+                        (Both at ATM)
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Position Legs (4 Total)</h3>
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Leg</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Option Type</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Position</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Strike</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Purpose</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">1</td>
+                <td class="py-3 px-4">Put</td>
+                <td class="py-3 px-4"><span class="text-emerald-400 font-semibold">BUY</span></td>
+                <td class="py-3 px-4">ATM − Wing Width</td>
+                <td class="py-3 px-4">Downside protection</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">2</td>
+                <td class="py-3 px-4">Put</td>
+                <td class="py-3 px-4"><span class="text-red-400 font-semibold">SELL</span></td>
+                <td class="py-3 px-4">ATM</td>
+                <td class="py-3 px-4">Income (short premium)</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">3</td>
+                <td class="py-3 px-4">Call</td>
+                <td class="py-3 px-4"><span class="text-red-400 font-semibold">SELL</span></td>
+                <td class="py-3 px-4">ATM</td>
+                <td class="py-3 px-4">Income (short premium)</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4">4</td>
+                <td class="py-3 px-4">Call</td>
+                <td class="py-3 px-4"><span class="text-emerald-400 font-semibold">BUY</span></td>
+                <td class="py-3 px-4">ATM + Wing Width</td>
+                <td class="py-3 px-4">Upside protection</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Key Characteristics</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5">
+            <div class="text-purple-400 font-semibold text-sm mb-1">💰 Max Profit</div>
+            <p class="text-gray-400 text-sm">Net credit received (if SPY expires exactly at ATM strike)</p>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5">
+            <div class="text-purple-400 font-semibold text-sm mb-1">📉 Max Loss</div>
+            <p class="text-gray-400 text-sm">Wing Width − Net Credit</p>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5">
+            <div class="text-purple-400 font-semibold text-sm mb-1">📈 Upper Breakeven</div>
+            <p class="text-gray-400 text-sm">ATM + Net Credit</p>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5">
+            <div class="text-purple-400 font-semibold text-sm mb-1">📉 Lower Breakeven</div>
+            <p class="text-gray-400 text-sm">ATM − Net Credit</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPARISON ============ -->
+  <section id="comparison" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-purple-400">🔄</span> Iron Butterfly vs Iron Condor
+        </h2>
+        <div class="overflow-x-auto mb-8">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Feature</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Iron Butterfly</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Iron Condor</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Short Strikes</td>
+                <td class="py-3 px-4">Both at ATM (same strike)</td>
+                <td class="py-3 px-4">Different strikes (OTM)</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Net Credit</td>
+                <td class="py-3 px-4"><span class="text-emerald-400 font-semibold">Higher</span></td>
+                <td class="py-3 px-4">Lower</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Profit Zone</td>
+                <td class="py-3 px-4">Narrower</td>
+                <td class="py-3 px-4"><span class="text-emerald-400 font-semibold">Wider</span></td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Probability of Profit</td>
+                <td class="py-3 px-4">Lower</td>
+                <td class="py-3 px-4"><span class="text-emerald-400 font-semibold">Higher</span></td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Max Profit Likelihood</td>
+                <td class="py-3 px-4">Only at exact ATM price</td>
+                <td class="py-3 px-4">Between short strikes</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Best For</td>
+                <td class="py-3 px-4">Low volatility, pinned price</td>
+                <td class="py-3 px-4">Range bound markets</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Visual Comparison</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5">
+            <h4 class="text-center text-purple-400 font-semibold mb-3">Iron Condor</h4>
+            <div class="diagram-box text-center">
+        ┌─────────────┐
+       /               \
+      /                 \
+──/───────────────────\──
+  Short Put       Short Call
+    (OTM)           (OTM)
+            </div>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5">
+            <h4 class="text-center text-purple-400 font-semibold mb-3">Iron Butterfly</h4>
+            <div class="diagram-box text-center">
+           ┌─┐
+          / │ \
+         /  │  \
+──/──────┴──────\──
+      Both Shorts
+        at ATM
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FILES & FLOWS ============ -->
+  <section id="files" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-purple-400">📁</span> Files &amp; Flows
+        </h2>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Core Files</h3>
+        <div class="overflow-x-auto mb-8">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">File</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Purpose</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">API Environment</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="px-2 py-0.5 rounded bg-white/5 text-purple-300 text-xs">ib.json</code></td>
+                <td class="py-3 px-4">Entry flow — Opens new positions</td>
+                <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-300">Paper</span></td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="px-2 py-0.5 rounded bg-white/5 text-purple-300 text-xs">liquidation_flow.json</code></td>
+                <td class="py-3 px-4">Closes positions manually or scheduled</td>
+                <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300">Live</span></td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="px-2 py-0.5 rounded bg-white/5 text-purple-300 text-xs">monitoring_flow.json</code></td>
+                <td class="py-3 px-4">Auto-monitors P&amp;L, exits on thresholds</td>
+                <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300">Live</span></td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="px-2 py-0.5 rounded bg-white/5 text-purple-300 text-xs">trade_history_flow.json</code></td>
+                <td class="py-3 px-4">Calculates historical P&amp;L</td>
+                <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300">Live</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Flow Descriptions</h3>
+
+        <!-- Flow 1: Entry -->
+        <h4 class="text-white font-medium mt-6 mb-2">1. Entry Flow (ib.json)</h4>
+        <p class="text-gray-400 text-sm mb-3"><strong class="text-white">Trigger:</strong> Monday 9:35 AM (cron) or Manual</p>
+        <div class="space-y-1 mb-6">
+          <div class="flow-step"><span class="flow-num">1</span><span class="text-gray-300 text-sm">Calculate Friday expiry date</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">2</span><span class="text-gray-300 text-sm">Fetch SPY price from Alpaca Data API</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">3</span><span class="text-gray-300 text-sm">Calculate ATM strike (round to nearest $1)</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">4</span><span class="text-gray-300 text-sm">Build OCC option symbols</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">5</span><span class="text-gray-300 text-sm">Fetch options Greeks/prices</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">6</span><span class="text-gray-300 text-sm">Calculate risk metrics &amp; expected value</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">7</span><span class="text-gray-300 text-sm">Submit 4-leg multi-leg order</span></div>
+        </div>
+
+        <!-- Flow 2: Liquidation -->
+        <h4 class="text-white font-medium mt-6 mb-2">2. Liquidation Flow (liquidation_flow.json)</h4>
+        <p class="text-gray-400 text-sm mb-3"><strong class="text-white">Trigger:</strong> Thursday 2:40 PM (cron) or Manual</p>
+        <div class="space-y-1 mb-6">
+          <div class="flow-step"><span class="flow-num">1</span><span class="text-gray-300 text-sm">Fetch all open positions</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">2</span><span class="text-gray-300 text-sm">Filter SPY options</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">3</span><span class="text-gray-300 text-sm">Group by expiry (handles multiple butterflies)</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">4</span><span class="text-gray-300 text-sm">Build close orders with correct quantities</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">5</span><span class="text-gray-300 text-sm">Submit multi-leg close orders</span></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><span class="flow-num">6</span><span class="text-gray-300 text-sm">Calculate realized P&amp;L and verify closure</span></div>
+        </div>
+
+        <!-- Flow 3: Monitoring -->
+        <h4 class="text-white font-medium mt-6 mb-2">3. Monitoring Flow (monitoring_flow.json)</h4>
+        <p class="text-gray-400 text-sm mb-3"><strong class="text-white">Trigger:</strong> Every 5 minutes (repeating inject)</p>
+        <div class="alert-box alert-info">
+          <strong class="text-white">Exit Conditions:</strong>
+          <ul class="list-disc list-inside text-gray-400 text-sm mt-2 space-y-1">
+            <li>Profit ≥ 50% of max → Close</li>
+            <li>Profit ≥ 90% (near max) → Close</li>
+            <li>Loss ≥ 80% → Stop loss</li>
+          </ul>
+        </div>
+
+        <!-- Flow 4: Trade History -->
+        <h4 class="text-white font-medium mt-6 mb-2">4. Trade History (trade_history_flow.json)</h4>
+        <p class="text-gray-400 text-sm mb-3"><strong class="text-white">Trigger:</strong> Manual</p>
+        <p class="text-gray-400 text-sm">Fetches last 30 days of closed orders, matches entry/exit pairs by expiry, and calculates realized P&amp;L, win rate, and cumulative statistics.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SETUP ============ -->
+  <section id="setup" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-purple-400">⚙️</span> Setup &amp; Configuration
+        </h2>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Prerequisites</h3>
+        <ul class="list-disc list-inside text-gray-400 text-sm space-y-2 mb-6">
+          <li><strong class="text-white">Node-RED</strong> installed</li>
+          <li><strong class="text-white">Alpaca Account</strong> with options trading enabled</li>
+          <li><strong class="text-white">API Keys</strong> for both paper and live trading</li>
+        </ul>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Import Flows</h3>
+        <ol class="list-decimal list-inside text-gray-400 text-sm space-y-2 mb-6">
+          <li>Open Node-RED</li>
+          <li>Menu → Import → Clipboard</li>
+          <li>Paste contents of each JSON file</li>
+          <li>Deploy</li>
+        </ol>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Configuration (in ib.json)</h3>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm mb-6"><code class="text-emerald-300">// Set API Keys node
+global.set("apiKeyP1", "YOUR_DATA_API_KEY");      // For market data
+global.set("apiSecretP1", "YOUR_DATA_SECRET");
+global.set("apiKeyP3", "YOUR_PAPER_TRADING_KEY"); // For paper trading
+global.set("apiSecretP3", "YOUR_PAPER_SECRET");
+
+// Strategy Configuration
+global.set("underlying", "SPY");
+global.set("quantity", 1);      // Number of contracts per leg
+global.set("wingWidth", 10);    // Distance from ATM to long strikes</code></pre>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Live Trading Keys</h3>
+        <p class="text-gray-400 text-sm mb-3">For <code class="px-2 py-0.5 rounded bg-white/5 text-purple-300 text-xs">liquidation_flow.json</code>, <code class="px-2 py-0.5 rounded bg-white/5 text-purple-300 text-xs">monitoring_flow.json</code>, and <code class="px-2 py-0.5 rounded bg-white/5 text-purple-300 text-xs">trade_history_flow.json</code>:</p>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm"><code class="text-emerald-300">global.set("apiKeyLive", "YOUR_LIVE_API_KEY");
+global.set("apiSecretLive", "YOUR_LIVE_SECRET");</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ API KEYS ============ -->
+  <section id="api-keys" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-purple-400">🔑</span> API Keys
+        </h2>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Key Types Used</h3>
+        <div class="overflow-x-auto mb-8">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Key Name</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Purpose</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Environment</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-purple-300 text-xs">apiKeyP1</code> / <code class="text-purple-300 text-xs">apiSecretP1</code></td>
+                <td class="py-3 px-4">Market data (snapshots, Greeks)</td>
+                <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300">data.alpaca.markets</span></td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-purple-300 text-xs">apiKeyP3</code> / <code class="text-purple-300 text-xs">apiSecretP3</code></td>
+                <td class="py-3 px-4">Paper trading orders</td>
+                <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-300">paper-api.alpaca.markets</span></td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-purple-300 text-xs">apiKeyLive</code> / <code class="text-purple-300 text-xs">apiSecretLive</code></td>
+                <td class="py-3 px-4">Live trading orders</td>
+                <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300">api.alpaca.markets</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">API Endpoints</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Endpoint</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Purpose</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-xs text-emerald-300">/v2/stocks/SPY/snapshot</code></td>
+                <td class="py-3 px-4">Get SPY price</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-xs text-emerald-300">/v1beta1/options/snapshots</code></td>
+                <td class="py-3 px-4">Get options prices/Greeks</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-xs text-emerald-300">/v2/orders</code> (paper)</td>
+                <td class="py-3 px-4">Submit paper orders</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-xs text-emerald-300">/v2/orders</code> (live)</td>
+                <td class="py-3 px-4">Submit live orders</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-xs text-emerald-300">/v2/positions</code></td>
+                <td class="py-3 px-4">Get open positions</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ORDER STRUCTURE ============ -->
+  <section id="order-structure" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-purple-400">📦</span> Order Structure
+        </h2>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Alpaca Multi-Leg Order Format</h3>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm mb-6"><code class="text-emerald-300">{
+  "order_class": "mleg",
+  "type": "market",
+  "time_in_force": "day",
+  "qty": "5",
+  "legs": [
+    {
+      "symbol": "SPY250117P00580000",
+      "side": "buy",
+      "ratio_qty": "1"
+    },
+    {
+      "symbol": "SPY250117P00590000",
+      "side": "sell",
+      "ratio_qty": "1"
+    },
+    {
+      "symbol": "SPY250117C00590000",
+      "side": "sell",
+      "ratio_qty": "1"
+    },
+    {
+      "symbol": "SPY250117C00600000",
+      "side": "buy",
+      "ratio_qty": "1"
+    }
+  ]
+}</code></pre>
+
+        <div class="alert-box alert-warning">
+          <strong class="text-yellow-300">⚠️ Important Notes:</strong>
+          <ul class="list-disc list-inside text-gray-400 text-sm mt-2 space-y-1">
+            <li><code class="text-yellow-300 text-xs">qty</code> at order level = number of spreads (actual contracts per leg)</li>
+            <li><code class="text-yellow-300 text-xs">ratio_qty</code> at leg level = ratio between legs (always "1" for butterfly)</li>
+            <li>Both must be <strong class="text-white">strings</strong>, not numbers</li>
+            <li><code class="text-yellow-300 text-xs">ratio_qty</code> replaced the deprecated <code class="text-yellow-300 text-xs">ratio</code> field</li>
+          </ul>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mt-6 mb-3">OCC Symbol Format</h3>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm"><code class="text-emerald-300">SPY250117P00580000
+│   │     │ │
+│   │     │ └── Strike × 1000 (8 digits, padded with zeros)
+│   │     └──── Option type (P=Put, C=Call)
+│   └────────── Expiry (YYMMDD)
+└────────────── Underlying symbol</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXIT MANAGEMENT ============ -->
+  <section id="exit-management" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-purple-400">🚪</span> Exit Management
+        </h2>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Scheduled Exit</h3>
+        <div class="bg-black/30 border border-white/5 rounded-xl p-5 mb-6">
+          <h4 class="text-purple-400 font-semibold mb-2">⏰ Thursday 2:40 PM EST</h4>
+          <p class="text-gray-400 text-sm mb-2"><strong class="text-white">Why Thursday?</strong></p>
+          <ul class="list-disc list-inside text-gray-400 text-sm space-y-1">
+            <li>Avoids Friday gamma risk</li>
+            <li>Captures majority of theta decay</li>
+            <li>Provides buffer before expiration</li>
+          </ul>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Automated Monitoring Exits</h3>
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Condition</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Threshold</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Rationale</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4 font-semibold">Profit Target</td>
+                <td class="py-3 px-4 text-emerald-400">P&amp;L ≥ 50%</td>
+                <td class="py-3 px-4">Secure profits before potential reversal</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4 font-semibold">Max Profit</td>
+                <td class="py-3 px-4 text-emerald-400">P&amp;L ≥ 90%</td>
+                <td class="py-3 px-4">Close when near max, avoid pin risk</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4 font-semibold">Stop Loss</td>
+                <td class="py-3 px-4 text-red-400">P&amp;L ≤ −80%</td>
+                <td class="py-3 px-4">Limit losses on breakout moves</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-2">Manual Exit</h3>
+        <p class="text-gray-400 text-sm">Click <strong class="text-white">"Manual Liquidation Trigger"</strong> in the liquidation flow to close immediately.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ P&L ============ -->
+  <section id="pnl" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-purple-400">💰</span> P&amp;L Calculation
+        </h2>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Entry Metrics</h3>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm mb-6"><code class="text-emerald-300">// Net Credit = Premium received - Premium paid
+netCreditReceived = shortCredit - longCost;
+
+// Max Risk = Wing Width × 100 - Net Credit
+maxRisk = (wingWidth * 100 * quantity) - netCreditReceived;</code></pre>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Return Calculations</h3>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm mb-6"><code class="text-emerald-300">// Return on Capital (ROC)
+returnOnCapital = (realizedPnL / maxRisk) * 100;
+
+// Return on Credit
+returnOnCredit = (realizedPnL / netCreditReceived) * 100;
+
+// Annualized Return
+annualizedReturn = (returnOnCapital / tradeDays) * 252;</code></pre>
+
+        <h3 class="text-lg font-semibold text-white mb-3">P&amp;L Summary Output</h3>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm mb-6"><code class="text-emerald-300">{
+  "summary": {
+    "completedTrades": 5,
+    "totalPnL": "+$234.50",
+    "winCount": 4,
+    "lossCount": 1,
+    "winRate": "80.0%",
+    "avgPnLPerTrade": "+$46.90"
+  }
+}</code></pre>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Example Trade</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5">
+            <h4 class="text-purple-400 font-semibold mb-3">📥 Entry (Monday 9:35 AM)</h4>
+            <pre class="text-xs text-gray-300 whitespace-pre-wrap leading-relaxed"><code>SPY Price: $590.25
+ATM Strike: $590
+Wing Width: 10
+Position:
+- Buy  1x SPY 250117 P580 @ $0.80
+- Sell 1x SPY 250117 P590 @ $2.50
+- Sell 1x SPY 250117 C590 @ $2.50
+- Buy  1x SPY 250117 C600 @ $0.80
+Net Credit: $3.40
+Max Profit: $340
+Max Loss: $660</code></pre>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5">
+            <h4 class="text-purple-400 font-semibold mb-3">📤 Exit (Thursday 2:40 PM)</h4>
+            <pre class="text-xs text-gray-300 whitespace-pre-wrap leading-relaxed"><code>SPY Price: $589.50
+Close Cost: ~$1.80
+Realized P&amp;L: 
+  $3.40 - $1.80 = $1.60
+  × 100 = $160 profit
+ROC: $160 / $660 = 24.2%</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TROUBLESHOOTING ============ -->
+  <section id="troubleshooting" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-purple-400">🔧</span> Troubleshooting
+        </h2>
+
+        <h3 class="text-lg font-semibold text-white mb-4">Common Issues</h3>
+        <div class="space-y-4 mb-8">
+          <div class="alert-box alert-danger">
+            <h4 class="text-red-300 font-semibold text-sm">❌ "No SPY options positions"</h4>
+            <p class="text-gray-400 text-sm mt-1"><strong class="text-white">Cause:</strong> No open positions or wrong API keys</p>
+            <p class="text-gray-400 text-sm"><strong class="text-white">Fix:</strong> Verify live API keys are set and positions exist</p>
+          </div>
+          <div class="alert-box alert-danger">
+            <h4 class="text-red-300 font-semibold text-sm">❌ Order rejected — "Invalid ratio"</h4>
+            <p class="text-gray-400 text-sm mt-1"><strong class="text-white">Cause:</strong> Using <code class="text-red-300 text-xs">ratio</code> instead of <code class="text-red-300 text-xs">ratio_qty</code></p>
+            <p class="text-gray-400 text-sm"><strong class="text-white">Fix:</strong> Use <code class="text-emerald-300 text-xs">"ratio_qty": "1"</code> (string, not number)</p>
+          </div>
+          <div class="alert-box alert-danger">
+            <h4 class="text-red-300 font-semibold text-sm">❌ Order closes only 1 contract</h4>
+            <p class="text-gray-400 text-sm mt-1"><strong class="text-white">Cause:</strong> Missing <code class="text-red-300 text-xs">qty</code> at order level</p>
+            <p class="text-gray-400 text-sm"><strong class="text-white">Fix:</strong> Include <code class="text-emerald-300 text-xs">"qty": "N"</code> at order level with actual quantity</p>
+          </div>
+          <div class="alert-box alert-warning">
+            <h4 class="text-yellow-300 font-semibold text-sm">⚠️ "API keys not configured"</h4>
+            <p class="text-gray-400 text-sm mt-1"><strong class="text-white">Cause:</strong> Global variables not set</p>
+            <p class="text-gray-400 text-sm"><strong class="text-white">Fix:</strong> Run the "Initialize API Keys" inject node first</p>
+          </div>
+          <div class="alert-box alert-warning">
+            <h4 class="text-yellow-300 font-semibold text-sm">⚠️ Positions not closing completely</h4>
+            <p class="text-gray-400 text-sm mt-1"><strong class="text-white">Cause:</strong> Multiple butterflies with different expiries</p>
+            <p class="text-gray-400 text-sm"><strong class="text-white">Fix:</strong> Flow groups by expiry and submits separate orders</p>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Debug Tips</h3>
+        <ul class="list-disc list-inside text-gray-400 text-sm space-y-2 mb-6">
+          <li>Enable debug nodes to see full payloads</li>
+          <li>Check Node-RED sidebar for warnings/errors</li>
+          <li>Use <code class="text-purple-300 text-xs">node.warn()</code> output in function nodes</li>
+          <li>Verify API response codes (200/201 = success)</li>
+        </ul>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Logs to Check</h3>
+        <ul class="list-disc list-inside text-gray-400 text-sm space-y-2">
+          <li><strong class="text-white">Order submission:</strong> Look for order ID in response</li>
+          <li><strong class="text-white">Position fetch:</strong> Verify <code class="text-purple-300 text-xs">us_option</code> asset class filter</li>
+          <li><strong class="text-white">Symbol format:</strong> Ensure no spaces/trimming issues</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DISCLAIMER ============ -->
+  <section class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-red-500/10 border-l-4 border-red-500 rounded-2xl p-8">
+        <h4 class="text-red-400 font-bold mb-3">⚠️ Disclaimer</h4>
+        <p class="text-red-200/80 text-sm leading-relaxed">
+          <strong>Options trading involves significant risk.</strong> This automation is provided as-is without warranty. Always monitor your positions and ensure you understand the risks involved. Past performance does not guarantee future results.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="border-t border-white/5 py-24 text-center">
+    <div class="max-w-3xl mx-auto px-6">
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-6 text-white">Ready to Automate Your Options Strategies?</h2>
+      <p class="text-gray-400 text-lg mb-10">Deploy Iron Butterfly and other strategies with MachineTrader's low-code platform.</p>
+      <a href="/pricing" class="btn-primary text-lg font-semibold px-10 py-4 rounded-full inline-flex items-center gap-2">
+        Start Free Trial
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-gray-950 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+        <div class="col-span-2 md:col-span-1">
+          <a href="../index.html" class="flex items-center gap-2 mb-4">
+            <img src="../images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">Automate your trading strategies using our low-code/no-code MachineTrader™ software.</p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="/pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="../data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="../trading-flows/index.html" class="hover:text-white transition">Trading Scripts</a></li>
+            <li><a href="../backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="../terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="../cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">© 2022–2026 MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005</div>
+        <div class="flex items-center gap-6">
+          <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+        </div>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed">
+          <strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading. All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC, member FINRA/SIPC. *Commission-free for U.S. equities.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    const EXPECTED_HASH = '8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    (async () => {
+      const lockScreen = document.getElementById('lock-screen');
+      const pageContent = document.getElementById('page-content');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (sessionStorage.getItem('mt-auth') === EXPECTED_HASH) {
+        lockScreen.classList.add('hidden');
+        pageContent.classList.remove('hidden');
+      } else { input.focus(); }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const hash = await sha256(input.value);
+        if (hash === EXPECTED_HASH) {
+          sessionStorage.setItem('mt-auth', EXPECTED_HASH);
+          lockScreen.style.transition = 'opacity 0.4s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => { lockScreen.classList.add('hidden'); pageContent.classList.remove('hidden'); }, 400);
+        } else {
+          error.classList.remove('hidden'); input.classList.add('!border-red-500'); input.value = ''; input.focus();
+          setTimeout(() => { error.classList.add('hidden'); input.classList.remove('!border-red-500'); }, 3000);
+        }
+      });
+    })();
+  </script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

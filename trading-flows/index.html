@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trading Scripts &amp; Flows | MachineTrader</title>
+  <link rel="canonical" href="https://www.machinetrader.io/trading-flows" />
+  <meta name="description" content="Explore trading scripts and automated trading flows on MachineTrader. Build your own algorithmic trading strategies without code." />
+  <meta property="og:title" content="Trading Scripts & Flows | MachineTrader" />
+  <meta property="og:description" content="Explore trading scripts and automated trading flows on MachineTrader." />
+  <meta property="og:type" content="website" />
+  <meta property="twitter:title" content="Trading Scripts & Flows | MachineTrader" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="google-site-verification" content="google6132bb2f08408978.html" />
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fff8f0',100:'#ffe8cc',200:'#ffd199',300:'#ffb366',400:'#ff9533',500:'#ff6b00',600:'#e05e00',700:'#b84d00',800:'#8f3c00',900:'#662b00',950:'#3d1a00' },
+            accent: { 500:'#489fd9',600:'#3a87be' },
+            mt: { green:'#4dbd90',purple:'#8668ab',blue:'#489fd9',pink:'#fde5e5',lavender:'#dde7ed' },
+            dark: { 900:'#0a0f1a',800:'#111827',700:'#1f2937',600:'#374151' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set','developer_id.dZGVlNj',true);gtag('js',new Date());gtag('config','G-G9L6L77LNM');</script>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1830322441099552');fbq('track','PageView');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="../images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <div class="relative">
+          <input id="password-input" type="password" placeholder="Password" autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm" />
+        </div>
+        <button type="submit" class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl">Enter</button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="../index.html" class="flex items-center gap-3 group">
+          <img src="../images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="../index.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Home</a>
+          <a href="../features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="../learn.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Learn</a>
+          <a href="../data-center.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Data Center</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+        <a href="../index.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Home</a>
+        <a href="../features.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Features</a>
+        <a href="../learn.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Learn</a>
+        <a href="../data-center.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Data Center</a>
+        <div class="flex flex-col gap-3 pt-4 border-t border-white/10">
+          <a href="/pricing" class="btn-primary text-center text-base font-semibold px-6 py-3 rounded-full">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 pb-16 overflow-hidden">
+    <div class="absolute top-20 left-1/4 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-mt-purple/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-500 text-sm font-medium mb-8">
+        <span>⚡</span> Automated Trading Flows
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+        <span class="text-white">Trading Scripts</span>
+        <br />
+        <span class="bg-gradient-to-r from-brand-500 to-mt-purple bg-clip-text text-transparent">&amp; Flows</span>
+      </h1>
+      <p class="text-lg text-gray-400 max-w-2xl mx-auto">Ready-to-import Node-RED flows for automated trading. Copy the JSON, import into your MachineTrader™ instance, and start trading.</p>
+    </div>
+  </section>
+
+  <!-- ============ FLOWS GRID ============ -->
+  <section class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+
+      <h2 class="text-2xl font-bold text-white mb-3">Options Strategies</h2>
+      <p class="text-gray-400 mb-8">Defined-risk options spreads with automated execution, position tracking, and P&L analytics.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-16">
+        <a href="bear-call-spread-flow.html" class="group bg-gray-900/40 border border-white/10 rounded-xl p-6 hover:border-red-500/40 hover:bg-red-500/5 transition-all">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center text-2xl">📉</div>
+            <h3 class="text-base font-semibold text-white group-hover:text-red-500 transition">Bear Call Spread</h3>
+          </div>
+          <p class="text-sm text-gray-500">Bearish credit spread using call options with automated contract selection and performance tracking.</p>
+        </a>
+        <a href="bear-put-spread-flow.html" class="group bg-gray-900/40 border border-white/10 rounded-xl p-6 hover:border-red-500/40 hover:bg-red-500/5 transition-all">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center text-2xl">📉</div>
+            <h3 class="text-base font-semibold text-white group-hover:text-red-500 transition">Bear Put Spread</h3>
+          </div>
+          <p class="text-sm text-gray-500">Bearish debit spread using put options with defined risk and automated order execution.</p>
+        </a>
+      </div>
+
+      <h2 class="text-2xl font-bold text-white mb-3">Portfolio Strategies</h2>
+      <p class="text-gray-400 mb-8">Automated portfolio creation, rebalancing, and performance tracking across multiple asset classes.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <a href="bitcoin-etf-portfolio-flow.html" class="group bg-gray-900/40 border border-white/10 rounded-xl p-6 hover:border-amber-500/40 hover:bg-amber-500/5 transition-all">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center text-2xl">₿</div>
+            <h3 class="text-base font-semibold text-white group-hover:text-amber-500 transition">Bitcoin ETF Portfolio</h3>
+          </div>
+          <p class="text-sm text-gray-500">Diversified portfolio of 11 Bitcoin ETFs with automated buy, sell, and performance tracking.</p>
+        </a>
+        <a href="crypto-portfolio-flow.html" class="group bg-gray-900/40 border border-white/10 rounded-xl p-6 hover:border-purple-500/40 hover:bg-purple-500/5 transition-all">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center text-2xl">🪙</div>
+            <h3 class="text-base font-semibold text-white group-hover:text-purple-500 transition">Crypto Portfolio</h3>
+          </div>
+          <p class="text-sm text-gray-500">Portfolio of 17 cryptocurrency assets with automated management and analytics.</p>
+        </a>
+        <a href="faang-portfolio-flow.html" class="group bg-gray-900/40 border border-white/10 rounded-xl p-6 hover:border-blue-500/40 hover:bg-blue-500/5 transition-all">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center text-2xl">📊</div>
+            <h3 class="text-base font-semibold text-white group-hover:text-blue-500 transition">FAANG Portfolio</h3>
+          </div>
+          <p class="text-sm text-gray-500">Major tech stock portfolio with position management and performance tracking.</p>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="border-t border-white/5 py-24 text-center">
+    <div class="max-w-3xl mx-auto px-6">
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-6 text-white">Ready to Automate Your Trading?</h2>
+      <p class="text-gray-400 text-lg mb-10">Import any flow into your MachineTrader™ instance and start trading in minutes.</p>
+      <a href="/pricing" class="btn-primary text-lg font-semibold px-10 py-4 rounded-full inline-flex items-center gap-2">
+        Start Free Trial
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-gray-950 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+        <div class="col-span-2 md:col-span-1">
+          <a href="../index.html" class="flex items-center gap-2 mb-4">
+            <img src="../images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">Automate your trading strategies using our low-code/no-code MachineTrader™ software.</p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="/pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="../data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="index.html" class="hover:text-white transition">Trading Scripts</a></li>
+            <li><a href="../backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="../terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="../cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">© 2022–2026 MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005</div>
+        <div class="flex items-center gap-6">
+          <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+        </div>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed">
+          <strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading. All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC, member FINRA/SIPC. *Commission-free for U.S. equities.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    const EXPECTED_HASH = '8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    (async () => {
+      const lockScreen = document.getElementById('lock-screen');
+      const pageContent = document.getElementById('page-content');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (sessionStorage.getItem('mt-auth') === EXPECTED_HASH) {
+        lockScreen.classList.add('hidden');
+        pageContent.classList.remove('hidden');
+      } else { input.focus(); }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const hash = await sha256(input.value);
+        if (hash === EXPECTED_HASH) {
+          sessionStorage.setItem('mt-auth', EXPECTED_HASH);
+          lockScreen.style.transition = 'opacity 0.4s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => { lockScreen.classList.add('hidden'); pageContent.classList.remove('hidden'); }, 400);
+        } else {
+          error.classList.remove('hidden'); input.classList.add('!border-red-500'); input.value = ''; input.focus();
+          setTimeout(() => { error.classList.add('hidden'); input.classList.remove('!border-red-500'); }, 3000);
+        }
+      });
+    })();
+  </script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

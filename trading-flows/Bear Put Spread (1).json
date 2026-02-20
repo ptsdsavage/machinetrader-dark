@@ -1,0 +1,1780 @@
+[
+    {
+        "id": "965967f444881a65",
+        "type": "tab",
+        "label": "Paper 1 Bear Put Spread",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8c8b6a2e163e7fb3",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "buy",
+                "vt": "flow"
+            }
+        ],
+        "repeat": "",
+        "crontab": "*/1 9-15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 1015,
+        "y": 360,
+        "wires": [
+            [
+                "811fa62deb21071c"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "811fa62deb21071c",
+        "type": "alpaca-position-query",
+        "z": "965967f444881a65",
+        "conf": "0ced618a3a2038f5",
+        "symbol": "",
+        "x": 1170,
+        "y": 360,
+        "wires": [
+            [
+                "ab12f8f2a5530497"
+            ]
+        ]
+    },
+    {
+        "id": "28f03568f0d4d360",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "sell",
+                "vt": "flow"
+            }
+        ],
+        "repeat": "",
+        "crontab": "*/1 9-15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 1015,
+        "y": 300,
+        "wires": [
+            [
+                "509e2f1e1b2cb411"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "509e2f1e1b2cb411",
+        "type": "alpaca-position-query",
+        "z": "965967f444881a65",
+        "conf": "0ced618a3a2038f5",
+        "symbol": "",
+        "x": 1170,
+        "y": 300,
+        "wires": [
+            [
+                "ac564c353a01d8a6"
+            ]
+        ]
+    },
+    {
+        "id": "9e3f7d18f0253ca8",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "store sellpos",
+        "func": "flow.set(\"sellpos\", msg.payload.qty) \n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1510,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ac564c353a01d8a6",
+        "type": "switch",
+        "z": "965967f444881a65",
+        "name": "Empty",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            },
+            {
+                "t": "empty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1350,
+        "y": 300,
+        "wires": [
+            [
+                "9e3f7d18f0253ca8"
+            ],
+            [
+                "dffdf3ddebd0c6a6"
+            ]
+        ]
+    },
+    {
+        "id": "dffdf3ddebd0c6a6",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "store sellpos",
+        "func": "flow.set(\"sellpos\", 0)\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1510,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a2569472106ba713",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "store buypos",
+        "func": "flow.set(\"buypos\", msg.payload.qty) \n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1510,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ab12f8f2a5530497",
+        "type": "switch",
+        "z": "965967f444881a65",
+        "name": "Empty",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            },
+            {
+                "t": "empty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1350,
+        "y": 360,
+        "wires": [
+            [
+                "a2569472106ba713"
+            ],
+            [
+                "330f6d36e220da21"
+            ]
+        ]
+    },
+    {
+        "id": "330f6d36e220da21",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "store buypos",
+        "func": "flow.set(\"buypos\", 0)\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1510,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1118f5ea1540acf6",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "underlying",
+                "vt": "flow"
+            }
+        ],
+        "repeat": "",
+        "crontab": "*/1 9-15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 1025,
+        "y": 460,
+        "wires": [
+            [
+                "a6dcc732f0cdd1a9"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "a6dcc732f0cdd1a9",
+        "type": "alpaca-position-query",
+        "z": "965967f444881a65",
+        "conf": "0ced618a3a2038f5",
+        "symbol": "",
+        "x": 1190,
+        "y": 460,
+        "wires": [
+            [
+                "7c542b0c9420b651"
+            ]
+        ]
+    },
+    {
+        "id": "19b9309ba40f3070",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "store underlyingpos",
+        "func": "flow.set(\"underlyingpos\", msg.payload.qty) \n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1540,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7c542b0c9420b651",
+        "type": "switch",
+        "z": "965967f444881a65",
+        "name": "Empty",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            },
+            {
+                "t": "empty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1370,
+        "y": 460,
+        "wires": [
+            [
+                "19b9309ba40f3070"
+            ],
+            [
+                "5b706b72103647aa"
+            ]
+        ]
+    },
+    {
+        "id": "5b706b72103647aa",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "store underlyingpos",
+        "func": "flow.set(\"underlyingpos\", 0)\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1540,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a35e12deae75667e",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Use XLK as the underlying. Highly Liquid, Relatively low volatility.",
+        "info": "",
+        "x": 290,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "94c50f881ffe1ac3",
+        "type": "pts_oauth_browser",
+        "z": "965967f444881a65",
+        "callback": "",
+        "redirect": "https://www.tastylive.com/concepts-strategies/bear-put-spread",
+        "name": "Bear Put Spread",
+        "x": 240,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "081d8b79d85c411f",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "Click Here",
+        "props": [
+            {
+                "p": "redirect",
+                "v": "https://drive.google.com/file/d/1vAUkXuiP4CGUszLROUvCPBdG5Lx0T0I0/view",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 125,
+        "y": 40,
+        "wires": [
+            [
+                "94c50f881ffe1ac3"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "2e756f7676a793d6",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "underlying",
+                "vt": "flow"
+            }
+        ],
+        "repeat": "",
+        "crontab": "*/1 9-15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 1035,
+        "y": 540,
+        "wires": [
+            [
+                "4f8fbf2f42aa8fba"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "4f8fbf2f42aa8fba",
+        "type": "alpaca-position-query",
+        "z": "965967f444881a65",
+        "conf": "c1cada2a7d9ab525",
+        "symbol": "",
+        "x": 1190,
+        "y": 540,
+        "wires": [
+            [
+                "513e07d62050c898"
+            ]
+        ]
+    },
+    {
+        "id": "4d0a745d1b701f1b",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "store underlyingposP2",
+        "func": "flow.set(\"underlyingposP2\", msg.payload.qty) \n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1540,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "513e07d62050c898",
+        "type": "switch",
+        "z": "965967f444881a65",
+        "name": "Empty",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            },
+            {
+                "t": "empty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1370,
+        "y": 540,
+        "wires": [
+            [
+                "4d0a745d1b701f1b"
+            ],
+            [
+                "cb476811dc091c62"
+            ]
+        ]
+    },
+    {
+        "id": "cb476811dc091c62",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "store underlyingposP2",
+        "func": "flow.set(\"underlyingposP2\", 0)\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1540,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "022d7d3acf21135c",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "prepare long trade in paper1",
+        "func": "let symbol = flow.get(\"underlying\")\nlet pos = flow.get(\"underlyingpos\")\n\nflow.set(\"tradePrice\", flow.get(\"askPrice\"))\n\nif ( pos == 0){\n    let tradeOrders = {\n        \"symbol\": symbol,\n        \"qty\": 100,\n        \"side\": 'buy',\n        \"type\": \"limit\",\n        //    \"extended_hours\": true,\n        \"limit_price\": flow.get(\"askPrice\"),\n        \"time_in_force\": 'day'\n    } // end tradeOrders\n    node.warn(tradeOrders)\n    msg.payload = tradeOrders\n    return msg;\n}\n\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 1120,
+        "wires": [
+            [
+                "2232efe6f9e31ba1"
+            ]
+        ]
+    },
+    {
+        "id": "2232efe6f9e31ba1",
+        "type": "link out",
+        "z": "965967f444881a65",
+        "name": "buy underlying HYG",
+        "mode": "link",
+        "links": [
+            "a3f55139b6b5f4ff"
+        ],
+        "x": 755,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "f917e7e066508ead",
+        "type": "alpaca-data-last-quote",
+        "z": "965967f444881a65",
+        "conf": "686c79e38465315c",
+        "symbol": "",
+        "name": "",
+        "x": 250,
+        "y": 1060,
+        "wires": [
+            [
+                "460d5f14d50d2e3b"
+            ]
+        ]
+    },
+    {
+        "id": "b15834dbcbc56ebb",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "d": true,
+        "name": "",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "underlying",
+                "vt": "flow"
+            }
+        ],
+        "repeat": "",
+        "crontab": "*/1 9-11 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 105,
+        "y": 1060,
+        "wires": [
+            [
+                "f917e7e066508ead"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "460d5f14d50d2e3b",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "set prices",
+        "func": "//node.warn(msg.payload)\nflow.set(\"askPrice\", msg.payload.ask_price)\nflow.set(\"bidPrice\", msg.payload.bid_price)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "211ca2dc1561679c",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "prepare short trade in paper2",
+        "func": "//node.warn(msg.payload)\nlet symbol = flow.get(\"underlying\")\nlet price = flow.get(\"tradePrice\")\n//let price = flow.get(\"bidPrice\")\n//let price = 292.66\nlet pos = flow.get(\"underlyingposP2\")\n\nif ( pos == 0){\n    let tradeOrders = {\n        \"symbol\": symbol,\n        \"qty\": 100,\n        \"side\": 'sell',\n        \"type\": \"limit\",\n        //    \"extended_hours\": true,\n        \"limit_price\": price,\n        \"time_in_force\": 'day'\n    } // end tradeOrders\n    node.warn(tradeOrders)\n    msg.payload = tradeOrders\n    return msg;\n}\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 1160,
+        "wires": [
+            [
+                "14d101355504b366"
+            ]
+        ]
+    },
+    {
+        "id": "14d101355504b366",
+        "type": "link out",
+        "z": "965967f444881a65",
+        "name": "short underlying HYG",
+        "mode": "link",
+        "links": [
+            "9f3f53b5bdc0a364"
+        ],
+        "x": 815,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "bca5183330adaf21",
+        "type": "alpaca-orders-close",
+        "z": "965967f444881a65",
+        "conf": "c1cada2a7d9ab525",
+        "name": "Close orders P2",
+        "x": 440,
+        "y": 1160,
+        "wires": [
+            [
+                "211ca2dc1561679c"
+            ]
+        ]
+    },
+    {
+        "id": "5d285804287e73f3",
+        "type": "alpaca-orders-close",
+        "z": "965967f444881a65",
+        "conf": "0ced618a3a2038f5",
+        "name": "Close orders P1",
+        "x": 360,
+        "y": 1120,
+        "wires": [
+            [
+                "022d7d3acf21135c"
+            ]
+        ]
+    },
+    {
+        "id": "2855e5f873ab495f",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "d": true,
+        "name": "9:31AM",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 105,
+        "y": 1120,
+        "wires": [
+            [
+                "58493303f0b2a660"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "3724937382b6a1c3",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "d": true,
+        "name": "9:31AM",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "*/1 9-15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 105,
+        "y": 1160,
+        "wires": [
+            [
+                "d2ccd75fece6b6e9"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "d2ccd75fece6b6e9",
+        "type": "delay",
+        "z": "965967f444881a65",
+        "name": "1Sec",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 290,
+        "y": 1160,
+        "wires": [
+            [
+                "bca5183330adaf21"
+            ]
+        ]
+    },
+    {
+        "id": "58493303f0b2a660",
+        "type": "delay",
+        "z": "965967f444881a65",
+        "name": "1Sec",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 190,
+        "y": 1120,
+        "wires": [
+            [
+                "5d285804287e73f3",
+                "d2ccd75fece6b6e9"
+            ]
+        ]
+    },
+    {
+        "id": "173f5c5ddcdc43f4",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "Enter ticker as msg.symbol",
+        "props": [],
+        "repeat": "",
+        "crontab": "*/1 9-15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 135,
+        "y": 360,
+        "wires": [
+            [
+                "3567466bdd2ca1a8"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "3567466bdd2ca1a8",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "set variables",
+        "func": "node.warn(msg.symbol)\n\nflow.set(\"underlying\", 'XLK')\nflow.set(\"expirationDate\", '2025-12-19')\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9abc54882569069c",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Step 2: Enter the ticker you want to trade in the inject node below. XLK",
+        "info": "",
+        "x": 310,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "74c6c9fe28fa9d7f",
+        "type": "alpaca-data-last-trade",
+        "z": "965967f444881a65",
+        "conf": "686c79e38465315c",
+        "symbol": "",
+        "name": "Last Trade",
+        "x": 470,
+        "y": 460,
+        "wires": [
+            [
+                "4adc32e54ff1a000"
+            ]
+        ]
+    },
+    {
+        "id": "4ca47b192d076d85",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "get current price each minute",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "underlying",
+                "vt": "flow"
+            }
+        ],
+        "repeat": "",
+        "crontab": "*/1 9-15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 250,
+        "y": 460,
+        "wires": [
+            [
+                "74c6c9fe28fa9d7f"
+            ]
+        ]
+    },
+    {
+        "id": "4adc32e54ff1a000",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "current price",
+        "func": "node.warn(\"Symbol: \" + msg.payload.ticker + \" Current Price: \" + msg.payload.price)\nflow.set(\"currentPrice\", msg.payload.price)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c1529efd73e32523",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Step 3: Get the current price of the ticker",
+        "info": "",
+        "x": 220,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "74d3f3de423c0072",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Step 4: Get list of contracts you might want to trade for a specific expiration date. ",
+        "info": "",
+        "x": 340,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "6859758811f89ff4",
+        "type": "alpaca-data-options-fetch-contracts",
+        "z": "965967f444881a65",
+        "conf": "0ced618a3a2038f5",
+        "symbol": "",
+        "expiration_date_lte": "",
+        "expiration_date_gte": "",
+        "name": "Fetch Contracts",
+        "x": 660,
+        "y": 600,
+        "wires": [
+            [
+                "753bea07b0216923"
+            ]
+        ]
+    },
+    {
+        "id": "753bea07b0216923",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "output",
+        "func": "node.warn(msg.payload)\n//node.warn(msg.payload[\"option_contracts\"])\n//node.warn(msg.payload[\"next_page_token\"])\nlet options = flow.get(\"contracts\")\noptions.push(...msg.payload[\"option_contracts\"])\nflow.set(\"contracts\", options)\nflow.set(\"pageToken\", msg.payload[\"next_page_token\"]) \nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 600,
+        "wires": [
+            [
+                "07c58fe9d091e7dc"
+            ]
+        ]
+    },
+    {
+        "id": "f3b6dc8c50be8bb9",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "page_token",
+        "func": "\nif ( msg.a == 1 ) {\n    msg.page_token == ''\n    flow.set(\"pageToken\", [])\n    msg.feed = 'sip'\n    msg.expiration_date_gte = '2025-12-15'\n    msg.expiration_date_lte = '2025-12-19'\n    msg.symbol = flow.get(\"underlying\")\n    node.warn(msg.symbol)\n\n    return msg;\n}\n\nelse { \n\nmsg.page_token = flow.get(\"nextPageToken\")\nnode.warn(msg.page_token)\nmsg.feed = 'iex'\nmsg.expiration_date_gte = '2025-12-15'\nmsg.expiration_date_lte = '2025-12-19'\nmsg.symbol = flow.get(\"underlying\")\nnode.warn(msg.symbol)\nreturn msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 600,
+        "wires": [
+            [
+                "6859758811f89ff4"
+            ]
+        ]
+    },
+    {
+        "id": "07c58fe9d091e7dc",
+        "type": "switch",
+        "z": "965967f444881a65",
+        "name": "next_page",
+        "property": "payload[\"next_page_token\"]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "null"
+            },
+            {
+                "t": "nempty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 170,
+        "y": 700,
+        "wires": [
+            [
+                "44098bc0c69edaf4"
+            ],
+            [
+                "e21ec1447e11f2ed"
+            ]
+        ]
+    },
+    {
+        "id": "e21ec1447e11f2ed",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "next+page_token",
+        "func": "//node.warn(msg.payload[\"next_page_token\"])\nflow.set(\"nextPageToken\", msg.payload[\"next_page_token\"] )\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 720,
+        "wires": [
+            [
+                "d4a387dee463b733"
+            ]
+        ]
+    },
+    {
+        "id": "44098bc0c69edaf4",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "end of file",
+        "func": "node.warn(\"end of file\")\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d4a387dee463b733",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "msg.a++",
+        "func": "msg.a++\nnode.warn(msg.a)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 720,
+        "wires": [
+            [
+                "24548ce8b51892a3"
+            ]
+        ]
+    },
+    {
+        "id": "24548ce8b51892a3",
+        "type": "delay",
+        "z": "965967f444881a65",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "0.5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 770,
+        "y": 720,
+        "wires": [
+            [
+                "f3b6dc8c50be8bb9"
+            ]
+        ]
+    },
+    {
+        "id": "5a0113752bdf7917",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "",
+        "props": [
+            {
+                "p": "a",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "p": "b",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 125,
+        "y": 600,
+        "wires": [
+            [
+                "bb8ee49a42bab0bd"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "bb8ee49a42bab0bd",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "initialize contracts",
+        "func": "flow.set(\"contracts\", [])\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 600,
+        "wires": [
+            [
+                "f3b6dc8c50be8bb9"
+            ]
+        ]
+    },
+    {
+        "id": "fc805101a7e54842",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "Contract parameters",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 115,
+        "y": 920,
+        "wires": [
+            [
+                "3e7c16112f89c439"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "3e7c16112f89c439",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "Contract parameters",
+        "func": "msg.expiration_date_gte = '2025-12-15'\nmsg.expiration_date_lte = '2025-12-20'\nmsg.symbol = flow.get(\"underlying\")\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 920,
+        "wires": [
+            [
+                "9bec651f801de234"
+            ]
+        ]
+    },
+    {
+        "id": "9bec651f801de234",
+        "type": "alpaca-data-options-fetch-contracts",
+        "z": "965967f444881a65",
+        "conf": "0ced618a3a2038f5",
+        "symbol": "",
+        "expiration_date_lte": "",
+        "expiration_date_gte": "",
+        "name": "Get Contracts",
+        "x": 450,
+        "y": 920,
+        "wires": [
+            [
+                "3c52ddb8cd1ff49b"
+            ]
+        ]
+    },
+    {
+        "id": "3c52ddb8cd1ff49b",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "store contracts",
+        "func": "// functions\n\nfunction convertCallToPut(optionSymbol) {\n  // Replace the character at position 9 (0-based index) from 'C' to 'P'\n  return optionSymbol.slice(0, 9) + 'P' + optionSymbol.slice(10);\n}\n\nfunction createCallOptionSymbol(underlying, expirationDate, strike) {\n  // Split the date string manually to avoid timezone issues\n  const [year, month, day] = expirationDate.split('-');\n  const yy = year.slice(-2);\n  const mm = month.padStart(2, '0');\n  const dd = day.padStart(2, '0');\n  const formattedDate = `${yy}${mm}${dd}`;\n\n  // Format strike price: multiply by 1000 and pad to 8 digits\n  const strikeFormatted = String(Math.round(strike * 1000)).padStart(8, '0');\n\n  let optionType = 'P' // get puts only\n\n  // Construct symbol\n  return `${underlying}${formattedDate}${optionType}${strikeFormatted}`;\n}\n\n/*\nStructure of a Bear Put Spread\nIn a bear put spread, the trader buys a put option with a higher strike price and \nconcurrently sells a put option with a lower strike price.\nBoth options have the same expiration date, resulting in a net debit for the position.\n*/\n\nlet price = Number(flow.get(\"currentPrice\"))\nlet strike = Number(price.toFixed(0))\nlet strikeLower = strike - 10\nnode.warn(strikeLower)\n\nlet underlying = flow.get(\"underlying\")\nlet expirationDate = flow.get(\"expirationDate\")\n\n// get options \nconst sell = createCallOptionSymbol(underlying, expirationDate, strikeLower);\nconst buy = createCallOptionSymbol(underlying, expirationDate, strike);\n\nflow.set(\"sell\", sell)\nflow.set(\"buy\", buy)\nnode.warn(\"sell: \" +sell+ \" buy: \" +buy)\n\n// test to see if the contracts are valid symbols\nlet contracts = flow.get(\"contracts\")\nconst filtered = contracts.filter(opt => opt.symbol === sell);\nif (!filtered) { node.warn(\"not a valid contract\")}\nelse { node.warn(\"contract is valid\")}\n\nconst filtered1 = contracts.filter(opt => opt.symbol === buy);\nif (!filtered1) { node.warn(\"not a valid contract\") }\nelse { node.warn(\"contract is valid\") }\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "407e859fed0d459d",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Step 5: Specify the contracts you to trade",
+        "info": "",
+        "x": 210,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "baaed3876187b382",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "filter contracts by open_interest",
+        "func": "let contracts = flow.get(\"contracts\")\nconst filtered = contracts.filter(contract => contract.open_interest > 1000);\nconst sorted = filtered.sort((a, b) => b.open_interest - a.open_interest);\nflow.set(\"contractsFiltered\", sorted)\n\nnode.warn(sorted)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ecefc22073742255",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "",
+        "props": [
+            {
+                "p": "a",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "p": "b",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 95,
+        "y": 800,
+        "wires": [
+            [
+                "baaed3876187b382"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "98fc75e37c486a9b",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 545,
+        "y": 220,
+        "wires": [
+            [
+                "10b8d78f18d86140"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "10b8d78f18d86140",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "Delete all the flow vars",
+        "func": "let flowkeys = flow.keys()\nfor (var i = 0; i < flowkeys.length; i++) {\n    flow.set(flowkeys[i])\n} // end for\n\nmsg.payload = flowkeys\nreturn msg\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "13c65254d0ed737c",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Step 1: Make sure starting flow variables are empty",
+        "info": "",
+        "x": 250,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "5b7b51ee9160ac90",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Track Current Positions",
+        "info": "",
+        "x": 1060,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "aa3c5c7dff10b979",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Step 6: Buy underlying - use limit orders",
+        "info": "Alpaca does not allow selling uncovered option contracts (Level 4) which means you \nwill need to hold 100 shares of the underlying asset for every option you sell. In\norder to neutralize the effect of holding a stock so that you can have a pure \noption play, we buy shares in one paper account and short the same number of\nshares are the same exact price so that the holdings offset each other.\n\nThe flows below will first purchase 100 shares of the stocks in the paper 1 account\nusing limit trades so as to get an exact price. The price of the trade is then stored\nto be used as the limit price for shorting the stock in the paper 2 account.\n \n",
+        "x": 200,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "85a522bbabb87217",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Step 7: Execute Options Trades",
+        "info": "",
+        "x": 170,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "715672a7d0089539",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "buy option",
+        "func": "let pos = Number(flow.get(\"buypos\"))\nlet underlyingpos = Number(flow.get(\"underlyingpos\"))\nlet underlyingposP2 = Number(flow.get(\"underlyingposP2\"))\nnode.warn(\"pos: \" + pos + \" underlying: \" + underlyingpos )\n\nif (pos == 0 && underlyingpos == 100 && underlyingposP2 == -100) {\n    let tradeOrders = {\n        \"symbol\": msg.symbol,\n        \"qty\": 1,\n        \"side\": 'buy',\n        \"type\": \"market\",\n        //    \"extended_hours\": true,\n        //\"limit_price\": msg.latestquote_bp,\n        \"time_in_force\": 'day'\n    } // end tradeOrders\n    node.warn(tradeOrders)\n    msg.payload = tradeOrders\n    return msg;\n}\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 1300,
+        "wires": [
+            [
+                "41f9fae36ef61082"
+            ]
+        ]
+    },
+    {
+        "id": "54be10f4e7eff84c",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "Sell",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "sell",
+                "vt": "flow"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 1340,
+        "wires": [
+            [
+                "51e5447d3744b5a9"
+            ]
+        ]
+    },
+    {
+        "id": "a8a311a58006fd9e",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "Buy",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "buy",
+                "vt": "flow"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 1300,
+        "wires": [
+            [
+                "715672a7d0089539"
+            ]
+        ]
+    },
+    {
+        "id": "51e5447d3744b5a9",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "sell option",
+        "func": "let pos = Number(flow.get(\"sellpos\"))\nlet underlyingpos = Number(flow.get(\"underlyingpos\"))\nlet underlyingposP2 = Number(flow.get(\"underlyingposP2\"))\nnode.warn(\"pos: \" + pos + \" underlying: \" + underlyingpos )\n\nif (pos == 0 && underlyingpos == 100 && underlyingposP2 == -100) {\n    let tradeOrders = {\n        \"symbol\": msg.symbol,\n        \"qty\": 1,\n        \"side\": 'sell',\n        \"type\": \"market\",\n        //    \"extended_hours\": true,\n        //\"limit_price\": msg.latestquote_bp,\n        \"time_in_force\": 'day'\n    } // end tradeOrders\n    node.warn(tradeOrders)\n    msg.payload = tradeOrders\n    return msg;\n}\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 1340,
+        "wires": [
+            [
+                "41f9fae36ef61082"
+            ]
+        ]
+    },
+    {
+        "id": "41f9fae36ef61082",
+        "type": "link out",
+        "z": "965967f444881a65",
+        "name": "trade options",
+        "mode": "link",
+        "links": [
+            "a3f55139b6b5f4ff"
+        ],
+        "x": 385,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "bc166175c1514245",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Vertical Strangle: long put spread",
+        "info": "In the options world, a bear put spread is a bearish options strategy constructed by buying \na put option with a higher strike price (closer to at-the-money) and simultaneously \nselling a put option with a lower strike price. This spread is initiated for a net debit, \nas the premium paid for the higher strike put will be greater than the premium \nreceived for selling the lower strike put.\n\nFrom that perspective, this spread may also be referred to as a \"long put spread.\" \nThis strategy aims to profit from a bearish market outlook, with both limited risk \nand limited profit potential.\n\n\n",
+        "x": 210,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "3d822bd0762b0b98",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Defined Risk: ",
+        "info": "One of the primary advantages of the bear put spread is that it offers limited risk. \nAs a result of its defined-risk nature, the maximum potential loss of a bear put \nspread is predefined and limited to the net debit paid when entering the trade.\n",
+        "x": 150,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "1434805a6a508f9a",
+        "type": "pts_oauth_browser",
+        "z": "965967f444881a65",
+        "callback": "",
+        "redirect": "https://docs.google.com/document/d/1-lkFN-_yGo7tkIMJdnMeH2eyc7psjknvVpi-vY-EJnA/edit?usp=sharing",
+        "name": "Flow Documentation",
+        "x": 580,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "aaa7c3a07766dab8",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "Click Here",
+        "props": [
+            {
+                "p": "redirect",
+                "v": "https://drive.google.com/file/d/1vAUkXuiP4CGUszLROUvCPBdG5Lx0T0I0/view",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 445,
+        "y": 40,
+        "wires": [
+            [
+                "1434805a6a508f9a"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "d83f8460e4a71b41",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "Run Once",
+        "props": [],
+        "repeat": "",
+        "crontab": "*/1 4-19 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 95,
+        "y": 1820,
+        "wires": [
+            [
+                "791457c49823c378"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "be63de5260ef21ba",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "Market Value",
+        "func": "let buy = Number(flow.get(\"buyMarket\"))\nlet sell = Number(flow.get(\"sellMarket\"))\nlet sum = buy + sell\nsum = sum.toFixed(0)\n\nlet riskcapital = Number( 28000 * 2 / 4 ) // 2 accounts with 8500 each @4x margin  \nlet pctsum = sum / riskcapital  \npctsum = (pctsum * 12) * 100  // pct annualized return\npctsum = pctsum.toFixed(1)\n\nnode.warn(\"Total Market: $\" +sum+ \" Pct Gain/Loss: \" +pctsum+ \"%\")\n\n\n\n// Get current time as ISO string\nlet now = new Date();\nlet isoDate = now.toISOString(); // e.g. \"2025-11-15T12:28:00.123Z\"\n\n// Build a new record\nlet record = {\n    sum: sum,\n    pctsum: pctsum,\n    timestamp: isoDate\n};\n\nnode.warn(record)\n\n// Retrieve existing metrics array from flow context\nlet metrics = flow.get(\"marketValueBearPut\");\nif (!Array.isArray(metrics)) {\n    metrics = [];\n}\n\n// Append new record\nmetrics.push(record);\n\n// Save updated array back into flow context\nflow.set(\"marketValueBearPut\", metrics);\n\n// Optionally pass it along\nmsg.metrics = metrics;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 1820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "791457c49823c378",
+        "type": "delay",
+        "z": "965967f444881a65",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 190,
+        "y": 1820,
+        "wires": [
+            [
+                "be63de5260ef21ba"
+            ]
+        ]
+    },
+    {
+        "id": "c2275265eb65317b",
+        "type": "http in",
+        "z": "965967f444881a65",
+        "name": "/api/ironcondor",
+        "url": "/api/ironcondor",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 1900,
+        "wires": [
+            [
+                "8ed3429fef6c430c"
+            ]
+        ]
+    },
+    {
+        "id": "b99e299e6ce4b059",
+        "type": "http response",
+        "z": "965967f444881a65",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 800,
+        "y": 1900,
+        "wires": []
+    },
+    {
+        "id": "f06a9b33b7c62ef4",
+        "type": "file",
+        "z": "965967f444881a65",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 660,
+        "y": 1900,
+        "wires": [
+            [
+                "b99e299e6ce4b059"
+            ]
+        ]
+    },
+    {
+        "id": "520e24cb911e036d",
+        "type": "csv",
+        "z": "965967f444881a65",
+        "name": "",
+        "spec": "rfc",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "mult",
+        "ret": "\\r\\n",
+        "temp": "sum,pctsum,timestamp",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 520,
+        "y": 1900,
+        "wires": [
+            [
+                "f06a9b33b7c62ef4"
+            ]
+        ]
+    },
+    {
+        "id": "8ed3429fef6c430c",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "marketValueBearPut",
+        "func": "msg.payload = flow.get(\"marketValueBearPut\")\nnode.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 1900,
+        "wires": [
+            [
+                "520e24cb911e036d"
+            ]
+        ]
+    },
+    {
+        "id": "11425c5a116504fc",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Calculate strategy perforrmance",
+        "info": "",
+        "x": 170,
+        "y": 1640,
+        "wires": []
+    },
+    {
+        "id": "d6f09cf1a1d2d9e3",
+        "type": "alpaca-data-account-activities",
+        "z": "965967f444881a65",
+        "conf": "0ced618a3a2038f5",
+        "activity_type": "",
+        "date": "",
+        "until": "",
+        "after": "",
+        "direction": "desc",
+        "page_size": "",
+        "name": "Get Sell Call",
+        "x": 230,
+        "y": 1720,
+        "wires": [
+            [
+                "73d02a2ec3af092b"
+            ]
+        ]
+    },
+    {
+        "id": "c4f9cace7aab9799",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "Run Once",
+        "props": [],
+        "repeat": "",
+        "crontab": "*/1 4-19 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 105,
+        "y": 1720,
+        "wires": [
+            [
+                "d6f09cf1a1d2d9e3"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "73d02a2ec3af092b",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "Market Value Sell",
+        "func": "// get strike price and option type for contracts\nconst symbol = flow.get(\"sell\");\n//node.warn(symbol)\n\n// Option type is always at position 9 (after underlying + date)\nmsg.optionTypeChar = symbol.charAt(9);\nmsg.optionType = msg.optionTypeChar === \"C\" ? \"Call\" : \"Put\";\n\n// Strike price is the last 8 digits, divided by 1000 (OCC format)\nmsg.strikeRaw = symbol.slice(10); // \"00684000\"\nmsg.strikePrice = parseInt(msg.strikeRaw, 10) / 1000;\n\nlet data = msg.payload\n//node.warn(data)\n\n// define allowed symbols\nconst allowed = symbol; \n\n// filter and sum\nmsg.premium = data\n  .filter(item => allowed.includes(item.symbol) && \n    (item.symbol === symbol)\n  )\n  .slice(-1) // take only the last item in case the option was traded in the past\n  .reduce((acc, item) => acc + item.qty * item.price * 100, 0);\n\nmsg.currentPrice = Number(flow.get(\"currentPrice\"))\nmsg.priceChange = msg.currentPrice - msg.strikePrice\n\n//node.warn(\"Strike: \" + msg.strikePrice + \" Type: \" + msg.optionType + \" Current Price: \" +msg.currentPrice+ \" Price Change: \" +msg.priceChange+ \" Premium: \" + msg.premium)\n\nif ( msg.optionType == 'Call' && msg.priceChange < 0) { \n  //node.warn(\"call option OTM. no payout\")\n  msg.marketValue = msg.premium\n }\n\nelse if (msg.optionType == 'Call' && msg.priceChange > 0) { \n  //node.warn(\"call option ITM. Calculate payout\")\n  msg.optionValue = (msg.strikePrice - msg.currentPrice) * 100\n  msg.marketValue = msg.optionValue + msg.premium\n}\n\nelse if (msg.optionType == 'Put' && msg.priceChange > 0) {\n    //node.warn(\"put option OTM. no payout\")\n    msg.marketValue = msg.premium\n  }\n\nelse if (msg.optionType == 'Put' && msg.priceChange < 0) {\n  //node.warn(\"put option ITM. Calculate paylout\")\n  msg.optionValue = (msg.currentPrice - msg.strikePrice) * 100\n  msg.marketValue = msg.optionValue + msg.premium\n}\n\n\n//node.warn(\"Contract: \" +symbol+ \" Market Value: \" +msg.marketValue)\nflow.set(\"sellMarket\", msg.marketValue)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cee7bc1ecb72cec6",
+        "type": "function",
+        "z": "965967f444881a65",
+        "name": "Market Value Buy",
+        "func": "\n// bought contracts\nlet buy1 = flow.get(\"buy\")\nlet data = msg.payload\n//node.warn(msg.payload)\n\n// allowed symbols\nconst allowed = [buy1];\n\n// filter and sum\nconst buys = data\n    .filter(item => allowed.includes(item.symbol))\n    .slice(-1) // take only the last 2 items in case the option was traded in the past\n    .reduce((acc, item) => acc + Number(item.unrealized_pl), 0);\n\n//node.warn(\"Market Value OTMCall: \" +buys);\nflow.set(\"buyMarket\", buys)\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 1560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8f114b2eaa064242",
+        "type": "alpaca-position-query",
+        "z": "965967f444881a65",
+        "conf": "0ced618a3a2038f5",
+        "symbol": "",
+        "x": 270,
+        "y": 1560,
+        "wires": [
+            [
+                "cee7bc1ecb72cec6"
+            ]
+        ]
+    },
+    {
+        "id": "8d2c0be82f5e8da4",
+        "type": "inject",
+        "z": "965967f444881a65",
+        "name": "Every Min",
+        "props": [],
+        "repeat": "",
+        "crontab": "*/1 4-19 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 105,
+        "y": 1560,
+        "wires": [
+            [
+                "8f114b2eaa064242"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "2c4868c64766ade2",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Get the market value of the long options every minute",
+        "info": "",
+        "x": 240,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "56b9268ddd217e0b",
+        "type": "comment",
+        "z": "965967f444881a65",
+        "name": "Use these flows toi track gain/losses",
+        "info": "",
+        "x": 180,
+        "y": 1440,
+        "wires": []
+    },
+    {
+        "id": "0ced618a3a2038f5",
+        "type": "alpaca-account",
+        "name": "Paper",
+        "keyId": "PKTO4DOVAHHSGJKPPEJUQNDXNF",
+        "paper": true
+    },
+    {
+        "id": "c1cada2a7d9ab525",
+        "type": "alpaca-account",
+        "name": "Paper2",
+        "keyId": "PK2RCGP4EMAKQ4TGRSACMHKRJS",
+        "paper": true
+    },
+    {
+        "id": "686c79e38465315c",
+        "type": "alpaca-account",
+        "name": "Live",
+        "keyId": "AK69KPKZCRI6XLPWKDOR",
+        "paper": false
+    }
+]

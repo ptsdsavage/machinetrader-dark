@@ -1,0 +1,608 @@
+[
+    {
+        "id": "f7caaab04e39d9d4",
+        "type": "tab",
+        "label": "All Tickers  Monthly Bars",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d96c9e9b093355a2",
+        "type": "alpaca-range-bars",
+        "z": "f7caaab04e39d9d4",
+        "conf": "686c79e38465315c",
+        "symbol": "",
+        "start": "",
+        "end": "",
+        "timeframe": "",
+        "name": "",
+        "x": 630,
+        "y": 340,
+        "wires": [
+            [
+                "bb8fe3539c578184"
+            ]
+        ]
+    },
+    {
+        "id": "9cfdc70c91051353",
+        "type": "comment",
+        "z": "f7caaab04e39d9d4",
+        "name": "Get  monthly daybars all tickers. Do this once.",
+        "info": "",
+        "x": 210,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "ca4f0ea04d39b77f",
+        "type": "function",
+        "z": "f7caaab04e39d9d4",
+        "name": "Change date range on lines 12/13",
+        "func": "// this global is created by default each morning in the global1 tab\nlet arr = global.get(\"assetsTradable\")\narr = arr.slice(msg.a,msg.b)\narr = arr.slice(0,10)\n\nfor ( let i = 0; i < arr.length; i++){\n    msg.symbol = arr[i][\"symbol\"]\n}\n\n//node.warn(msg.symbol)\nmsg.feed = \"iex\"; // for free users and sip for users with a subscription.\nmsg.start = \"2025-09-01T0:00:00Z\";\nmsg.end = \"2025-09-30T23:00:00Z\";\nmsg.timeframe = \"1Month\"; //  1Day, 1Hour, 1Min, 1Sec\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 340,
+        "wires": [
+            [
+                "d96c9e9b093355a2",
+                "bc384ee3d47dd82b"
+            ]
+        ]
+    },
+    {
+        "id": "8fe35a1b974ad992",
+        "type": "inject",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "props": [
+            {
+                "p": "a",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "p": "b",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 135,
+        "y": 340,
+        "wires": [
+            [
+                "ca4f0ea04d39b77f",
+                "2b5b83ab5269bbc8"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "bb8fe3539c578184",
+        "type": "function",
+        "z": "f7caaab04e39d9d4",
+        "name": "insert into bars_monthly",
+        "func": "//node.warn(msg.payload[\"bars\"])\nlet bars = msg.payload[\"bars\"]\nnode.warn(msg.b)\n\nlet sql = ''\nfor ( let i = 0; i < bars.length; i++){\n    msg.open = bars[i][\"o\"]\n    msg.close = bars[i][\"c\"]\n    msg.high = bars[i][\"h\"]\n    msg.low = bars[i][\"l\"]\n    msg.volume = bars[i][\"v\"]\n    msg.date = bars[i][\"t\"]\n    msg.vwap = bars[i][\"vw\"]\n    if (typeof msg.vwap === 'undefined') { msg.vwap = ' ';\n}\n    sql += \"insert into barsonemonth (symbol, open, close, high, low, volume, vwap, date) values ('\"\n    sql += \"\" + msg.symbol + \"','\" + msg.open + \"','\" + msg.close + \"','\" + msg.high + \"','\" + msg.low + \"','\" + msg.volume + \"','\" + msg.vwap + \"','\" + msg.date+ \"') ON CONFLICT DO NOTHING;\\n\"\n\n}\n\n//node.warn(sql)\nmsg.query = sql\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 340,
+        "wires": [
+            [
+                "987ede230cbee1bd"
+            ]
+        ]
+    },
+    {
+        "id": "987ede230cbee1bd",
+        "type": "postgresql",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1050,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e407c582fbab4df1",
+        "type": "loop",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "kind": "fcnt",
+        "count": "12043",
+        "initial": "1",
+        "step": "1",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 670,
+        "y": 280,
+        "wires": [
+            [],
+            [
+                "c98bd994ee2b2f64"
+            ]
+        ]
+    },
+    {
+        "id": "bc384ee3d47dd82b",
+        "type": "delay",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "10",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 460,
+        "y": 280,
+        "wires": [
+            [
+                "e407c582fbab4df1"
+            ]
+        ]
+    },
+    {
+        "id": "c98bd994ee2b2f64",
+        "type": "function",
+        "z": "f7caaab04e39d9d4",
+        "name": "msg.a++",
+        "func": "msg.a++\nmsg.b++\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 280,
+        "wires": [
+            [
+                "ca4f0ea04d39b77f"
+            ]
+        ]
+    },
+    {
+        "id": "6957fe5d767503e5",
+        "type": "function",
+        "z": "f7caaab04e39d9d4",
+        "name": "update highlow spread",
+        "func": "msg.query = \"update barsonemonth set highlowspread = high - low\"\n//msg.query = \"update barsonemonth set pcthighlow = highlowspread / close\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 400,
+        "wires": [
+            [
+                "120ddbda8c684d84"
+            ]
+        ]
+    },
+    {
+        "id": "120ddbda8c684d84",
+        "type": "postgresql",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 510,
+        "y": 400,
+        "wires": [
+            [
+                "5ad96406604bc3ed"
+            ]
+        ]
+    },
+    {
+        "id": "5ad96406604bc3ed",
+        "type": "function",
+        "z": "f7caaab04e39d9d4",
+        "name": "update pcthighlow spread",
+        "func": "//msg.query = \"update barsonemonth set highlowspread = high - low\"\nmsg.query = \"update barsonemonth set pcthighlow = highlowspread / close\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 400,
+        "wires": [
+            [
+                "8bfd5b07322afb29"
+            ]
+        ]
+    },
+    {
+        "id": "8bfd5b07322afb29",
+        "type": "postgresql",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 910,
+        "y": 400,
+        "wires": [
+            [
+                "e35ccd9a8b40b2f5"
+            ]
+        ]
+    },
+    {
+        "id": "e35ccd9a8b40b2f5",
+        "type": "function",
+        "z": "f7caaab04e39d9d4",
+        "name": "update trading marketvalue",
+        "func": "//msg.query = \"update barsonemonth set highlowspread = high - low\"\nmsg.query = \"update barsonemonth set marketvalue = close * volume\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1120,
+        "y": 400,
+        "wires": [
+            [
+                "0fb3f473eaba11da"
+            ]
+        ]
+    },
+    {
+        "id": "0fb3f473eaba11da",
+        "type": "postgresql",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1330,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f42fe61fd9d3f2a7",
+        "type": "function",
+        "z": "f7caaab04e39d9d4",
+        "name": "create barsonemonth",
+        "func": "msg.query = \"CREATE TABLE barsonemonth( symbol TEXT NOT NULL, open NUMERIC, close NUMERIC, high NUMERIC, low NUMERIC, volume INTEGER, vwap NUMERIC, highlowspread NUMERIC, pcthighlow NUMERIC, marketvalue NUMERIC, date TIMESTAMPTZ NOT NULL, PRIMARY KEY(symbol, date) );\"\nmsg.query = \"select * from barsonemonth\"\n//msg.query = \"drop table barsonemonth\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 180,
+        "wires": [
+            [
+                "3a197594d7ba3e25"
+            ]
+        ]
+    },
+    {
+        "id": "883a738914b666c8",
+        "type": "inject",
+        "z": "f7caaab04e39d9d4",
+        "name": "Do this first",
+        "props": [
+            {
+                "p": "a",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "p": "b",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 180,
+        "wires": [
+            [
+                "f42fe61fd9d3f2a7"
+            ]
+        ]
+    },
+    {
+        "id": "3a197594d7ba3e25",
+        "type": "postgresql",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 570,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a8c7df97d5f31eb6",
+        "type": "comment",
+        "z": "f7caaab04e39d9d4",
+        "name": "Run this. Take approx. 30 minutes to run.",
+        "info": "",
+        "x": 200,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "2b5b83ab5269bbc8",
+        "type": "delay",
+        "z": "f7caaab04e39d9d4",
+        "name": "30 mins",
+        "pauseType": "delay",
+        "timeout": "30",
+        "timeoutUnits": "minutes",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 140,
+        "y": 400,
+        "wires": [
+            [
+                "6957fe5d767503e5"
+            ]
+        ]
+    },
+    {
+        "id": "65f82e52c39ccb2e",
+        "type": "comment",
+        "z": "f7caaab04e39d9d4",
+        "name": "This flow gets one month bars for all tradable tickers and stores it in a postgres table: barsonemonth. ",
+        "info": "",
+        "x": 390,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "facb43ad9b42ba78",
+        "type": "function",
+        "z": "f7caaab04e39d9d4",
+        "name": "select from barsonemonth",
+        "func": "msg.query = \"select * from barsonemonth\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 560,
+        "wires": [
+            [
+                "fb42344899ba7c25"
+            ]
+        ]
+    },
+    {
+        "id": "fb42344899ba7c25",
+        "type": "postgresql",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 670,
+        "y": 560,
+        "wires": [
+            [
+                "5ef3c242438fbf73"
+            ]
+        ]
+    },
+    {
+        "id": "70733af240c84588",
+        "type": "http in",
+        "z": "f7caaab04e39d9d4",
+        "name": "/api/barsonemonth",
+        "url": "/api/barsonemonth",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 210,
+        "y": 560,
+        "wires": [
+            [
+                "facb43ad9b42ba78"
+            ]
+        ]
+    },
+    {
+        "id": "8484f99d1b21ef9a",
+        "type": "http response",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1170,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "a4887f0a25526e62",
+        "type": "file",
+        "z": "f7caaab04e39d9d4",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 1030,
+        "y": 560,
+        "wires": [
+            [
+                "8484f99d1b21ef9a"
+            ]
+        ]
+    },
+    {
+        "id": "5ef3c242438fbf73",
+        "type": "function",
+        "z": "f7caaab04e39d9d4",
+        "name": "convert to csv",
+        "func": "const array = msg.payload\n\n// Extract headers\nconst headers = Object.keys(array[0]);\n\n// Build CSV rows\nconst csvRows = [\n    headers.join(\",\"), // header row\n    ...array.map(row => headers.map(field => row[field]).join(\",\"))\n];\n\n// Final CSV string\nconst csvString = csvRows.join(\"\\n\");\n\nnode.warn(csvString);\nmsg.payload = csvString\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 560,
+        "wires": [
+            [
+                "a4887f0a25526e62"
+            ]
+        ]
+    },
+    {
+        "id": "801570513e64c2af",
+        "type": "comment",
+        "z": "f7caaab04e39d9d4",
+        "name": "Go to your browser, copy your machinetrader.io instance url, and add ... /api/barsonemonth at the end of the url to download a csv file",
+        "info": "",
+        "x": 510,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "ac7212774f18cbb4",
+        "type": "inject",
+        "z": "f7caaab04e39d9d4",
+        "name": "",
+        "props": [
+            {
+                "p": "url_callback",
+                "v": "https://oauth.machinetrader.io",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 75,
+        "y": 80,
+        "wires": [
+            [
+                "c6f49b4e26c70135"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "c6f49b4e26c70135",
+        "type": "pts_oauth_browser",
+        "z": "f7caaab04e39d9d4",
+        "callback": "",
+        "redirect": "https://docs.google.com/document/d/1ONnw2p1tsziFazbYKe-WtB7lbCsCSM3FJyEyHap-uSQ/edit?usp=drive_link",
+        "name": "Documentation",
+        "x": 200,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "686c79e38465315c",
+        "type": "alpaca-account",
+        "name": "Live",
+        "keyId": "AK69KPKZCRI6XLPWKDOR",
+        "paper": false
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Node Red Trading Nodes Using Gemini | MachineTrader</title>
+  <link rel="canonical" href="https://www.machinetrader.io/Using-Gemini-to-create-Node-Red-nodes" />
+  <meta name="description" content="Use Gemini to create stocks and options trading nodes in Node Red. Step-by-step tutorials for building automated trading flows." />
+  <meta property="og:title" content="Create Node Red Trading Nodes Using Gemini | MachineTrader" />
+  <meta property="og:description" content="Use Gemini to create stocks and options trading nodes in Node Red." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Create Node Red Trading Nodes Using Gemini | MachineTrader" />
+  <meta name="twitter:description" content="Learn how to create a Node-RED inject node that triggers every minute during market hours while avoiding weekends and 2026 market holidays." />
+  <meta name="twitter:image" content="https://www.machinetrader.io/images/social-card.png" />
+  <meta name="google-site-verification" content="google6132bb2f08408978.html" />
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fff8f0',100:'#ffe8cc',200:'#ffd199',300:'#ffb366',400:'#ff9533',500:'#ff6b00',600:'#e05e00',700:'#b84d00',800:'#8f3c00',900:'#662b00',950:'#3d1a00' },
+            accent: { 500:'#489fd9',600:'#3a87be' },
+            mt: { green:'#4dbd90',purple:'#8668ab',blue:'#489fd9',pink:'#fde5e5',lavender:'#dde7ed' },
+            dark: { 900:'#0a0f1a',800:'#111827',700:'#1f2937',600:'#374151' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set','developer_id.dZGVlNj',true);gtag('js',new Date());gtag('config','G-G9L6L77LNM');</script>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1830322441099552');fbq('track','PageView');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <div class="relative">
+          <input id="password-input" type="password" placeholder="Password" autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm" />
+        </div>
+        <button type="submit" class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl">Enter</button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="index.html" class="flex items-center gap-3 group">
+          <img src="images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="index.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Home</a>
+          <a href="features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="index.html#how-it-works" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">How It Works</a>
+          <a href="index.html#pricing" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Pricing</a>
+          <a href="index.html#faq" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">FAQ</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+        <a href="index.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Home</a>
+        <a href="features.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Features</a>
+        <a href="index.html#how-it-works" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">How It Works</a>
+        <a href="index.html#pricing" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Pricing</a>
+        <a href="index.html#faq" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">FAQ</a>
+        <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-3 rounded-xl text-center mt-2">Start Free Trial</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 pb-16 overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-0 left-1/4 w-96 h-96 bg-mt-purple/20 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent-500/15 rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-mt-purple/10 border border-mt-purple/20 mb-6">
+        <span class="w-2 h-2 rounded-full bg-mt-purple animate-pulse"></span>
+        <span class="text-sm font-medium text-mt-purple">AI-Powered Tutorials</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+        Use Gemini to Write <span class="text-gradient">Node-RED</span> Trading Nodes
+      </h1>
+      <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+        Create stocks and options trading nodes in Node-RED using Google's Gemini AI — no coding expertise required.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <section class="border-t border-white/5 py-16">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8">
+
+      <!-- Intro -->
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8 mb-10">
+        <h2 class="text-2xl font-bold text-white mb-4">Description</h2>
+        <p class="text-gray-300 leading-relaxed mb-4">
+          It's increasingly easy to use AI models to write Node-RED nodes and JavaScript to power your MachineTrader instances. We've created some instructional pages using Gemini — not because it's the best code writer, but it's easily accessible and it's free. We've created a library of documentation with descriptions and links below.
+        </p>
+        <p class="text-gray-300 leading-relaxed">
+          The latest versions of MachineTrader contain nodes that store your API keys as global variables which can be accessed by the Gemini functions. If, however, you're using an older version of MachineTrader or if the API keys fail to load, you'll need to attach these nodes to the end of Alpaca Account Query Nodes on your Home page as shown below. The nodes store the keys as globals which can be accessed by Gemini's Node-RED functions.
+        </p>
+      </div>
+
+      <!-- Info callout -->
+      <div class="bg-mt-purple/10 border border-mt-purple/20 rounded-xl p-6 mb-12">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">💡</span>
+          <div>
+            <h3 class="text-lg font-semibold text-mt-purple mb-1">Pro Tip</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              Gemini is free to use and produces surprisingly good Node-RED code. You can iterate on the results and refine your trading flows interactively.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tutorial Links -->
+      <h3 class="text-2xl font-bold text-white mb-6">Tutorials</h3>
+      <p class="text-gray-400 mb-8">Listed below are links that describe how to use Gemini to build Node-RED utilities and trading flows:</p>
+
+      <div class="flex flex-col gap-4">
+
+        <a href="/create-your-first-node-red-flow-using-gemini"
+          class="group block bg-gray-900/60 border border-white/10 rounded-xl p-6 hover:border-mt-green/40 hover:bg-mt-green/5 transition-all duration-300">
+          <div class="flex items-center gap-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-mt-green/10 flex items-center justify-center">
+              <span class="text-mt-green text-lg font-bold">1</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="text-lg font-semibold text-white group-hover:text-mt-green transition">Create Your First Node-RED Flow Using Gemini</h4>
+              <p class="text-sm text-gray-500 mt-1">Get started with your first automated trading flow</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-mt-green group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+
+        <a href="/1min-trigger-inject-node"
+          class="group block bg-gray-900/60 border border-white/10 rounded-xl p-6 hover:border-accent-500/40 hover:bg-accent-500/5 transition-all duration-300">
+          <div class="flex items-center gap-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-accent-500/10 flex items-center justify-center">
+              <span class="text-accent-500 text-lg font-bold">2</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="text-lg font-semibold text-white group-hover:text-accent-500 transition">Create a 1 Min. Trigger to Fire Flows During Market Hours</h4>
+              <p class="text-sm text-gray-500 mt-1">Build a trigger that fires during market hours while avoiding weekends and holidays</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-accent-500 group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+
+        <a href="/get-last30mins-range-bars"
+          class="group block bg-gray-900/60 border border-white/10 rounded-xl p-6 hover:border-brand-500/40 hover:bg-brand-500/5 transition-all duration-300">
+          <div class="flex items-center gap-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-brand-500/10 flex items-center justify-center">
+              <span class="text-brand-500 text-lg font-bold">3</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="text-lg font-semibold text-white group-hover:text-brand-500 transition">Get TSLA 30 Minute Bars Using Gemini</h4>
+              <p class="text-sm text-gray-500 mt-1">Fetch and process TSLA 30-minute range bars for analysis</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-brand-500 group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+
+        <a href="/create-simple_scraper-using-gemini"
+          class="group block bg-gray-900/60 border border-white/10 rounded-xl p-6 hover:border-mt-purple/40 hover:bg-mt-purple/5 transition-all duration-300">
+          <div class="flex items-center gap-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-mt-purple/10 flex items-center justify-center">
+              <span class="text-mt-purple text-lg font-bold">4</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="text-lg font-semibold text-white group-hover:text-mt-purple transition">Create a Simple Scraper Using Gemini</h4>
+              <p class="text-sm text-gray-500 mt-1">Build a web scraper for market data</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-mt-purple group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA SECTION ============ -->
+  <section class="border-t border-white/5 py-20">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-white mb-4">Ready to Build Your Trading Flows?</h2>
+      <p class="text-gray-400 mb-8 max-w-xl mx-auto">Start automating your trading strategies with MachineTrader's visual programming environment and AI-powered tools.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/pricing" class="btn-primary text-sm font-semibold px-8 py-3 rounded-full">Start Free Trial</a>
+        <a href="features.html" class="btn-secondary text-sm font-semibold px-8 py-3 rounded-full">Explore Features</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-gray-950 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+        <div class="col-span-2 md:col-span-1">
+          <a href="index.html" class="flex items-center gap-2 mb-4">
+            <img src="images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">
+            Automate your trading strategies using our low-code/no-code MachineTrader™ software.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="index.html#pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="trading-flows/index.html" class="hover:text-white transition">Trading Scripts</a></li>
+            <li><a href="backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">
+          © 2022–<script>document.write(new Date().getFullYear())</script> MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+        </div>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed">
+          <strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading.
+          All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a
+          registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC,
+          member FINRA/SIPC. *Commission-free for U.S. equities. Please read all risk disclosures before trading.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    const EXPECTED_HASH = '8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    (async () => {
+      const lockScreen = document.getElementById('lock-screen');
+      const pageContent = document.getElementById('page-content');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (sessionStorage.getItem('mt-auth') === EXPECTED_HASH) {
+        lockScreen.classList.add('hidden');
+        pageContent.classList.remove('hidden');
+      } else { input.focus(); }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const hash = await sha256(input.value);
+        if (hash === EXPECTED_HASH) {
+          sessionStorage.setItem('mt-auth', EXPECTED_HASH);
+          lockScreen.style.transition = 'opacity 0.4s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => { lockScreen.classList.add('hidden'); pageContent.classList.remove('hidden'); }, 400);
+        } else {
+          error.classList.remove('hidden');
+          input.classList.add('!border-red-500');
+          input.value = '';
+          input.focus();
+          setTimeout(() => { error.classList.add('hidden'); input.classList.remove('!border-red-500'); }, 3000);
+        }
+      });
+    })();
+  </script>
+  <script src="js/main.js"></script>
+</body>
+</html>

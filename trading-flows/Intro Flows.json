@@ -1,0 +1,875 @@
+[
+    {
+        "id": "c02597a95ed5550a",
+        "type": "tab",
+        "label": "Intro flows",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "045d3c8f7b9a457b",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Time of day",
+        "func": "// Get timestamp when order was submitted\nlet timeDate = new Date()\n// Get the machine time in milliseconds\nlet timeMillisec = timeDate.getTime() // Machine time in milliseconds\nlet timeNow = timeDate.toISOString() // ISO date - a string, not a date object\n// flow.set(\"timeNow\", timeNow) // Set the timeNow as ISO date string\n// flow.set(\"timeMillisec\", timeMillisec) // Set the timeNow machine time in milliseconds\n\nlet dateString = \"2024-11-14T13:14:27.831Z\"\ndateString = \"2024-11-14\"\nnode.warn(\"dateString = \" + dateString)\nnode.warn(\"timeNow UTC = \" + timeNow)\nnode.warn(\"dateString < timeNow = \" + (dateString < timeNow))\n\nlet timeString = \"9:00:00 AM\"\n// node.warn(\"timeLocal = \" + timeString)\nlet timeLocal = timeDate.toLocaleTimeString('en-US')\nnode.warn(\"timeLocal EST = \" + timeLocal)\nnode.warn(\"timeLocal < timeString = \" + (timeLocal < timeString))\n\nmsg.payload = timeNow\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 100,
+        "wires": [
+            [
+                "e2f210eccdd510f0"
+            ]
+        ]
+    },
+    {
+        "id": "ce5463ccbe1e3c28",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 100,
+        "wires": [
+            [
+                "045d3c8f7b9a457b"
+            ]
+        ]
+    },
+    {
+        "id": "e2f210eccdd510f0",
+        "type": "debug",
+        "z": "c02597a95ed5550a",
+        "name": "debug 1167",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "20defdfacb2d22a9",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 160,
+        "wires": [
+            [
+                "69efb4552ed9249e"
+            ]
+        ]
+    },
+    {
+        "id": "69efb4552ed9249e",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Create flow variables",
+        "func": "// Collect prices in extended hours?\nflow.set(\"tradExtended\", false)\nnode.warn(\"Collect prices in extended hours = \" + flow.get(\"tradExtended\"))\n\n// String with ticker for trading\nflow.set(\"symbolName\", \"AAPL\")\nnode.warn(\"Trading symbol = \" + flow.get(\"symbolName\"))\n// String with tickers to collect prices\nflow.set(\"symbolNames\", \"AAPL,MSFT\")\nnode.warn(\"Trading symbols = \" + flow.get(\"symbolNames\"))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "601ab23f73c241fb",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 340,
+        "wires": [
+            [
+                "32c2b75877fd783f"
+            ]
+        ]
+    },
+    {
+        "id": "32c2b75877fd783f",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Delete all the flow variables",
+        "func": "let flowkeys = flow.keys()\nnode.warn(\"Deleting all the flow variables: \" + flowkeys)\n\nlet namev = \"\"\nfor (namev of flowkeys) {\n    flow.set(namev)\n} // end for\n\n// for (var i = 0; i < flowkeys.length; i++) {\n//     flow.set(flowkeys[i])\n// } // end for\n\nmsg.payload = flowkeys\nreturn msg\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "703efbde89a41451",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Get all the flow variables",
+        "func": "let flowkeys = flow.keys()\nnode.warn(\"All the flow variables: \" + flowkeys)\nmsg.payload = flowkeys\nreturn msg\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 220,
+        "wires": [
+            [
+                "590881e1bb6eebd5"
+            ]
+        ]
+    },
+    {
+        "id": "b46028531a077d53",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "703efbde89a41451"
+            ]
+        ]
+    },
+    {
+        "id": "a2bdcddd07ce4e36",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Get all the global variables",
+        "func": "let globvars = global.keys()\nnode.warn(\"All the global variables: \" + globvars)\nmsg.payload = globvars\nreturn msg\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 280,
+        "wires": [
+            [
+                "0f12c49a23316530"
+            ]
+        ]
+    },
+    {
+        "id": "44bdbe781852e6d8",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 280,
+        "wires": [
+            [
+                "a2bdcddd07ce4e36"
+            ]
+        ]
+    },
+    {
+        "id": "590881e1bb6eebd5",
+        "type": "debug",
+        "z": "c02597a95ed5550a",
+        "name": "debug 1168",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "0f12c49a23316530",
+        "type": "debug",
+        "z": "c02597a95ed5550a",
+        "name": "debug 1169",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "588a2c7d5ab3eb6b",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 500,
+        "wires": [
+            [
+                "4478b465f8bc7e5c"
+            ]
+        ]
+    },
+    {
+        "id": "4478b465f8bc7e5c",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Buy stock",
+        "func": "let tradeOrder = {\n    \"symbol\": \"USO\",\n    \"qty\": 1,\n    \"side\": \"buy\",\n    \"type\": \"market\",\n    \"tradExtended\": true,\n    \"time_in_force\": \"day\"\n} // end tradeOrder\n\nmsg.payload = tradeOrder\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 500,
+        "wires": [
+            [
+                "f7ca586db4d8313d"
+            ]
+        ]
+    },
+    {
+        "id": "8e84b14abc339279",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 580,
+        "wires": [
+            [
+                "dfe5b85b0e729d53"
+            ]
+        ]
+    },
+    {
+        "id": "dfe5b85b0e729d53",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Sell stock",
+        "func": "let tradeOrder = {\n    \"symbol\": \"USO\",\n    \"qty\": 1,\n    \"side\": \"sell\",\n    \"type\": \"market\",\n    \"tradExtended\": true,\n    \"time_in_force\": \"day\"\n} // end tradeOrder\n\nmsg.payload = tradeOrder\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 580,
+        "wires": [
+            [
+                "f7ca586db4d8313d"
+            ]
+        ]
+    },
+    {
+        "id": "f7ca586db4d8313d",
+        "type": "alpaca-order",
+        "z": "c02597a95ed5550a",
+        "conf": "0ced618a3a2038f5",
+        "x": 490,
+        "y": 540,
+        "wires": [
+            [
+                "2d566488fa82adec",
+                "aac77e831c1fdc6c"
+            ]
+        ]
+    },
+    {
+        "id": "637b410009603ad5",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Get trade ID",
+        "func": "let tradeid = msg.payload[\"id\"]\nnode.warn(\"Trade ID = \" + tradeid)\n\nmsg.id = tradeid\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f558290b7e559247",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Error handler",
+        "func": "// Handle the errors for trade orders rejected by Alpaca.\n// When Alpaca rejects a trade, it sends an error message.\n// Otherwise it sends a trade order submission confirmation, with the order details.\n\n// Get the error message.\n// The error message is not undefined because Alpaca rejected the trade order.\nlet errorm = msg.payload[\"message\"]\nnode.warn(\"Trade was rejected\") \nlet codev = msg.payload[\"code\"] // Get the error code\nnode.warn(\"Error code \" + codev) \n// let messagesplit = errorm.split('\\\"')\n// node.warn(\"messagesplit \" + messagesplit[0] + \" / \" + messagesplit[1] + \" / \" + messagesplit[2]) \nlet symbolName = errorm.split('\\\"')[1]\nnode.warn(\"Trade for \" + symbolName + \" was rejected\") \nlet errortext = \"Error code: \" + codev + \" / Message: \" + errorm\nnode.warn(errortext)\n\n// Update the fills table\nlet symbol1 = flow.get(\"symbol1\")\nlet symbol2 = flow.get(\"symbol2\")\nlet timeMillisec = flow.get(\"timeMillisec\") // Get the submit machine time in milliseconds\nlet priceCurrent = flow.get(\"priceCurrent\") // Get the last price\n\nif (symbolName == symbol1) {\n    let fillArr1 = flow.get(\"fillArr1\")\n    let fillv = {timeMillisec: timeMillisec, timeFill: \"NA\", symbolName: symbol1, orderType: \"NA\", side: \"NA\", qtySubmit: \"NA\", qtyFill: \"NA\", priceFill: \"NA\", priceCurrent: priceCurrent, Code: errortext}\n    fillArr1.push(fillv)\n    flow.set(\"fillArr1\", fillArr1)\n} else if (symbolName == symbol2) {\n    let fillArr2 = flow.get(\"fillArr2\")\n    let fillv = {timeMillisec: timeMillisec, timeFill: \"NA\", symbolName: symbol2, orderType: \"NA\", side: \"NA\", qtySubmit: \"NA\", qtyFill: \"NA\", priceFill: \"NA\", priceCurrent: priceCurrent, Code: errortext}\n    fillArr2.push(fillv)\n    flow.set(\"fillArr2\", fillArr2)\n} // end if\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2d566488fa82adec",
+        "type": "switch",
+        "z": "c02597a95ed5550a",
+        "name": "Check message",
+        "property": "payload[\"id\"]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "istype",
+                "v": "string",
+                "vt": "string"
+            },
+            {
+                "t": "null"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 700,
+        "y": 540,
+        "wires": [
+            [
+                "637b410009603ad5"
+            ],
+            [
+                "f558290b7e559247"
+            ]
+        ]
+    },
+    {
+        "id": "aac77e831c1fdc6c",
+        "type": "debug",
+        "z": "c02597a95ed5550a",
+        "name": "debug 1170",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "d5dc1e246f35add5",
+        "type": "alpaca-position-query",
+        "z": "c02597a95ed5550a",
+        "conf": "0ced618a3a2038f5",
+        "symbol": "USO",
+        "x": 530,
+        "y": 420,
+        "wires": [
+            [
+                "3ef4857349cbb328"
+            ]
+        ]
+    },
+    {
+        "id": "11c70c57a148fc5e",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Get position",
+        "func": "/*\nmsg.payload = {\n    // \"symbol\": \"AAPL,MSFT\",\n    \"symbol\": \"SPY\",\n}\n*/\n\nreturn msg\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 420,
+        "wires": [
+            [
+                "d5dc1e246f35add5"
+            ]
+        ]
+    },
+    {
+        "id": "614f868197a1129f",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 420,
+        "wires": [
+            [
+                "11c70c57a148fc5e"
+            ]
+        ]
+    },
+    {
+        "id": "3ef4857349cbb328",
+        "type": "debug",
+        "z": "c02597a95ed5550a",
+        "name": "debug 1171",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "95845ad84baa2c20",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Get orders",
+        "func": "msg.payload = {\n    status: \"closed\", // \"open or closed\"\n    limit: \"6\", // default is 500\n    direction: \"desc\" //  \"asc or desc\"\n}\n\nnode.warn(msg.payload)\n\nreturn msg\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 720,
+        "wires": [
+            [
+                "734b0b6f8da8cf3f"
+            ]
+        ]
+    },
+    {
+        "id": "4f479a7823687906",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 720,
+        "wires": [
+            [
+                "95845ad84baa2c20"
+            ]
+        ]
+    },
+    {
+        "id": "6e6bde09493a1818",
+        "type": "debug",
+        "z": "c02597a95ed5550a",
+        "name": "debug 1172",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "734b0b6f8da8cf3f",
+        "type": "alpaca-query-order",
+        "z": "c02597a95ed5550a",
+        "conf": "0ced618a3a2038f5",
+        "x": 500,
+        "y": 720,
+        "wires": [
+            [
+                "6e6bde09493a1818"
+            ]
+        ]
+    },
+    {
+        "id": "1ec7a7ec9fa5e7e2",
+        "type": "comment",
+        "z": "c02597a95ed5550a",
+        "name": "Liquidate stocks",
+        "info": "",
+        "x": 140,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "8873a75695989e31",
+        "type": "alpaca-position-query",
+        "z": "c02597a95ed5550a",
+        "conf": "0ced618a3a2038f5",
+        "symbol": "",
+        "x": 370,
+        "y": 1140,
+        "wires": [
+            [
+                "c6627c7302dd3bd4",
+                "cc65ae45490a40dd"
+            ]
+        ]
+    },
+    {
+        "id": "ea3888f914e2c6fb",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 1140,
+        "wires": [
+            [
+                "8873a75695989e31"
+            ]
+        ]
+    },
+    {
+        "id": "e6146150cbfaeda8",
+        "type": "alpaca-order",
+        "z": "c02597a95ed5550a",
+        "conf": "0ced618a3a2038f5",
+        "x": 950,
+        "y": 1140,
+        "wires": [
+            [
+                "b53626ffd3838e22",
+                "e231a8eaf170a0b9"
+            ]
+        ]
+    },
+    {
+        "id": "c6627c7302dd3bd4",
+        "type": "split",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 1140,
+        "wires": [
+            [
+                "5bfe5f2dd70bb01e"
+            ]
+        ]
+    },
+    {
+        "id": "5bfe5f2dd70bb01e",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Unwind positions",
+        "func": "// Get timestamp when order was submitted\nlet timeDate = new Date()\n// Get the machine time in milliseconds\nlet timeMillisec = timeDate.getTime() // Machine time in milliseconds\nlet timeSubmit = timeDate.toISOString() // ISO date - a string, not a date object\nflow.set(\"timeSubmit\", timeSubmit) // Set the timeSubmit as ISO date string\nflow.set(\"timeMillisec\", timeMillisec) // Set the timeSubmit machine time in milliseconds\n\nlet posv = msg.payload\n// posv = posv[0]\nnode.warn(\"posv = \" + posv)\n\nlet tradeOrders = []\nlet symbolv = posv[\"symbol\"]\nnode.warn(\"symbol = \" + symbolv)\nlet qtv = posv[\"qty\"]\nnode.warn(\"qtv = \" + qtv)\nlet sidev = \"sell\"\nif (qtv < 0) {\n    sidev = \"buy\"\n    qtv = -qtv\n} // end if\nnode.warn(\"sidev = \" + sidev)\n\nlet orderv = {\n        \"symbol\": symbolv,\n        \"qty\": qtv,\n        \"side\": sidev,\n        \"type\": \"market\",\n        \"tradExtended\": true,\n        \"time_in_force\": \"day\"\n    } // end tradeOrder\n\nmsg.payload = orderv\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 1140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "63b788b3190a564e",
+        "type": "alpaca-query-order",
+        "z": "c02597a95ed5550a",
+        "conf": "0ced618a3a2038f5",
+        "x": 900,
+        "y": 1220,
+        "wires": [
+            [
+                "518d1eb6aa783ee4"
+            ]
+        ]
+    },
+    {
+        "id": "e231a8eaf170a0b9",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Get trade ID",
+        "func": "let tradeid = msg.payload[\"id\"]\n// node.warn(\"Trade ID = \" + tradeid)\n\nmsg.id = tradeid\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 1220,
+        "wires": [
+            [
+                "bf10fa1ee284b1b7"
+            ]
+        ]
+    },
+    {
+        "id": "bf10fa1ee284b1b7",
+        "type": "delay",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "7",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 720,
+        "y": 1220,
+        "wires": [
+            [
+                "63b788b3190a564e"
+            ]
+        ]
+    },
+    {
+        "id": "518d1eb6aa783ee4",
+        "type": "function",
+        "z": "c02597a95ed5550a",
+        "name": "Confirm trades",
+        "func": "// let timeDate = new Date()\n// let timestamp = timeDate.getTime()\n\nlet timeFill = msg.payload[\"filled_at\"]\nlet symbolName = msg.payload[\"symbol\"]\nlet orderType = msg.payload[\"order_type\"]\nlet sidev = msg.payload[\"side\"]\nlet priceFill = Number(msg.payload[\"filled_avg_price\"])\nlet qtySubmit = Number(msg.payload[\"qty\"])\nlet qtyFill = Number(msg.payload[\"filled_qty\"])\n\n// Set pendingTrade=false after a response from Alpaca,\n// either if the trade was confirmed or rejected.\nflow.set(\"pendingTrade\", false)\n\n// Get the current position\nlet posDaily = flow.get(\"posDaily\")\n// Number of shares traded with sign\nlet numTraded = qtyFill\n\n// Check if the trade was filled by Alpaca\nif ((qtyFill == 0) || (priceFill == null) || (priceFill == 0) || (priceFill == undefined) || isNaN(priceFill)) {\n    // The trade was not filled by Alpaca\n    node.warn(\"Trade was not filled\")\n    // Reset the fill price if Alpaca returned null\n    // priceFill = priceSubmit\n    // qtySubmit = 1\n} else {\n    // The trade was filled by Alpaca\n    node.warn(symbolName + \" trade was filled \" + \"/ priceFill = \" + priceFill)\n    // Set the fill price\n    // flow.set(\"priceFill\", priceFill)\n\n    // Get the fill price with sign\n    if (sidev == \"sell\") {\n        numTraded = -qtyFill\n    } else if (sidev == \"buy\") {\n        numTraded = qtyFill\n        // Flip the fill price to negative price if it's a buy trade\n        priceFill = -priceFill // Buy - negative price\n    } // end if\n\n    // Get the open position queue.\n    let posQueue = flow.get(\"posQueue\")\n    // Get the realized PnL\n    let pnlReal = flow.get(\"pnlReal\")\n    if (isNaN(pnlReal)) pnlReal = 0\n\n    // Get the daily open position queue.\n    let posQueued = flow.get(\"posQueued\")\n    // Get the realized PnL\n    let pnlReald = flow.get(\"pnlReald\")\n    if (isNaN(pnlReald)) pnlReald = 0\n\n\n    // Update the open position queue\n    if ((posQueue[symbolName].length == 0) || ((priceFill * posQueue[symbolName][0]) > 0)) {\n        // Add to the open position queue for symbolName\n        for (var i = 0; i < qtyFill; i++) {\n            posQueue[symbolName].push(priceFill)\n        } // end for\n    } else {\n        // Calculate the realized PnL for symbolName\n        let pnlReal = flow.get(\"pnlReal\")\n        let priceq = 0\n        for (var i = 0; i < qtyFill; i++) {\n            priceq = posQueue[symbolName].shift() // Get oldest price from posQueue\n            pnlReal += priceq + priceFill\n        } // end for\n        flow.set(\"pnlReal\", pnlReal)\n    } // end if\n\n    // Update the open position queue\n    flow.set(\"posQueue\", posQueue)\n\n    // Update the daily open position queue\n    if ((posQueued[symbolName].length == 0) || ((priceFill * posQueued[symbolName][0]) > 0)) {\n        // Add to the daily open position queue for symbolName\n        for (var i = 0; i < qtyFill; i++) {\n            posQueued[symbolName].push(priceFill)\n        } // end for\n    } else {\n        // Calculate the daily realized PnL for symbolName\n        let pnlReald = flow.get(\"pnlReald\")\n        let priceq = 0\n        for (var i = 0; i < qtyFill; i++) {\n            priceq = posQueued[symbolName].shift() // Get oldest price from posQueued\n            pnlReald += priceq + priceFill\n        } // end for\n        flow.set(\"pnlReald\", pnlReald)\n    } // end if\n\n    // Update the daily open position queue\n    flow.set(\"posQueued\", posQueued)\n\n} // end if\n\n// Update the fills table\nlet symbol1 = flow.get(\"symbol1\")\nlet symbol2 = flow.get(\"symbol2\")\nlet timeMillisec = flow.get(\"timeMillisec\") // Get the submit machine time in milliseconds\nlet priceCurrent = flow.get(\"priceCurrent\") // Get the last price\n\nif (symbolName == symbol1) {\n    let fillArr1 = flow.get(\"fillArr1\")\n    let fillv = {timeMillisec: timeMillisec, timeFill: timeFill, symbolName: symbol1, orderType: orderType, side: sidev, qtySubmit: qtySubmit, qtyFill: qtyFill, priceFill: priceFill, priceCurrent: priceCurrent, posDaily: posDaily, Code: \"Filled\"}\n    fillArr1.push(fillv)\n    flow.set(\"fillArr1\", fillArr1)\n} else if (symbolName == symbol2) {\n    let fillArr2 = flow.get(\"fillArr2\")\n    let fillv = { timeMillisec: timeMillisec, timeFill: timeFill, symbolName: symbol2, orderType: orderType, side: sidev, qtySubmit: qtySubmit, qtyFill: qtyFill, priceFill: priceFill, priceCurrent: priceCurrent, posDaily: posDaily, Code: \"Filled\"}\n    fillArr2.push(fillv)\n    flow.set(\"fillArr2\", fillArr2)\n} // end if\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 1220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b53626ffd3838e22",
+        "type": "debug",
+        "z": "c02597a95ed5550a",
+        "name": "debug 1173",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1170,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "cc65ae45490a40dd",
+        "type": "debug",
+        "z": "c02597a95ed5550a",
+        "name": "debug 1174",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "a42aa391e03a6b48",
+        "type": "alpaca-data-last-quote",
+        "z": "c02597a95ed5550a",
+        "conf": "686c79e38465315c",
+        "symbol": "GLD",
+        "name": "",
+        "x": 350,
+        "y": 660,
+        "wires": [
+            [
+                "50b9fb57c992acf9"
+            ]
+        ]
+    },
+    {
+        "id": "b85f0f012efb963f",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 660,
+        "wires": [
+            [
+                "a42aa391e03a6b48"
+            ]
+        ]
+    },
+    {
+        "id": "50b9fb57c992acf9",
+        "type": "debug",
+        "z": "c02597a95ed5550a",
+        "name": "debug 1175",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 550,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "a7b1c2c71f60bce3",
+        "type": "inject",
+        "z": "c02597a95ed5550a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "Hello World!",
+        "payloadType": "str",
+        "x": 170,
+        "y": 40,
+        "wires": [
+            [
+                "83b3eaa026a4605d"
+            ]
+        ]
+    },
+    {
+        "id": "83b3eaa026a4605d",
+        "type": "debug",
+        "z": "c02597a95ed5550a",
+        "name": "debug 1176",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 340,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "0ced618a3a2038f5",
+        "type": "alpaca-account",
+        "name": "Paper",
+        "keyId": "PK8GZA5FZQP0TN7U9T7F",
+        "paper": true
+    },
+    {
+        "id": "686c79e38465315c",
+        "type": "alpaca-account",
+        "name": "Live",
+        "keyId": "AKNYA5V8EBMGBLON9V4S",
+        "paper": false
+    }
+]

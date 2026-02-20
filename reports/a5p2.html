@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A5P2 — Portfolio History | MachineTrader</title>
+  <meta name="description" content="Daily performance report for A5P2 on MachineTrader." />
+  <meta property="og:title" content="A5P2 — Portfolio History" />
+  <meta property="twitter:title" content="A5P2 — Portfolio History" />
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fff8f0',100:'#ffe8cc',200:'#ffd199',300:'#ffb366',400:'#ff9533',500:'#ff6b00',600:'#e05e00',700:'#b84d00',800:'#8f3c00',900:'#662b00',950:'#3d1a00' },
+            accent: { 500:'#489fd9',600:'#3a87be' },
+            mt: { green:'#4dbd90',purple:'#8668ab',blue:'#489fd9',pink:'#fde5e5',lavender:'#dde7ed' },
+            dark: { 900:'#0a0f1a',800:'#111827',700:'#1f2937',600:'#374151' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set','developer_id.dZGVlNj',true);gtag('js',new Date());gtag('config','G-G9L6L77LNM');</script>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1830322441099552');fbq('track','PageView');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+  <style>
+    .report-table { width:100%; border-collapse:collapse; font-size:0.875rem; }
+    .report-table thead { background:linear-gradient(135deg,#ff6b00 0%,#e05e00 100%); }
+    .report-table th { padding:0.875rem 1rem; text-align:right; font-weight:600; white-space:nowrap; color:white; font-size:0.8125rem; text-transform:uppercase; letter-spacing:0.05em; }
+    .report-table th:first-child { text-align:left; }
+    .report-table td { padding:0.75rem 1rem; text-align:right; border-bottom:1px solid rgba(255,255,255,0.05); color:#d1d5db; }
+    .report-table td:first-child { text-align:left; font-weight:500; color:#f3f4f6; }
+    .report-table tbody tr { transition:background-color 0.15s ease; }
+    .report-table tbody tr:hover { background:rgba(255,255,255,0.04); }
+    .report-table tbody tr:nth-child(even) { background:rgba(255,255,255,0.02); }
+    .report-table tbody tr:nth-child(even):hover { background:rgba(255,255,255,0.05); }
+    .report-table .positive { color:#4dbd90; font-weight:600; }
+    .report-table .negative { color:#ef4444; font-weight:600; }
+    .report-table .neutral { color:#6b7280; }
+    .highlight-row { background:rgba(255,107,0,0.08) !important; }
+    .stat-card-dark { background:rgba(17,24,39,0.6); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:1.25rem; backdrop-filter:blur(8px); }
+    .stat-card-dark h3 { font-size:0.75rem; color:#9ca3af; margin-bottom:0.375rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; }
+    .stat-card-dark p { font-size:1.5rem; font-weight:700; color:#f3f4f6; }
+    .stat-card-dark.positive p { color:#4dbd90; }
+    .stat-card-dark.negative p { color:#ef4444; }
+    @media (max-width:768px) {
+      .report-table { font-size:0.75rem; min-width:700px; }
+      .report-table th, .report-table td { padding:0.5rem 0.375rem; }
+    }
+  </style>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- Password Gate -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="../images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <input id="password-input" type="password" placeholder="Password" autocomplete="off" class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm" />
+        <button type="submit" class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl">Enter</button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Page Content -->
+  <div id="page-content" class="hidden">
+
+  <!-- Navigation -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="../index.html" class="flex items-center gap-3 group">
+          <img src="../images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="../features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="../data-center.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Data Center</a>
+          <a href="../backtests.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Backtests</a>
+          <a href="../about-us.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">About Us</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+        <a href="../features.html" class="text-base font-medium text-gray-400 hover:text-white py-2">Features</a>
+        <a href="../data-center.html" class="text-base font-medium text-gray-400 hover:text-white py-2">Data Center</a>
+        <a href="../backtests.html" class="text-base font-medium text-gray-400 hover:text-white py-2">Backtests</a>
+        <a href="../about-us.html" class="text-base font-medium text-gray-400 hover:text-white py-2">About Us</a>
+        <div class="flex flex-col gap-3 pt-4 border-t border-white/10">
+          <a href="/pricing" class="btn-primary text-center text-base font-semibold px-6 py-3 rounded-full">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="relative pt-32 pb-12 overflow-hidden">
+    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-500/8 rounded-full blur-[120px] animate-pulse-slow"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/8 rounded-full blur-[100px] animate-pulse-slow animation-delay-2000"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/20 mb-6">
+        <span class="w-2 h-2 bg-brand-400 rounded-full animate-pulse"></span>
+        <span class="text-sm font-medium text-brand-200">Portfolio Report</span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">Account A5P2 Portfolio History</h1>
+      <p class="text-lg text-gray-400 max-w-2xl mx-auto">Live Account</p>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4" id="stats">
+        <div class="stat-card-dark" style="grid-column:1/-1;text-align:center;">
+          <h3>Loading...</h3>
+          <p style="font-size:1rem;">Fetching latest portfolio data...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Table -->
+  <section class="pb-20">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="bg-gray-900/60 border border-white/10 rounded-xl overflow-hidden backdrop-blur-sm">
+        <div class="overflow-x-auto" style="-webkit-overflow-scrolling:touch;">
+          <table class="report-table" id="portfolioTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Equity</th>
+                <th>Cash Flow</th>
+                <th>Daily P/L</th>
+                <th>Daily %</th>
+                <th>Cumulative Profit</th>
+                <th>Cumulative %</th>
+                <th>Annualized %</th>
+                <th>Sharpe Ratio</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+        <div class="text-center py-4 text-gray-500 text-sm border-t border-white/5">
+          Last updated: <span id="lastUpdate"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-950 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+        <div class="col-span-2 md:col-span-1">
+          <a href="../index.html" class="flex items-center gap-3 mb-4">
+            <img src="../images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">Automate your trading strategies using our low-code/no-code MachineTrader™ software.</p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="/pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="../data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="../backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="../terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="../cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">© 2022–2026 MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005</div>
+        <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed"><strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading. All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC, member FINRA/SIPC. *Commission-free for U.S. equities.</p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- Scripts -->
+  <script>
+    const csvPath = '/csvfiles/alpaca_portfolio_history_Aiv005P2.csv';
+  </script>
+  <script>
+    const EXPECTED_HASH='8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(m){const b=new TextEncoder().encode(m);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+    (async()=>{const ls=document.getElementById('lock-screen'),pc=document.getElementById('page-content'),f=document.getElementById('password-form'),i=document.getElementById('password-input'),e=document.getElementById('password-error');if(sessionStorage.getItem('mt-auth')===EXPECTED_HASH){ls.classList.add('hidden');pc.classList.remove('hidden');}else{i.focus();}f.addEventListener('submit',async(ev)=>{ev.preventDefault();const h=await sha256(i.value);if(h===EXPECTED_HASH){sessionStorage.setItem('mt-auth',EXPECTED_HASH);ls.style.transition='opacity 0.4s ease';ls.style.opacity='0';setTimeout(()=>{ls.classList.add('hidden');pc.classList.remove('hidden');},400);}else{e.classList.remove('hidden');i.classList.add('!border-red-500');i.value='';i.focus();setTimeout(()=>{e.classList.add('hidden');i.classList.remove('!border-red-500');},3000);}});})();
+  </script>
+  <script>
+    // --- Portfolio Report Logic (preserved from original) ---
+    async function fetchCSVData() {
+      try {
+        const response = await fetch(csvPath);
+        if (!response.ok) throw new Error('HTTP error! status: ' + response.status);
+        return await response.text();
+      } catch (error) {
+        console.error('Error fetching CSV data:', error);
+        document.getElementById('stats').innerHTML = '<div class="stat-card-dark negative" style="grid-column:1/-1;"><h3>Error Loading Data</h3><p style="font-size:1rem;">Unable to fetch portfolio data. Please check your connection and try again.</p></div>';
+        throw error;
+      }
+    }
+    function parseCSV(csv) {
+      const lines = csv.trim().split('\n');
+      const headers = lines[0].split(',');
+      const data = [];
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',');
+        const row = {};
+        headers.forEach((header, index) => { row[header] = values[index] || ''; });
+        data.push(row);
+      }
+      return data;
+    }
+    function formatCurrency(value) {
+      if (!value || value === '') return '-';
+      const num = parseFloat(value);
+      return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function formatPercentage(value) {
+      if (!value || value === '') return '-';
+      return parseFloat(value).toFixed(2) + '%';
+    }
+    function getValueClass(value) {
+      if (!value || value === '') return 'neutral';
+      const num = parseFloat(value);
+      if (num > 0) return 'positive';
+      if (num < 0) return 'negative';
+      return 'neutral';
+    }
+    function formatValueWithClass(value, isPercentage, isCurrency) {
+      if (!value || value === '') return '<span class="neutral">-</span>';
+      const num = parseFloat(value);
+      const cls = getValueClass(value);
+      let formatted;
+      if (isCurrency) formatted = formatCurrency(value);
+      else if (isPercentage) formatted = formatPercentage(value);
+      else formatted = num.toFixed(2);
+      return '<span class="' + cls + '">' + formatted + '</span>';
+    }
+    async function populateTable() {
+      document.getElementById('stats').innerHTML = '<div class="stat-card-dark" style="grid-column:1/-1;text-align:center;"><h3>Loading...</h3><p style="font-size:1rem;">Fetching latest portfolio data...</p></div>';
+      try {
+        const csvData = await fetchCSVData();
+        const data = parseCSV(csvData);
+        const tbody = document.getElementById('tableBody');
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          if (row['Cash Flow'] && row['Cash Flow'] !== '') tr.classList.add('highlight-row');
+          tr.innerHTML =
+            '<td>' + row['Date'] + '</td>' +
+            '<td>' + formatCurrency(row['Equity']) + '</td>' +
+            '<td>' + (row['Cash Flow'] ? formatCurrency(row['Cash Flow']) : '-') + '</td>' +
+            '<td>' + formatValueWithClass(row['Daily P/L'], false, true) + '</td>' +
+            '<td>' + formatValueWithClass(row['Daily %'], true) + '</td>' +
+            '<td>' + formatValueWithClass(row['Cumulative Profit'], false, true) + '</td>' +
+            '<td>' + formatValueWithClass(row['Cumulative %'], true) + '</td>' +
+            '<td>' + formatValueWithClass(row['Annualized %'], true) + '</td>' +
+            '<td>' + formatValueWithClass(row['Sharpe Ratio']) + '</td>';
+          tbody.appendChild(tr);
+        });
+        displayStats(data);
+      } catch (error) {
+        console.error('Error populating table:', error);
+        document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#ef4444;">Failed to load portfolio data. Please refresh the page.</td></tr>';
+      }
+    }
+    function displayStats(data) {
+      const latest = data[data.length - 1];
+      const equity = parseFloat(latest['Equity']);
+      const cumProfit = parseFloat(latest['Cumulative Profit']);
+      const cumPct = parseFloat(latest['Cumulative %']);
+      const annRet = parseFloat(latest['Annualized %']);
+      const sharpe = parseFloat(latest['Sharpe Ratio']);
+      document.getElementById('stats').innerHTML =
+        '<div class="stat-card-dark"><h3>Current Equity</h3><p>' + formatCurrency(equity) + '</p></div>' +
+        '<div class="stat-card-dark ' + (cumProfit >= 0 ? 'positive' : 'negative') + '"><h3>Total Profit</h3><p>' + formatCurrency(cumProfit) + '</p></div>' +
+        '<div class="stat-card-dark ' + (cumPct >= 0 ? 'positive' : 'negative') + '"><h3>Total Return</h3><p>' + formatPercentage(cumPct) + '</p></div>' +
+        '<div class="stat-card-dark ' + (annRet >= 0 ? 'positive' : 'negative') + '"><h3>Annualized Return</h3><p>' + formatPercentage(annRet) + '</p></div>' +
+        '<div class="stat-card-dark ' + (sharpe >= 0 ? 'positive' : 'negative') + '"><h3>Sharpe Ratio</h3><p>' + sharpe.toFixed(2) + '</p></div>';
+      document.getElementById('lastUpdate').textContent = latest['Date'];
+    }
+    document.addEventListener('DOMContentLoaded', () => { populateTable(); });
+  </script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

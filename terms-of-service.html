@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service | MachineTrader</title>
+  <link rel="canonical" href="https://www.machinetrader.io/terms-of-service" />
+  <meta name="description" content="MachineTrader Platform Agreement - Terms and conditions for using the MachineTrader automated trading platform and services." />
+  <meta property="og:title" content="Terms of Service | MachineTrader" />
+  <meta property="og:description" content="MachineTrader Platform Agreement - Terms and conditions for using the MachineTrader automated trading platform and services." />
+  <meta property="og:type" content="website" />
+  <meta property="twitter:title" content="Terms of Service | MachineTrader" />
+  <meta property="twitter:description" content="MachineTrader Platform Agreement - Terms and conditions for using the MachineTrader automated trading platform and services." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="google-site-verification" content="google6132bb2f08408978.html" />
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fff8f0',100:'#ffe8cc',200:'#ffd199',300:'#ffb366',400:'#ff9533',500:'#ff6b00',600:'#e05e00',700:'#b84d00',800:'#8f3c00',900:'#662b00',950:'#3d1a00' },
+            accent: { 500:'#489fd9',600:'#3a87be' },
+            mt: { green:'#4dbd90',purple:'#8668ab',blue:'#489fd9',pink:'#fde5e5',lavender:'#dde7ed' },
+            dark: { 900:'#0a0f1a',800:'#111827',700:'#1f2937',600:'#374151' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set','developer_id.dZGVlNj',true);gtag('js',new Date());gtag('config','G-G9L6L77LNM');</script>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1830322441099552');fbq('track','PageView');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <div class="relative">
+          <input id="password-input" type="password" placeholder="Password" autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm" />
+        </div>
+        <button type="submit" class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl">Enter</button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="index.html" class="flex items-center gap-3 group">
+          <img src="images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="index.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Home</a>
+          <a href="features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="index.html#how-it-works" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">How It Works</a>
+          <a href="index.html#pricing" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Pricing</a>
+          <a href="index.html#faq" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">FAQ</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+        <a href="index.html" class="text-base font-medium text-gray-400 hover:text-white py-2">Home</a>
+        <a href="features.html" class="text-base font-medium text-gray-400 hover:text-white py-2">Features</a>
+        <a href="index.html#how-it-works" class="text-base font-medium text-gray-400 hover:text-white py-2">How It Works</a>
+        <a href="index.html#pricing" class="text-base font-medium text-gray-400 hover:text-white py-2">Pricing</a>
+        <div class="flex flex-col gap-3 pt-4 border-t border-white/10">
+          <a href="/pricing" class="btn-primary text-center text-base font-semibold px-6 py-3 rounded-full">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 pb-16 overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand-500/15 rounded-full blur-3xl"></div>
+      <div class="absolute top-20 -left-40 w-80 h-80 bg-mt-blue/10 rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900/80 border border-white/10 text-sm text-gray-400 mb-8">
+        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+        Legal
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+        <span class="text-gradient">Terms</span> of Service
+      </h1>
+      <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
+        MachineTrader™ Platform Agreement
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <section class="border-t border-white/5">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8 py-16">
+
+      <!-- Intro -->
+      <div class="bg-gray-900/60 border-l-4 border-brand-500 rounded-2xl p-8 mb-10">
+        <p class="text-gray-400 leading-relaxed">
+          This MachineTrader™ Platform Agreement (this "Agreement") is made between MachineTrader.io Inc. ("MT"), a Delaware C corporation, having its principal place of business at <strong class="text-white">30 Wall Street, 8th Floor, New York, NY 10005</strong>, and USER effective today. MT and USER may be collectively referred to herein as the "Parties" and each individually as a "Party".
+        </p>
+      </div>
+
+      <!-- Table of Contents -->
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8 mb-12">
+        <h3 class="text-lg font-bold text-white mb-4">📋 Table of Contents</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <a href="#recitals" class="text-gray-400 hover:text-brand-500 transition text-sm font-medium py-1">Recitals</a>
+          <a href="#definitions" class="text-gray-400 hover:text-brand-500 transition text-sm font-medium py-1">1. Definitions</a>
+          <a href="#platform" class="text-gray-400 hover:text-brand-500 transition text-sm font-medium py-1">2. Platform and Services</a>
+          <a href="#ip" class="text-gray-400 hover:text-brand-500 transition text-sm font-medium py-1">3. Intellectual Property</a>
+          <a href="#confidentiality" class="text-gray-400 hover:text-brand-500 transition text-sm font-medium py-1">4. Confidentiality</a>
+          <a href="#term" class="text-gray-400 hover:text-brand-500 transition text-sm font-medium py-1">5. Term and Termination</a>
+          <a href="#warranties" class="text-gray-400 hover:text-brand-500 transition text-sm font-medium py-1">6. Warranties</a>
+          <a href="#liability" class="text-gray-400 hover:text-brand-500 transition text-sm font-medium py-1">7. Limitations on Liability</a>
+          <a href="#indemnification" class="text-gray-400 hover:text-brand-500 transition text-sm font-medium py-1">8. Indemnification</a>
+          <a href="#general" class="text-gray-400 hover:text-brand-500 transition text-sm font-medium py-1">9. General Terms</a>
+        </div>
+      </div>
+
+      <!-- Recitals -->
+      <div id="recitals" class="mb-12 pb-8 border-b border-white/5 scroll-mt-24">
+        <h2 class="text-2xl font-bold text-white mb-6">Recitals</h2>
+        <p class="text-gray-400 leading-relaxed mb-4"><strong class="text-white">A.</strong> WHEREAS, MT has developed and provides to its customers access to and use of its beta-version of its proprietary MachineTrader™ platform on a software as a service basis, which enables automated, machine-learning driven trading of securities and cryptocurrencies (the "Platform");</p>
+        <p class="text-gray-400 leading-relaxed mb-4"><strong class="text-white">B.</strong> WHEREAS, MT may also provide additional services to its customers with respect to the development, monitoring and implementation of the Platform, as may be more specifically agreed upon from time to time (collectively, the "Services" and each a "Service");</p>
+        <p class="text-gray-400 leading-relaxed mb-4"><strong class="text-white">C.</strong> WHEREAS, Customer desires to access and use the Platform and, as may be specified in a service order between the Parties from time to time, certain of the Services, and MT is willing to provide such Platform and Services in connection therewith, on the terms and conditions set forth in this Agreement.</p>
+        <p class="text-gray-400 leading-relaxed"><strong class="text-white">NOW THEREFORE</strong>, in consideration of the mutual promises set forth below, the Parties agree as follows:</p>
+      </div>
+
+      <!-- Section 1: Definitions -->
+      <div id="definitions" class="mb-12 pb-8 border-b border-white/5 scroll-mt-24">
+        <h2 class="text-2xl font-bold text-white mb-6">1. Definitions</h2>
+        <p class="text-gray-400 leading-relaxed mb-6">When used in this Agreement, the following capitalized terms shall have the meanings indicated below:</p>
+        <div class="space-y-3">
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.1 "Account"</strong> means Customer's account through which Customer's Designated Users can access and use the Platform.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.2 "Affiliate"</strong> means, as to any entity, any other entity directly or indirectly controlling, controlled by, or under common control with, such entity.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.3 "Alpaca"</strong> means Alpaca DB, Inc. and its subsidiaries and affiliates.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.4 "Alpaca Account"</strong> has the meaning set forth in Section 2.2(c) hereof.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.5 "Confidential Information"</strong> means any and all information disclosed by one Party to the other Party, directly or indirectly, in writing, orally, electronically, or in any other form, that is designated, at or before the time of disclosure, as confidential or proprietary.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.6 "Customer Data"</strong> means any data supplied by Customer to MT and/or accessible by MT as a result of the integration of the Platform with the Alpaca platform.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.7 "Designated Users"</strong> means the individual users designated by Customer to access the Account, each of which will be assigned a unique user login and password.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.8 "Documentation"</strong> means the MT MachineTrader™ Operating &amp; Training Guide provided by MT to Customer, as may be updated from time to time.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.9 "Intellectual Property Rights"</strong> means any copyright, trademark, service mark, trade name, patent, patent application, trade secret, moral right, privacy right, right of publicity, or any other intellectual property or proprietary right.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.10 "Policies"</strong> means criteria or specifications, including content limitations, technical specifications, data processing agreements, user experience policies.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.11 "Service(s)"</strong> has the meaning specified in Recital B hereof, as may be more particularly identified in a Service Order.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.12 "Service Order"</strong> means an insertion order, statement of work, and/or service order that incorporates this Agreement by reference.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.13 "Software"</strong> means all software code comprising all or a portion of the Platform, made available by MT for use by Customer.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.14 "Technology"</strong> means any Software or technology incorporated in or made available through the Platform and/or Services by MT to Customer.</p></div>
+          <div class="bg-gray-900/40 border-l-3 border-l-brand-500 rounded-lg p-4"><p class="text-gray-400 text-sm"><strong class="text-brand-400">1.15 "Platform"</strong> has the meaning specified in Recital A hereof, including all Technology related thereto.</p></div>
+        </div>
+      </div>
+
+      <!-- Section 2: Platform and Services -->
+      <div id="platform" class="mb-12 pb-8 border-b border-white/5 scroll-mt-24">
+        <h2 class="text-2xl font-bold text-white mb-6">2. Platform and Services</h2>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">2.1 Use of Platform and Services</h3>
+        <p class="text-gray-400 leading-relaxed mb-3">(a) Subject to the terms and conditions of this Agreement, MT hereby grants Customer the right, during the term of this Agreement, to access and use the Platform through Customer's Account to engage in machine-learning automated trading of securities and/or cryptocurrencies.</p>
+        <p class="text-gray-400 leading-relaxed mb-3">(b) MT shall provide Customer with such additional Services as may be set forth in a Service Order from time to time in furtherance of Customer's use of the Platform.</p>
+        <p class="text-gray-400 leading-relaxed mb-6">(c) MT will provide Customer with user logins and passwords for its Designated Users to access the Customer's Account. Customer shall maintain the confidentiality of the user logins and passwords and is fully responsible for all activities that occur under the Account.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">2.2 Customer Acknowledgements and Obligations</h3>
+        <p class="text-gray-400 leading-relaxed mb-3">(a) Customer shall provide MT with all reasonable information, cooperation and technical support necessary to fully implement the Platform and/or Services.</p>
+        <p class="text-gray-400 leading-relaxed mb-3">(b) Customer shall adhere to all applicable laws, rules, and regulations, including all applicable state and Federal securities laws.</p>
+        <p class="text-gray-400 leading-relaxed mb-3">(c) Customer shall maintain an account with Alpaca (an "Alpaca Account") subject to all terms and conditions Alpaca may require.</p>
+        <p class="text-gray-400 leading-relaxed mb-6">(d) Customer shall test and evaluate the Platform and report to MT with respect to the usefulness and functionality of the Platform.</p>
+        <div class="bg-brand-500/10 border border-brand-500/30 rounded-xl p-6 mb-6">
+          <p class="text-brand-300 text-sm"><strong>Important:</strong> Customer acknowledges that the Platform is a beta version and may not operate properly or be fully functional. Customer should not rely on the Platform for any reason and is solely responsible for all trading activities.</p>
+        </div>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">2.3 Permitted Use; Limited License</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Subject to Customer's compliance with all terms and conditions of this Agreement, MT hereby grants to Customer a limited, revocable, non-transferable, non-sublicensable, non-assignable, non-exclusive license to access and use the Platform during the Term.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">2.4 Restrictions</h3>
+        <p class="text-gray-400 leading-relaxed">Customer agrees not to: (a) reproduce or modify the Platform; (b) use any device to interfere with proper working of the Platform; (c) use automated means to access the Platform without approval; (d) use the Platform in any manner other than as permitted by this Agreement.</p>
+      </div>
+
+      <!-- Section 3: Intellectual Property -->
+      <div id="ip" class="mb-12 pb-8 border-b border-white/5 scroll-mt-24">
+        <h2 class="text-2xl font-bold text-white mb-6">3. Intellectual Property</h2>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">3.1 Proprietary Rights</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">As between MT and Customer, MT owns all right, title and interest, including all Intellectual Property Rights, in and to the Platform and the Services. Customer owns all right, title and interest in and to the Customer Data.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">3.2 No Reverse Engineering</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Customer may not sell, resell, copy, distribute, rent, lease, sublicense, transfer, or assign the Platform. Customer may not modify, decompile, reverse engineer, or disassemble the Platform or create derivative works based on it.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">3.3 No License</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Nothing in this Agreement shall be deemed to grant Customer any license to use the Platform other than as expressly stated herein.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">3.4 Feedback</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Any suggestions, feedback, or ideas provided by Customer relating to the Platform ("Customer Input") grants MT a nonexclusive, worldwide, royalty-free, perpetual, irrevocable license to exploit such Customer Input.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">3.5 Data Use</h3>
+        <p class="text-gray-400 leading-relaxed">MT shall have the right to collect and analyze data relating to the provision, use and performance of the Platform, and may use such data to improve and enhance the Platform and Services.</p>
+      </div>
+
+      <!-- Section 4: Confidentiality -->
+      <div id="confidentiality" class="mb-12 pb-8 border-b border-white/5 scroll-mt-24">
+        <h2 class="text-2xl font-bold text-white mb-6">4. Confidentiality</h2>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">4.1 Restrictions on Use and Disclosure</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Each Party agrees to protect and safeguard the other Party's Confidential Information against unauthorized use, publication or disclosure with reasonable care, and to restrict access to those with confidentiality obligations.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">4.2 Exceptions</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Each Party may disclose Confidential Information if required by court order, law, or regulation, after notice to the other Party if practicable and lawful.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">4.3 Confidentiality of Agreement</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">The terms and conditions of this Agreement shall be treated as Confidential Information, with specified exceptions for legal requirements, securities filings, and business transactions.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">4.4 Remedies</h3>
+        <p class="text-gray-400 leading-relaxed">Each Party acknowledges that any disclosure or misappropriation of Confidential Information may cause irreparable harm, and the disclosing Party shall have the right to seek injunctive relief.</p>
+      </div>
+
+      <!-- Section 5: Term and Termination -->
+      <div id="term" class="mb-12 pb-8 border-b border-white/5 scroll-mt-24">
+        <h2 class="text-2xl font-bold text-white mb-6">5. Term and Termination</h2>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">5.1 Term</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">This Agreement shall commence on the Effective Date and remain in effect for a period of one (1) year (the "Initial Term"). The Agreement shall automatically renew for successive twelve (12) month terms unless either Party provides ninety (90) days prior written notice of non-renewal.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">5.2 Termination/Suspension</h3>
+        <p class="text-gray-400 leading-relaxed mb-3">This Agreement may be terminated immediately upon written notice:</p>
+        <ul class="space-y-2 text-gray-400 mb-6">
+          <li class="flex items-start gap-2"><span class="text-brand-500 mt-1">•</span>By either Party if the other breaches any material provision and fails to cure within thirty (30) days</li>
+          <li class="flex items-start gap-2"><span class="text-brand-500 mt-1">•</span>By MT if Customer breaches payment obligations and fails to cure within ten (10) days</li>
+          <li class="flex items-start gap-2"><span class="text-brand-500 mt-1">•</span>By either Party if the other becomes insolvent or files for bankruptcy</li>
+          <li class="flex items-start gap-2"><span class="text-brand-500 mt-1">•</span>By either Party for convenience with prior written notice</li>
+        </ul>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">5.3 Effect of Termination</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Upon termination, MT shall terminate Customer's access to the Platform, both Parties will destroy or return Confidential Information, and Customer will pay any outstanding Fees.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">5.4 Survival of Provisions</h3>
+        <p class="text-gray-400 leading-relaxed">Sections 1, 2.4, 3, 4, 5, 6.3, 6.4, 7.4, 8, 9 and 10 shall survive any termination or expiration of this Agreement.</p>
+      </div>
+
+      <!-- Section 6: Warranties -->
+      <div id="warranties" class="mb-12 pb-8 border-b border-white/5 scroll-mt-24">
+        <h2 class="text-2xl font-bold text-white mb-6">6. Warranties</h2>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">6.1 Mutual Warranties</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Each Party represents and warrants that it has the power to enter into this Agreement and that the Agreement constitutes a valid and binding obligation.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">6.2 MT Warranties</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">MT warrants that the Platform will not knowingly violate or infringe upon third-party Intellectual Property Rights, and that it will implement reasonable security measures to protect Customer Data.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">6.3 Customer Warranties</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Customer warrants compliance with Section 2.2 obligations, that Customer Data has been collected in accordance with applicable laws, and that Customer Data does not infringe third-party rights.</p>
+        <div class="bg-brand-500/10 border border-brand-500/30 rounded-xl p-6">
+          <h4 class="text-brand-400 font-bold mb-2">6.4 Disclaimer</h4>
+          <p class="text-brand-300 text-sm uppercase leading-relaxed">THE PLATFORM AND SERVICES ARE PROVIDED "AS IS, WITH ALL FAULTS." EXCEPT AS EXPRESSLY STATED, NEITHER PARTY MAKES ANY OTHER WARRANTIES, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. MT DOES NOT WARRANT THAT THE PLATFORM WILL BE UNINTERRUPTED OR ERROR-FREE.</p>
+        </div>
+      </div>
+
+      <!-- Section 7: Limitations on Liability -->
+      <div id="liability" class="mb-12 pb-8 border-b border-white/5 scroll-mt-24">
+        <h2 class="text-2xl font-bold text-white mb-6">7. Limitations on Liability</h2>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">7.1 Exclusion of Damages</h3>
+        <p class="text-gray-400 leading-relaxed mb-6 uppercase text-xs">MT WILL NOT BE LIABLE FOR ANY INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES (INCLUDING DAMAGES RELATING TO LOST PROFITS, LOST DATA OR LOSS OF GOODWILL) ARISING OUT OF THIS AGREEMENT.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">7.2 Limitation on Liability</h3>
+        <p class="text-gray-400 leading-relaxed uppercase text-xs">IN NO EVENT WILL MT'S LIABILITY UNDER THIS AGREEMENT EXCEED $10,000. EACH PARTY ACKNOWLEDGES THAT THESE LIMITATIONS ARE AN ESSENTIAL BASIS OF THE BARGAIN BETWEEN THE PARTIES.</p>
+      </div>
+
+      <!-- Section 8: Indemnification -->
+      <div id="indemnification" class="mb-12 pb-8 border-b border-white/5 scroll-mt-24">
+        <h2 class="text-2xl font-bold text-white mb-6">8. Indemnification</h2>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">8.1 Indemnification from Customer</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Customer shall indemnify and hold MT harmless from any Claims arising out of Customer's use of the Platform other than in accordance with this Agreement, any breach by Customer, or Customer's gross negligence or willful misconduct.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">8.2 Indemnification from MT</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">MT shall indemnify and hold Customer harmless from any Claims arising out of allegations that the Platform violates or infringes upon third-party Intellectual Property Rights.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">8.3 Indemnity Process</h3>
+        <p class="text-gray-400 leading-relaxed">The Party against whom a Claim is made shall provide prompt written notice. The indemnifying Party will control the defense and settlement. The indemnified Party shall cooperate and provide reasonable assistance.</p>
+      </div>
+
+      <!-- Section 9: General Terms -->
+      <div id="general" class="mb-12 scroll-mt-24">
+        <h2 class="text-2xl font-bold text-white mb-6">9. General Terms</h2>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.1 Independent Contractors</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">The relationship of MT and Customer is that of independent contractors. Nothing in this Agreement creates any partnership, joint venture, agency, or employment relationship.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.2 Governing Law; Jurisdiction</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">This Agreement is governed by the laws of the State of New York. Any legal action may be brought only in the courts of New York County, New York. <strong class="text-white">THE PARTIES HEREBY WAIVE ANY RIGHT TO A JURY TRIAL.</strong></p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.3 Assignment</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">This Agreement may not be assigned by Customer without prior written consent of MT. MT may assign or transfer this Agreement.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.4 Recovery of Fees by Prevailing Party</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">The prevailing Party in any legal action will be entitled to reimbursement of reasonable attorneys' fees and court costs.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.5 Severability</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">If any provision is held invalid, the validity of other provisions will not be affected.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.6 Waiver</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">A waiver of any breach will not be deemed a waiver of prior, concurrent, or subsequent breaches.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.7 Force Majeure</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Neither Party will be in default if performance is delayed by acts of God, natural disaster, war, terrorism, or other causes beyond reasonable control.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.8 Notices</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Notices shall be given in writing by overnight messenger, mail, or email to the addresses specified in this Agreement.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.9 Counterparts</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">This Agreement may be executed in counterparts. Electronic signatures shall have the same force as original signatures.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.10 Entire Agreement</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">This Agreement constitutes the entire agreement between the Parties and supersedes all prior agreements or representations.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.11 Amendments</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">This Agreement may be amended only by a writing signed by both Parties.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.12 Headings</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Headings are used for convenience only.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.13 Marketing</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">Customer grants MT a non-exclusive license to use Customer's trade names and logos for promotional purposes.</p>
+        <h3 class="text-lg font-semibold text-brand-500 mb-3">9.14 Capitalized Terms</h3>
+        <p class="text-gray-400 leading-relaxed">Capitalized terms in any Service Order shall have the meanings ascribed to them in this Agreement unless otherwise noted.</p>
+      </div>
+
+      <!-- Contact -->
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8 text-center">
+        <p class="text-gray-400">Questions about these terms? Contact us at<br />
+          <a href="mailto:support@machinetrader.io" class="text-brand-500 hover:text-brand-400 transition font-semibold">support@machinetrader.io</a>
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-gray-950 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+        <div class="col-span-2 md:col-span-1">
+          <a href="index.html" class="flex items-center gap-2 mb-4">
+            <img src="images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">Automate your trading strategies using our low-code/no-code MachineTrader™ software.</p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="/pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="trading-flows/index.html" class="hover:text-white transition">Trading Scripts</a></li>
+            <li><a href="backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">© 2022–2026 MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005</div>
+        <div class="flex items-center gap-6">
+          <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+        </div>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed">
+          <strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading. All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC, member FINRA/SIPC. *Commission-free for U.S. equities.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    const EXPECTED_HASH = '8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    (async () => {
+      const lockScreen = document.getElementById('lock-screen');
+      const pageContent = document.getElementById('page-content');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (sessionStorage.getItem('mt-auth') === EXPECTED_HASH) {
+        lockScreen.classList.add('hidden');
+        pageContent.classList.remove('hidden');
+      } else { input.focus(); }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const hash = await sha256(input.value);
+        if (hash === EXPECTED_HASH) {
+          sessionStorage.setItem('mt-auth', EXPECTED_HASH);
+          lockScreen.style.transition = 'opacity 0.4s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => { lockScreen.classList.add('hidden'); pageContent.classList.remove('hidden'); }, 400);
+        } else {
+          error.classList.remove('hidden'); input.classList.add('!border-red-500'); input.value = ''; input.focus();
+          setTimeout(() => { error.classList.add('hidden'); input.classList.remove('!border-red-500'); }, 3000);
+        }
+      });
+    })();
+  </script>
+  <script src="js/main.js"></script>
+</body>
+</html>

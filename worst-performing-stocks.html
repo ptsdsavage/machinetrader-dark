@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Worst Performing Stocks | MachineTrader Data Center</title>
+  <link rel="canonical" href="https://www.machinetrader.io/worst-performing-stocks" />
+  <meta name="description" content="Real-time worst performing stocks updated every minute. Track the biggest losers in the market with MachineTrader." />
+  <meta property="og:title" content="Worst Performing Stocks | MachineTrader Data Center" />
+  <meta property="og:description" content="Real-time worst performing stocks updated every minute. Track the biggest losers in the market with MachineTrader." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="twitter:title" content="Worst Performing Stocks | MachineTrader Data Center" />
+  <meta property="twitter:description" content="Real-time worst performing stocks updated every minute. Track the biggest losers in the market with MachineTrader." />
+  <meta name="google-site-verification" content="google6132bb2f08408978.html" />
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fff8f0',100:'#ffe8cc',200:'#ffd199',300:'#ffb366',400:'#ff9533',500:'#ff6b00',600:'#e05e00',700:'#b84d00',800:'#8f3c00',900:'#662b00',950:'#3d1a00' },
+            accent: { 500:'#489fd9',600:'#3a87be' },
+            mt: { green:'#4dbd90',purple:'#8668ab',blue:'#489fd9',pink:'#fde5e5',lavender:'#dde7ed' },
+            dark: { 900:'#0a0f1a',800:'#111827',700:'#1f2937',600:'#374151' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set','developer_id.dZGVlNj',true);gtag('js',new Date());gtag('config','G-G9L6L77LNM');</script>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1830322441099552');fbq('track','PageView');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+  <style>
+    .stocks-table { width: 100%; border-collapse: collapse; }
+    .stocks-table th {
+      background: rgba(255,255,255,0.03);
+      color: #9ca3af;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      padding: 14px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .stocks-table td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.875rem;
+      color: #d1d5db;
+    }
+    .stocks-table tr:hover { background: rgba(255,255,255,0.03); }
+    .stocks-table tr:last-child td { border-bottom: none; }
+    .stock-rank { font-weight: 700; color: #6b7280; text-align: center; }
+    .stock-symbol-link {
+      font-weight: 700;
+      color: #489fd9;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .stock-symbol-link:hover { color: #6bb8f0; text-decoration: underline; }
+    .stock-price { font-weight: 500; color: #d1d5db; }
+    .stock-percent-negative {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+    .stock-volume { color: #6b7280; }
+    .stock-loading { text-align: center; padding: 60px; color: #6b7280; }
+    .stock-loading-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top: 3px solid #ef4444;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .stock-error {
+      text-align: center; padding: 40px;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+      border-radius: 12px;
+    }
+    @media (max-width: 768px) {
+      .stocks-table th, .stocks-table td { padding: 8px 6px; font-size: 0.78rem; }
+      .stock-symbol-link { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <div class="relative">
+          <input id="password-input" type="password" placeholder="Password" autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm" />
+        </div>
+        <button type="submit" class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl">Enter</button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="index.html" class="flex items-center gap-3 group">
+          <img src="images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="index.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Home</a>
+          <a href="features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="index.html#how-it-works" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">How It Works</a>
+          <a href="index.html#pricing" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Pricing</a>
+          <a href="index.html#faq" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">FAQ</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+        <a href="index.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Home</a>
+        <a href="features.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Features</a>
+        <a href="index.html#how-it-works" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">How It Works</a>
+        <a href="index.html#pricing" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Pricing</a>
+        <a href="index.html#faq" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">FAQ</a>
+        <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-3 rounded-xl text-center mt-2">Start Free Trial</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 pb-12 overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-0 left-1/4 w-96 h-96 bg-red-500/15 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-brand-500/10 rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 mb-6">
+        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+        <span class="text-sm font-medium text-red-400">Live Data · Auto-refreshes every 60s</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4">
+        📉 Top <span class="bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent">Losers</span> Today
+      </h1>
+      <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+        Real-time worst performing stocks updated every minute (5 min bars)
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ DATA SECTION ============ -->
+  <section class="border-t border-white/5 py-10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+      <!-- Info Row -->
+      <div class="flex flex-wrap items-center gap-4 mb-6">
+        <span class="text-mt-green text-sm font-medium" id="lastUpdated">Loading...</span>
+        <span class="text-gray-500 text-sm" id="countdown"></span>
+        <div class="flex gap-3 ml-auto">
+          <a href="top-performing-stocks.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-mt-green hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg transition">
+            🚀 View Top Gainers
+          </a>
+          <a href="data-center.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold rounded-lg transition">
+            ← Data Center
+          </a>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-6 overflow-x-auto">
+        <div id="stocksTable">
+          <div class="stock-loading">
+            <div class="stock-loading-spinner"></div>
+            <p>Fetching stock data...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-gray-950 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+        <div class="col-span-2 md:col-span-1">
+          <a href="index.html" class="flex items-center gap-2 mb-4">
+            <img src="images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">
+            Automate your trading strategies using our low-code/no-code MachineTrader™ software.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="index.html#pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="trading-flows/index.html" class="hover:text-white transition">Trading Scripts</a></li>
+            <li><a href="backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">
+          © 2022–<script>document.write(new Date().getFullYear())</script> MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+        </div>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed">
+          <strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading.
+          All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a
+          registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC,
+          member FINRA/SIPC. *Commission-free for U.S. equities. Please read all risk disclosures before trading.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    const EXPECTED_HASH = '8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    (async () => {
+      const lockScreen = document.getElementById('lock-screen');
+      const pageContent = document.getElementById('page-content');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (sessionStorage.getItem('mt-auth') === EXPECTED_HASH) {
+        lockScreen.classList.add('hidden');
+        pageContent.classList.remove('hidden');
+      } else { input.focus(); }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const hash = await sha256(input.value);
+        if (hash === EXPECTED_HASH) {
+          sessionStorage.setItem('mt-auth', EXPECTED_HASH);
+          lockScreen.style.transition = 'opacity 0.4s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => { lockScreen.classList.add('hidden'); pageContent.classList.remove('hidden'); }, 400);
+        } else {
+          error.classList.remove('hidden');
+          input.classList.add('!border-red-500');
+          input.value = '';
+          input.focus();
+          setTimeout(() => { error.classList.add('hidden'); input.classList.remove('!border-red-500'); }, 3000);
+        }
+      });
+    })();
+  </script>
+  <script src="js/main.js"></script>
+
+  <!-- Stock Data Script -->
+  <script>
+    const API_URL = 'https://stockscreener.machinetrader.io/api/worststocksmt4';
+    let countdownSeconds = 60;
+
+    function formatCurrency(num) {
+      if (typeof num !== 'number' || isNaN(num)) return 'N/A';
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
+      }).format(num);
+    }
+
+    function formatPercent(num) {
+      if (typeof num !== 'number' || isNaN(num)) return 'N/A';
+      return `${num.toFixed(2)}%`;
+    }
+
+    function formatVolume(num) {
+      if (typeof num !== 'number' || isNaN(num)) return 'N/A';
+      if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+      if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+      if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
+      return num.toString();
+    }
+
+    function renderTable(stocks) {
+      if (!stocks || stocks.length === 0) {
+        return '<div class="stock-error">No stock data available</div>';
+      }
+      let html = `
+        <table class="stocks-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Symbol</th>
+              <th>Open</th>
+              <th>High</th>
+              <th>Low</th>
+              <th>Close</th>
+              <th>% Change</th>
+              <th>Volume</th>
+              <th>VWAP</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      stocks.forEach((stock, index) => {
+        const percentChange = stock.change_pct || 0;
+        const tickerUrl = `https://publicdemo.machinetrader.io/#/tickers?symbol=${stock.symbol}`;
+        html += `
+          <tr>
+            <td class="stock-rank">${index + 1}</td>
+            <td>
+              <a href="${tickerUrl}" target="_blank" class="stock-symbol-link">${stock.symbol || 'N/A'}</a>
+            </td>
+            <td class="stock-price">${formatCurrency(stock.open)}</td>
+            <td class="stock-price">${formatCurrency(stock.high)}</td>
+            <td class="stock-price">${formatCurrency(stock.low)}</td>
+            <td class="stock-price">${formatCurrency(stock.close)}</td>
+            <td>
+              <span class="stock-percent-negative">
+                ▼ ${formatPercent(Math.abs(percentChange))}
+              </span>
+            </td>
+            <td class="stock-volume">${formatVolume(stock.volume)}</td>
+            <td class="stock-price">${formatCurrency(stock.vwap)}</td>
+          </tr>
+        `;
+      });
+      html += '</tbody></table>';
+      return html;
+    }
+
+    async function fetchStocks() {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const stocks = Array.isArray(data) ? data : (data.data || data.stocks || []);
+        document.getElementById('stocksTable').innerHTML = renderTable(stocks);
+        document.getElementById('lastUpdated').textContent =
+          `Last updated: ${new Date().toLocaleTimeString()}`;
+        countdownSeconds = 60;
+      } catch (error) {
+        console.error('Error fetching stocks:', error);
+        document.getElementById('stocksTable').innerHTML = `
+          <div class="stock-error">
+            <p>⚠️ Failed to fetch stock data</p>
+            <p style="font-size: 0.85rem; margin-top: 10px;">${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    function updateCountdown() {
+      countdownSeconds--;
+      if (countdownSeconds <= 0) {
+        countdownSeconds = 60;
+        fetchStocks();
+      }
+      document.getElementById('countdown').textContent =
+        `Next update in ${countdownSeconds} seconds`;
+    }
+
+    // Initial fetch
+    fetchStocks();
+    // Update every minute
+    setInterval(fetchStocks, 60000);
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>

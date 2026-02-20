@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bear Put Spread Options Trading Flow | MachineTrader</title>
+  <link rel="canonical" href="https://www.machinetrader.io/trading-flows/bear-put-spread-flow" />
+  <meta name="description" content="Automate bearish options trading with the Bear Put Spread strategy. This Node-RED flow executes defined-risk put spreads on XLK with position tracking, contract selection, and performance analytics." />
+  <meta property="og:title" content="Bear Put Spread Options Trading Flow | MachineTrader" />
+  <meta property="og:description" content="Automate bearish options trading with the Bear Put Spread strategy. This Node-RED flow executes defined-risk put spreads on XLK with position tracking, contract selection, and performance analytics." />
+  <meta property="og:type" content="website" />
+  <meta property="twitter:title" content="Bear Put Spread Options Trading Flow | MachineTrader" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="google-site-verification" content="google6132bb2f08408978.html" />
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fff8f0',100:'#ffe8cc',200:'#ffd199',300:'#ffb366',400:'#ff9533',500:'#ff6b00',600:'#e05e00',700:'#b84d00',800:'#8f3c00',900:'#662b00',950:'#3d1a00' },
+            accent: { 500:'#489fd9',600:'#3a87be' },
+            mt: { green:'#4dbd90',purple:'#8668ab',blue:'#489fd9',pink:'#fde5e5',lavender:'#dde7ed' },
+            dark: { 900:'#0a0f1a',800:'#111827',700:'#1f2937',600:'#374151' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set','developer_id.dZGVlNj',true);gtag('js',new Date());gtag('config','G-G9L6L77LNM');</script>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1830322441099552');fbq('track','PageView');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+  <style>
+
+    /* Custom styles for code box - Bear Put Spread Red/Bearish Theme */
+    .code-container {
+      position: relative;
+      background: linear-gradient(135deg, #1a1a2e 0%, #2d1f1f 100%);
+      border-radius: 12px;
+      margin: 30px 0;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+    
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .code-title {
+      color: #a0a0a0;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .code-title::before {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 50%;
+    }
+    
+    .copy-button {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .copy-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(220, 38, 38, 0.4);
+    }
+    
+    .copy-button.copied {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+    
+    .code-content {
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    
+    .code-content pre {
+      margin: 0;
+      color: #e0e0e0;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    
+    .code-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .code-content::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .code-content::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+    
+    .feature-card {
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+      border-left: 4px solid #dc2626;
+      transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-3px);
+    }
+    
+    .feature-card h3 {
+      color: #f1f5f9;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    
+    .feature-card p {
+      color: #9ca3af;
+      margin: 0;
+      line-height: 1.6;
+    }
+    
+    .strategy-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    
+    .strategy-badge {
+      background: linear-gradient(135deg, #1a1a2e 0%, #2d1f1f 100%);
+      color: #ef4444;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 13px;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    .strategy-badge.bearish {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      color: white;
+      border: none;
+    }
+    
+    .strategy-badge.defined-risk {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: white;
+      border: none;
+    }
+    
+    .strategy-badge.options {
+      background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+      color: white;
+      border: none;
+    }
+    
+    .instructions-list {
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 25px 25px 25px 45px;
+      margin: 20px 0;
+    }
+    
+    .instructions-list li {
+      margin-bottom: 12px;
+      color: #9ca3af;
+      line-height: 1.6;
+    }
+    
+    .instructions-list li strong {
+      color: #f1f5f9;
+    }
+    
+    .warning-box {
+      background: rgba(245,158,11,0.08);
+      border-left: 4px solid #f59e0b;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    .warning-box p {
+      margin: 0;
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    
+    .info-box {
+      background: rgba(59,130,246,0.08);
+      border-left: 4px solid #3b82f6;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    .info-box p {
+      margin: 0;
+      color: #93c5fd;
+      font-size: 14px;
+    }
+    
+    .risk-box {
+      background: rgba(236,72,153,0.08);
+      border-left: 4px solid #ec4899;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    .risk-box p {
+      margin: 0;
+      color: #f9a8d4;
+      font-size: 14px;
+    }
+    
+    .section-divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      margin: 40px 0;
+    }
+    
+    .bear-header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #450a0a 100%) !important;
+    }
+    
+    .strategy-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    .stat-card {
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    
+    .stat-card .number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #dc2626;
+      margin-bottom: 5px;
+    }
+    
+    .stat-card .label {
+      font-size: 14px;
+      color: #64748b;
+    }
+    
+    .strategy-diagram {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 25px 0;
+      color: white;
+    }
+    
+    .strategy-diagram h4 {
+      margin: 0 0 15px 0;
+      color: #f1f5f9;
+      font-size: 16px;
+    }
+    
+    .strategy-diagram .leg {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .strategy-diagram .leg:last-child {
+      border-bottom: none;
+    }
+    
+    .strategy-diagram .action {
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    
+    .strategy-diagram .buy {
+      background: #10b981;
+    }
+    
+    .strategy-diagram .sell {
+      background: #ef4444;
+    }
+    
+    .strategy-diagram .description {
+      flex: 1;
+      color: #cbd5e1;
+    }
+    
+    .step-cards {
+      counter-reset: step-counter;
+    }
+    
+    .step-card {
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+      border-left: 4px solid #6366f1;
+      position: relative;
+      padding-left: 70px;
+    }
+    
+    .step-card::before {
+      counter-increment: step-counter;
+      content: counter(step-counter);
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    
+    .step-card h3 {
+      color: #f1f5f9;
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+    
+    .step-card p {
+      color: #9ca3af;
+      margin: 0;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+  
+  </style>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="../images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <div class="relative">
+          <input id="password-input" type="password" placeholder="Password" autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm" />
+        </div>
+        <button type="submit" class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl">Enter</button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="../index.html" class="flex items-center gap-3 group">
+          <img src="../images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="../index.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Home</a>
+          <a href="../features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="../learn.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Learn</a>
+          <a href="../data-center.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Data Center</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+        <a href="../index.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Home</a>
+        <a href="../features.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Features</a>
+        <a href="../learn.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Learn</a>
+        <a href="../data-center.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Data Center</a>
+        <div class="flex flex-col gap-3 pt-4 border-t border-white/10">
+          <a href="/pricing" class="btn-primary text-center text-base font-semibold px-6 py-3 rounded-full">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 pb-16 overflow-hidden">
+    <div class="absolute top-20 left-1/4 w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-medium mb-8">
+        📉 Bearish Options Strategy
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+        <span class="text-white">Bear Put Spread Options Flow</span>
+      </h1>
+      <p class="text-lg text-gray-400 max-w-2xl mx-auto mb-6">Profit from bearish moves with defined-risk put spreads using automated Node-RED trading</p>
+      <a href="#flow-json" class="btn-primary text-sm font-semibold px-8 py-3 rounded-full inline-flex items-center gap-2">
+        View Flow JSON
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <section class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+<!-- Overview Section -->
+<div class="mb-8">
+<div class="col-span-full">
+<h2 class="text-2xl font-bold text-white mb-4">What is a Bear Put Spread?</h2>
+<p>A <strong>Bear Put Spread</strong> (also called a "Long Put Spread") is a bearish options strategy designed to profit when the underlying asset's price declines moderately. This Node-RED flow automates the entire strategy execution using the Alpaca API, including contract selection, order execution, position tracking, and performance analytics.</p>
+<!-- Strategy Tags -->
+<div class="strategy-badges">
+<span class="strategy-badge bearish">📉 Bearish Strategy</span>
+<span class="strategy-badge defined-risk">🛡️ Defined Risk</span>
+<span class="strategy-badge options">📋 Options Trading</span>
+<span class="strategy-badge">XLK - Tech ETF</span>
+<span class="strategy-badge">Put Options</span>
+<span class="strategy-badge">Vertical Spread</span>
+</div>
+<!-- Stats Cards -->
+<div class="strategy-stats">
+<div class="stat-card">
+<div class="number">XLK</div>
+<div class="label">Underlying Asset</div>
+</div>
+<div class="stat-card">
+<div class="number">2</div>
+<div class="label">Option Legs</div>
+</div>
+<div class="stat-card">
+<div class="number">$10</div>
+<div class="label">Strike Width</div>
+</div>
+<div class="stat-card">
+<div class="number">Defined</div>
+<div class="label">Risk Profile</div>
+</div>
+</div>
+<!-- Strategy Diagram -->
+<div class="strategy-diagram">
+<h4>📊 Bear Put Spread Structure</h4>
+<div class="leg">
+<span class="action buy">BUY</span>
+<span class="description">Put option at <strong>higher strike price</strong> (at-the-money) — costs more premium</span>
+</div>
+<div class="leg">
+<span class="action sell">SELL</span>
+<span class="description">Put option at <strong>lower strike price</strong> (out-of-the-money) — receives premium to offset cost</span>
+</div>
+</div>
+<div class="risk-box">
+<p><strong>🎯 Risk Profile:</strong> Maximum loss is limited to the net debit paid when entering the trade. Maximum profit is achieved when the underlying falls to or below the lower strike price at expiration.</p>
+</div>
+</div>
+</div>
+<div class="section-divider"></div>
+<!-- Features Section -->
+<div class="mb-8">
+<div class="col-span-full">
+<h2 class="text-2xl font-bold text-white mb-4">Key Features</h2>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="">
+<div class="feature-card">
+<h3>🔍 Automatic Contract Selection</h3>
+<p>Fetches available options contracts for your chosen expiration date and automatically calculates optimal strike prices based on current market price.</p>
+</div>
+</div>
+<div class="">
+<div class="feature-card">
+<h3>📊 Real-Time Position Tracking</h3>
+<p>Monitors buy leg, sell leg, and underlying positions every minute during market hours (9 AM - 3 PM ET, Monday-Friday).</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="">
+<div class="feature-card">
+<h3>💼 Multi-Account Support</h3>
+<p>Uses two paper accounts to manage the underlying stock hedge — buying shares in one account while shorting in another to create a pure options play.</p>
+</div>
+</div>
+<div class="">
+<div class="feature-card">
+<h3>📈 Performance Analytics</h3>
+<p>Tracks market value, calculates annualized returns, and exports performance metrics to CSV for detailed analysis.</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="">
+<div class="feature-card">
+<h3>🎚️ Open Interest Filtering</h3>
+<p>Filters contracts by open interest (&gt;1000) to ensure sufficient liquidity for smooth trade execution.</p>
+</div>
+</div>
+<div class="">
+<div class="feature-card">
+<h3>⚡ Limit Order Execution</h3>
+<p>Uses limit orders for underlying stock trades to ensure precise entry prices when hedging the options position.</p>
+</div>
+</div>
+</div>
+<div class="section-divider"></div>
+<!-- Workflow Steps Section -->
+<div class="mb-8">
+<div class="col-span-full">
+<h2 class="text-2xl font-bold text-white mb-4">Flow Workflow Steps</h2>
+<p>The flow executes the bear put spread strategy in a structured sequence:</p>
+<div class="step-cards">
+<div class="step-card">
+<h3>Clear Flow Variables</h3>
+<p>Reset all flow variables to ensure a clean starting state before executing the strategy.</p>
+</div>
+<div class="step-card">
+<h3>Set Ticker &amp; Expiration</h3>
+<p>Configure the underlying asset (XLK) and options expiration date (e.g., December 19, 2025).</p>
+</div>
+<div class="step-card">
+<h3>Fetch Current Price</h3>
+<p>Get the real-time price of XLK to determine appropriate strike prices for the spread.</p>
+</div>
+<div class="step-card">
+<h3>Fetch Options Contracts</h3>
+<p>Retrieve available put options contracts for the specified expiration date range.</p>
+</div>
+<div class="step-card">
+<h3>Calculate Strike Prices</h3>
+<p>Determine buy strike (ATM) and sell strike (10 points lower) based on current price.</p>
+</div>
+<div class="step-card">
+<h3>Buy Underlying Hedge</h3>
+<p>Purchase 100 shares of XLK in Paper Account 1 and short 100 shares in Paper Account 2.</p>
+</div>
+<div class="step-card">
+<h3>Execute Options Trades</h3>
+<p>Buy the higher-strike put and sell the lower-strike put to establish the bear put spread.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section-divider"></div>
+<!-- How to Use Section -->
+<div class="mb-8">
+<div class="col-span-full">
+<h2 class="text-2xl font-bold text-white mb-4">How to Import This Flow</h2>
+<ol class="instructions-list">
+<li><strong>Copy the JSON code</strong> from the box below by clicking the "Copy to Clipboard" button.</li>
+<li><strong>Open your MachineTrader</strong> Node-RED editor.</li>
+<li>Click the <strong>hamburger menu</strong> (☰) in the top-right corner.</li>
+<li>Select <strong>Import</strong> from the dropdown menu.</li>
+<li><strong>Paste the JSON code</strong> into the import dialog.</li>
+<li>Click <strong>Import</strong> to add the flow to your workspace.</li>
+<li><strong>Configure your Alpaca credentials</strong> in both Paper 1 and Paper 2 configuration nodes.</li>
+<li>Click <strong>Deploy</strong> to activate the flow.</li>
+</ol>
+<div class="warning-box">
+<p><strong>⚠️ Important:</strong> This flow requires TWO Alpaca paper trading accounts. Options trading involves substantial risk and may not be suitable for all investors. The strategy requires holding 100 shares of the underlying asset to sell covered options. Always test thoroughly before using real funds.</p>
+</div>
+<div class="info-box">
+<p><strong>💡 Note:</strong> This flow trades on XLK (Technology Select Sector SPDR ETF) due to its high liquidity and relatively low volatility. You can modify the underlying asset and expiration date in the "set variables" function node. The flow monitors positions during market hours only (9 AM - 3 PM ET).</p>
+</div>
+</div>
+</div>
+<!-- Code Box Section -->
+<div id="flow-json" class="mb-8 scroll-mt-28">
+<div class="col-span-full">
+<h2 class="text-2xl font-bold text-white mb-4">Node-RED Flow JSON</h2>
+<p>Click the button below to copy the complete flow configuration to your clipboard:</p>
+<div class="code-container">
+<div class="code-header">
+<span class="code-title">Bear Put Spread.json</span>
+<button class="copy-button" onclick="copyCode()">
+<svg fill="none" height="16" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="16">
+<rect height="13" rx="2" ry="2" width="13" x="9" y="9"></rect>
+<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+</svg>
+<span id="copyText">Copy to Clipboard</span>
+</button>
+</div>
+<div class="code-content">
+<pre id="jsonCode"></pre>
+</div>
+</div>
+<div class="info-box">
+<p><strong>📄 Note:</strong> The JSON code will be loaded dynamically. If it doesn't appear, please <a download="" href="Bear Put Spread (1).json">download the JSON file directly</a>.</p>
+</div>
+</div>
+</div>
+<div class="section-divider"></div>
+<!-- Customization Section -->
+<div class="mb-8">
+<div class="col-span-full">
+<h2 class="text-2xl font-bold text-white mb-4">Customization Options</h2>
+<p>You can easily customize this flow to fit your options trading goals:</p>
+<div class="feature-card">
+<h3>🔄 Change Underlying Asset</h3>
+<p>Edit the "set variables" function node to change the <code>underlying</code> value from XLK to any optionable stock or ETF. Ensure the asset has sufficient options liquidity.</p>
+</div>
+<div class="feature-card">
+<h3>📅 Modify Expiration Date</h3>
+<p>Update the <code>expirationDate</code> variable to target different expiration cycles. Consider weekly, monthly, or quarterly options based on your trading timeframe.</p>
+</div>
+<div class="feature-card">
+<h3>📊 Adjust Strike Width</h3>
+<p>The default spread width is $10. Modify the "store contracts" function to change the <code>strikeLower = strike - 10</code> calculation for wider or narrower spreads.</p>
+</div>
+<div class="feature-card">
+<h3>🎚️ Filter by Open Interest</h3>
+<p>Adjust the open interest filter threshold in the "filter contracts by open_interest" function. Higher thresholds ensure better liquidity but fewer available contracts.</p>
+</div>
+</div>
+</div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="border-t border-white/5 py-24 text-center">
+    <div class="max-w-3xl mx-auto px-6">
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-6 text-white">Ready to Automate Your Trading?</h2>
+      <p class="text-gray-400 text-lg mb-10">Import this flow into your MachineTrader™ instance and start trading automatically.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/pricing" class="btn-primary text-lg font-semibold px-10 py-4 rounded-full inline-flex items-center gap-2">
+          Start Free Trial
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+        <a href="index.html" class="text-lg font-semibold px-10 py-4 rounded-full border border-white/20 text-white hover:bg-white/5 transition inline-flex items-center gap-2">
+          All Trading Flows
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-gray-950 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+        <div class="col-span-2 md:col-span-1">
+          <a href="../index.html" class="flex items-center gap-2 mb-4">
+            <img src="../images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">Automate your trading strategies using our low-code/no-code MachineTrader™ software.</p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="/pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="../data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="index.html" class="hover:text-white transition">Trading Scripts</a></li>
+            <li><a href="../backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="../terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="../cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">© 2022–2026 MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005</div>
+        <div class="flex items-center gap-6">
+          <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+        </div>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed">
+          <strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading. All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC, member FINRA/SIPC. *Commission-free for U.S. equities.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    const EXPECTED_HASH = '8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    (async () => {
+      const lockScreen = document.getElementById('lock-screen');
+      const pageContent = document.getElementById('page-content');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (sessionStorage.getItem('mt-auth') === EXPECTED_HASH) {
+        lockScreen.classList.add('hidden');
+        pageContent.classList.remove('hidden');
+      } else { input.focus(); }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const hash = await sha256(input.value);
+        if (hash === EXPECTED_HASH) {
+          sessionStorage.setItem('mt-auth', EXPECTED_HASH);
+          lockScreen.style.transition = 'opacity 0.4s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => { lockScreen.classList.add('hidden'); pageContent.classList.remove('hidden'); }, 400);
+        } else {
+          error.classList.remove('hidden'); input.classList.add('!border-red-500'); input.value = ''; input.focus();
+          setTimeout(() => { error.classList.add('hidden'); input.classList.remove('!border-red-500'); }, 3000);
+        }
+      });
+    })();
+    
+    // Load the JSON file dynamically
+    fetch('Bear Put Spread (1).json')
+      .then(r => r.ok ? r.text() : Promise.reject('File not found'))
+      .then(data => {
+        try {
+          const jsonObj = JSON.parse(data);
+          document.getElementById('jsonCode').textContent = JSON.stringify(jsonObj, null, 2);
+        } catch (e) {
+          document.getElementById('jsonCode').textContent = data;
+        }
+      })
+      .catch(err => {
+        const el = document.getElementById('jsonCode');
+        if (el) el.textContent = 'Error loading JSON file. Please download directly using the link below.';
+      });
+    // Copy to clipboard function
+    function copyCode() {
+      const codeElement = document.getElementById('jsonCode');
+      if (!codeElement) return;
+      navigator.clipboard.writeText(codeElement.textContent).then(() => {
+        const btn = document.querySelector('.copy-button');
+        const txt = document.getElementById('copyText');
+        if (btn) btn.classList.add('copied');
+        if (txt) txt.textContent = 'Copied!';
+        setTimeout(() => {
+          if (btn) btn.classList.remove('copied');
+          if (txt) txt.textContent = 'Copy to Clipboard';
+        }, 2000);
+      }).catch(err => console.error('Copy failed:', err));
+    }
+  </script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

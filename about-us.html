@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About the MachineTrader Team | MachineTrader</title>
+  <meta name="description" content="Meet the team behind MachineTrader - the world's only true low-code/no-code trading platform. Learn about our founders and their expertise in fintech, algorithmic trading, and portfolio management." />
+  <meta property="og:title" content="About the MachineTrader Team | MachineTrader" />
+  <meta property="og:description" content="Meet the team behind MachineTrader - the world's only true low-code/no-code trading platform." />
+  <meta property="og:type" content="website" />
+  <meta property="twitter:title" content="About the MachineTrader Team | MachineTrader" />
+  <meta property="twitter:description" content="Meet the team behind MachineTrader - the world's only true low-code/no-code trading platform." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://www.machinetrader.io/about-us" />
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#fff8f0',
+              100: '#ffe8cc',
+              200: '#ffd199',
+              300: '#ffb366',
+              400: '#ff9533',
+              500: '#ff6b00',
+              600: '#e05e00',
+              700: '#b84d00',
+              800: '#8f3c00',
+              900: '#662b00',
+              950: '#3d1a00',
+            },
+            accent: {
+              500: '#489fd9',
+              600: '#3a87be',
+            },
+            mt: {
+              green: '#4dbd90',
+              purple: '#8668ab',
+              blue: '#489fd9',
+              pink: '#fde5e5',
+              lavender: '#dde7ed',
+            },
+            dark: {
+              900: '#0a0f1a',
+              800: '#111827',
+              700: '#1f2937',
+              600: '#374151',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('set', 'developer_id.dZGVlNj', true);gtag('js', new Date());gtag('config', 'G-G9L6L77LNM');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <div class="relative">
+          <input
+            id="password-input"
+            type="password"
+            placeholder="Password"
+            autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm"
+          />
+        </div>
+        <button
+          type="submit"
+          class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl"
+        >
+          Enter
+        </button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="index.html" class="flex items-center gap-3 group">
+          <img src="images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="index.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Home</a>
+          <a href="features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="index.html#how-it-works" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">How It Works</a>
+          <a href="index.html#pricing" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Pricing</a>
+          <a href="index.html#faq" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">FAQ</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+        <a href="index.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Home</a>
+        <a href="features.html" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Features</a>
+        <a href="index.html#how-it-works" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">How It Works</a>
+        <a href="index.html#pricing" class="mobile-nav-link text-base font-medium text-gray-400 hover:text-white py-2">Pricing</a>
+        <div class="flex flex-col gap-3 pt-4 border-t border-white/10">
+          <a href="/pricing" class="btn-primary text-center text-base font-semibold px-6 py-3 rounded-full">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 pb-20 overflow-hidden bg-black">
+    <div class="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-brand-500/15 rounded-full blur-[128px]"></div>
+    <div class="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-mt-purple/10 rounded-full blur-[100px]"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/20 mb-8">
+        <span class="text-sm font-medium text-brand-300">Our Story</span>
+      </div>
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] mb-6 text-white">
+        Meet the <span class="text-gradient">Team</span>
+      </h1>
+      <p class="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+        MachineTrader™ is the world's only true low-code/no-code trading platform — everything, 
+        including the app itself, is customizable without writing a line of Python or C++.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ MISSION ============ -->
+  <section class="relative py-20 border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+        <div class="flex-shrink-0">
+          <img src="images/illustration2.png" alt="MachineTrader robot mascot" class="w-52 lg:w-60 h-auto drop-shadow-2xl" loading="lazy" />
+        </div>
+        <div class="text-center lg:text-left flex-1">
+          <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6">
+            Building Trading Algorithms <span class="inline-block px-3 py-1 rounded-lg bg-brand-500/15 text-brand-400 text-2xl sm:text-3xl font-extrabold">10x Faster</span>
+          </h2>
+          <p class="text-lg text-gray-400 leading-relaxed">
+            MachineTrader's founders have written millions of lines of code over the years, but we find that 
+            using our visual platform we can build trading algorithms up to 10x faster than writing code. Our 
+            mission is to democratize algorithmic trading by making it accessible to serious traders who want 
+            to automate their strategies without needing full-stack programming skills.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TEAM ============ -->
+  <section class="relative py-20 border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-white text-center mb-16">Our Team</h2>
+
+      <div class="space-y-10">
+
+        <!-- Dan -->
+        <div class="reveal group relative bg-gray-900/60 border border-white/10 rounded-2xl p-8 md:p-10 hover:border-brand-500/30 transition-all duration-300">
+          <div class="flex flex-col md:flex-row gap-8 items-start">
+            <div class="flex-shrink-0 mx-auto md:mx-0">
+              <div class="w-36 h-36 rounded-full bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center text-4xl font-bold text-white shadow-lg shadow-brand-600/20">
+                DS
+              </div>
+            </div>
+            <div class="flex-1 text-center md:text-left">
+              <h3 class="text-2xl font-bold text-white mb-1">Dan Savage</h3>
+              <p class="text-brand-400 font-semibold uppercase text-sm tracking-wider mb-4">CEO &amp; Co-Chairman</p>
+              <p class="text-gray-400 leading-relaxed mb-5">
+                Dan is currently the CEO and Co-Chairman of MachineTrader.io Inc. Prior to MachineTrader, Dan served as CEO of Predictive Technology Systems which built the MachineTrader platform. In 2018, Dan co-founded Resolute Digital, a ground-breaking digital marketing agency that had 50 employees and $30MM in annual revenue at the time of its sale to Weber-Shandwick. Earlier in his career, he led the team that developed the first automated system for buying Google AdWords and was a pioneer of using technology to purchase online advertising. Dan also has deep experience in digital strategy and digital marketing and his technical skills include more than fifteen years of writing LAMP stack programs including PHP, MySQL, BigQuery, PERL, and Python. Dan is a lifelong entrepreneur and classically trained musician with a track record of starting and growing successful companies and building outstanding teams.
+              </p>
+              <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-300 border border-brand-500/20">Entrepreneurship</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-300 border border-brand-500/20">Digital Marketing</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-300 border border-brand-500/20">LAMP Stack</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-300 border border-brand-500/20">AdTech Pioneer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jerzy -->
+        <div class="reveal group relative bg-gray-900/60 border border-white/10 rounded-2xl p-8 md:p-10 hover:border-brand-500/30 transition-all duration-300">
+          <div class="flex flex-col md:flex-row gap-8 items-start">
+            <div class="flex-shrink-0 mx-auto md:mx-0">
+              <div class="w-36 h-36 rounded-full bg-gradient-to-br from-accent-500 to-mt-purple flex items-center justify-center text-4xl font-bold text-white shadow-lg shadow-accent-500/20">
+                JP
+              </div>
+            </div>
+            <div class="flex-1 text-center md:text-left">
+              <h3 class="text-2xl font-bold text-white mb-1">Jerzy Pawlowski, Ph.D.</h3>
+              <p class="text-brand-400 font-semibold uppercase text-sm tracking-wider mb-4">Chief Investment Officer</p>
+              <p class="text-gray-400 leading-relaxed mb-5">
+                Jerzy Pawlowski serves as Chief Investment Officer of MachineTrader.io Inc. and brings years of experience in portfolio management to the team, including specialization in credit derivatives, emerging markets, and CDOs. In addition to his role at Predictive Trading Systems he teaches graduate courses in R for Finance and Algorithmic Portfolio Management at NYU. Jerzy earned his Ph.D. in Physics at University of Buffalo and a Master's in Physics from Jagiellonian University.
+              </p>
+              <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-accent-500/10 text-accent-500 border border-accent-500/20">Portfolio Management</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-accent-500/10 text-accent-500 border border-accent-500/20">Credit Derivatives</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-accent-500/10 text-accent-500 border border-accent-500/20">NYU Professor</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-accent-500/10 text-accent-500 border border-accent-500/20">Ph.D. Physics</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jack -->
+        <div class="reveal group relative bg-gray-900/60 border border-white/10 rounded-2xl p-8 md:p-10 hover:border-brand-500/30 transition-all duration-300">
+          <div class="flex flex-col md:flex-row gap-8 items-start">
+            <div class="flex-shrink-0 mx-auto md:mx-0">
+              <div class="w-36 h-36 rounded-full bg-gradient-to-br from-mt-green to-emerald-800 flex items-center justify-center text-4xl font-bold text-white shadow-lg shadow-mt-green/20">
+                JM
+              </div>
+            </div>
+            <div class="flex-1 text-center md:text-left">
+              <h3 class="text-2xl font-bold text-white mb-1">Jack Marhofer</h3>
+              <p class="text-brand-400 font-semibold uppercase text-sm tracking-wider mb-4">Chief Financial Officer</p>
+              <p class="text-gray-400 leading-relaxed mb-5">
+                Jack Marhofer, Chief Financial Officer (CFO) at MachineTrader.io Inc., is helping this FinTech startup grow and achieve our strategic goals. Jack is committed to providing financial leadership from securing capital to creating an integrated financial infrastructure that connects the entire virtual organization. His most recent position was as CFO of Resolute Digital, a digital marketing company, that was partially owned by the members of PTS. After Resolute Digital was sold to the Interpublic Group of Companies, he started his own firm, JAM CFO Services, and joined PTS. Prior to Resolute Digital, he was the CFO of Cleveland BioLabs, Inc., (NASDAQ:CBLI) where he successfully completed an IPO for a startup biotech firm and helped raise over $100M in equity investing and government funding. He was also Corporate Controller of Litehouse Products, Inc. a large pool and recreational products retailer and distributor in the Midwest. Mr. Marhofer holds a Bachelor of Science degree in Accounting and Marketing from Miami University and a Masters in Business Administration in Finance from Akron University.
+              </p>
+              <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-mt-green border border-emerald-500/20">IPO Experience</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-mt-green border border-emerald-500/20">FinTech</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-mt-green border border-emerald-500/20">Capital Markets</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-mt-green border border-emerald-500/20">MBA Finance</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Caroline -->
+        <div class="reveal group relative bg-gray-900/60 border border-white/10 rounded-2xl p-8 md:p-10 hover:border-brand-500/30 transition-all duration-300">
+          <div class="flex flex-col md:flex-row gap-8 items-start">
+            <div class="flex-shrink-0 mx-auto md:mx-0">
+              <div class="w-36 h-36 rounded-full bg-gradient-to-br from-mt-purple to-purple-900 flex items-center justify-center text-4xl font-bold text-white shadow-lg shadow-mt-purple/20">
+                C
+              </div>
+            </div>
+            <div class="flex-1 text-center md:text-left">
+              <h3 class="text-2xl font-bold text-white mb-1">Caroline</h3>
+              <p class="text-brand-400 font-semibold uppercase text-sm tracking-wider mb-4">Customer Support Lead</p>
+              <p class="text-gray-400 leading-relaxed mb-5">
+                Caroline has co-owned a business on the west coast of Turkey since 2011. She is building a team to provide customer support for the MachineTrader platform as the client base grows. Prior to moving abroad, she was a Senior Underwriter for Sun Life Financial in Wellesley Hills, MA. She holds Bachelor of Science degrees in Economics and Business Administration/Marketing from the University of Richmond.
+              </p>
+              <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-mt-purple border border-purple-500/20">Customer Success</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-mt-purple border border-purple-500/20">Business Owner</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-mt-purple border border-purple-500/20">Financial Services</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="relative py-24 border-t border-white/5 overflow-hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-500/10 rounded-full blur-[128px]"></div>
+    <div class="relative z-10 max-w-3xl mx-auto px-6 lg:px-8 text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6">Ready to Automate Your Trading?</h2>
+      <p class="text-lg text-gray-400 mb-10 leading-relaxed">
+        Join the MachineTrader community and start building algorithmic trading strategies — no coding required.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/pricing" class="btn-primary text-lg font-semibold px-10 py-4 rounded-full w-full sm:w-auto">
+          Start 30-Day Free Trial
+          <svg class="inline-block ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+        <a href="features.html" class="btn-secondary-light text-lg font-semibold px-10 py-4 rounded-full w-full sm:w-auto">
+          Explore Features
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-gray-950 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+        <div class="col-span-2 md:col-span-1">
+          <a href="index.html" class="flex items-center gap-2 mb-4">
+            <img src="images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">
+            Automate your trading strategies using our low-code/no-code MachineTrader™ software.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="/pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="trading-flows/index.html" class="hover:text-white transition">Trading Scripts</a></li>
+            <li><a href="backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">
+          © 2022–2026 MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+        </div>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed">
+          <strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading. 
+          All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a 
+          registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC, 
+          member FINRA/SIPC. *Commission-free for U.S. equities. Please read all risk disclosures before trading.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    const EXPECTED_HASH = '8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    (async () => {
+      const lockScreen = document.getElementById('lock-screen');
+      const pageContent = document.getElementById('page-content');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (sessionStorage.getItem('mt-auth') === EXPECTED_HASH) {
+        lockScreen.classList.add('hidden');
+        pageContent.classList.remove('hidden');
+      } else { input.focus(); }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const hash = await sha256(input.value);
+        if (hash === EXPECTED_HASH) {
+          sessionStorage.setItem('mt-auth', EXPECTED_HASH);
+          lockScreen.style.transition = 'opacity 0.4s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => { lockScreen.classList.add('hidden'); pageContent.classList.remove('hidden'); }, 400);
+        } else {
+          error.classList.remove('hidden'); input.classList.add('!border-red-500'); input.value = ''; input.focus();
+          setTimeout(() => { error.classList.add('hidden'); input.classList.remove('!border-red-500'); }, 3000);
+        }
+      });
+    })();
+  </script>
+  <script src="js/main.js"></script>
+</body>
+</html>

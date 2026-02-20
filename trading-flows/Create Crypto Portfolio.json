@@ -1,0 +1,659 @@
+[
+    {
+        "id": "fdbe3e45511a2850",
+        "type": "tab",
+        "label": "Buy Crypto Portfolio",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b63519f4673cae05",
+        "type": "pts_oauth_browser",
+        "z": "fdbe3e45511a2850",
+        "callback": "",
+        "redirect": "https://docs.google.com/document/d/1oBUDJ_CbfgdGUutQ4hgqdmOM1TEjCI3I0SDGuhrdUEM/edit?usp=sharing",
+        "name": "Documentation Link",
+        "x": 900,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "d1d43a7fbf60be58",
+        "type": "inject",
+        "z": "fdbe3e45511a2850",
+        "name": "Click Here to Open",
+        "props": [
+            {
+                "p": "redirect",
+                "v": "https://docs.google.com/document/d/1JrOxeQVfjAsRMMBDR6p9b-yRzCCs8m8frQoQvqwtjjw/edit",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 690,
+        "y": 80,
+        "wires": [
+            [
+                "b63519f4673cae05"
+            ]
+        ]
+    },
+    {
+        "id": "f5de230c87f121fc",
+        "type": "comment",
+        "z": "fdbe3e45511a2850",
+        "name": "Please refer to the Flow Documentation detailed explanation of this flow.",
+        "info": "",
+        "x": 300,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "d627f5ef18ce9b00",
+        "type": "comment",
+        "z": "fdbe3e45511a2850",
+        "name": "Buy Crypto Portfolio [paper]",
+        "info": "",
+        "x": 160,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "fd1398bd78597210",
+        "type": "comment",
+        "z": "fdbe3e45511a2850",
+        "name": "Set list of assets to buy",
+        "info": "",
+        "x": 140,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "88fa96eb6cae18e6",
+        "type": "inject",
+        "z": "fdbe3e45511a2850",
+        "name": "Run once",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 200,
+        "wires": [
+            [
+                "2d7d1d83b1835563"
+            ]
+        ]
+    },
+    {
+        "id": "2d7d1d83b1835563",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "Store strategy definition",
+        "func": "flow.set(\"tickers\", \"XTZ/USD,AAVE/USD,AVAX/USD,BAT/USD,BCH/USD,BTC/USD,CRV/USD,DOGE/USD,DOT/USD,ETH/USD,GRT/USD,LINK/USD,LTC/USD,MKR/USD,SHIB/USD,SUSHI/USD,UNI/USD\")\nflow.set(\"portfolioSize\", 10000) // total size of portfolio = $10,000\nflow.set(\"number\", 17) // number of assets to buy\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4e437cdd2afd5122",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "create market orders",
+        "func": "//node.warn(msg.payload)\nmsg.symbol = msg.payload[\"ticker\"]\nmsg.price = Number(msg.payload[\"price\"])\n//node.warn(\"Price: \" +msg.price)\nmsg.portfolio = Number(flow.get(\"portfolioSize\"))\nmsg.number = Number(flow.get(\"number\"))\n//node.warn(msg.portfolio+ \"--\" +msg.number)\n\nmsg.qty = Number(( msg.portfolio / msg.number / msg.price))\nmsg.qty = msg.qty.toFixed(2)\n\n\n// create a unique clientid with unixtime\nlet d = Date.now()\nlet ticker = msg.symbol.replace(\"/\",\"\")\nmsg.client_order_id = ticker + d\n\n\n\nmsg.payload = {\n    \"symbol\": msg.symbol,\n    \"qty\": msg.qty,\n    \"side\": \"buy\",\n    \"type\": 'market',\n //   \"extended_time\": true,\n    \"client_order_id\": msg.client_order_id,\n //   \"limit_price\": msg.price,\n    \"time_in_force\": \"gtc\"\n};\n\nnode.warn(msg.payload)\n\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 420,
+        "wires": [
+            [
+                "7e976e95626335d5"
+            ]
+        ]
+    },
+    {
+        "id": "7e976e95626335d5",
+        "type": "alpaca-order",
+        "z": "fdbe3e45511a2850",
+        "conf": "0ced618a3a2038f5",
+        "x": 550,
+        "y": 420,
+        "wires": [
+            [
+                "720d2e6dd080089a"
+            ]
+        ]
+    },
+    {
+        "id": "720d2e6dd080089a",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "display error",
+        "func": "msg.message = msg.payload[\"message\"]\nmsg.code = msg.payload[\"code\"]\n\n\nif ( msg.message == undefined){\n    //node.warn(\"no errors detected\") \n}\nelse {\n    node.warn(\"Code: \" +msg.code+ \" Message: \" +msg.message) \n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "21a4552ebe1dead6",
+        "type": "comment",
+        "z": "fdbe3e45511a2850",
+        "name": "Execute Trades",
+        "info": "",
+        "x": 120,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c08673d893ef90f7",
+        "type": "inject",
+        "z": "fdbe3e45511a2850",
+        "name": "Run Once",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 360,
+        "wires": [
+            [
+                "fa93e9552f33f6d7"
+            ]
+        ]
+    },
+    {
+        "id": "fa93e9552f33f6d7",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "get symbols",
+        "func": "msg.payload = flow.get(\"tickers\")\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 360,
+        "wires": [
+            [
+                "cab16ec1dbfe0fac"
+            ]
+        ]
+    },
+    {
+        "id": "cab16ec1dbfe0fac",
+        "type": "split",
+        "z": "fdbe3e45511a2850",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 410,
+        "y": 360,
+        "wires": [
+            [
+                "8282cc458014cf44"
+            ]
+        ]
+    },
+    {
+        "id": "54218c4b2cfa8a43",
+        "type": "alpaca-order",
+        "z": "fdbe3e45511a2850",
+        "conf": "0ced618a3a2038f5",
+        "x": 570,
+        "y": 660,
+        "wires": [
+            [
+                "a19cca7ad74b8566"
+            ]
+        ]
+    },
+    {
+        "id": "a19cca7ad74b8566",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "display error",
+        "func": "msg.message = msg.payload[\"message\"]\nmsg.code = msg.payload[\"code\"]\n\n\nif ( msg.message == undefined){\n    //node.warn(\"no errors detected\") \n}\nelse {\n    node.warn(\"Code: \" +msg.code+ \" Message: \" +msg.message) \n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8b6a17f8774fdef5",
+        "type": "comment",
+        "z": "fdbe3e45511a2850",
+        "name": "Liquidate Position",
+        "info": "",
+        "x": 130,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "6ba3082ddead49e5",
+        "type": "inject",
+        "z": "fdbe3e45511a2850",
+        "name": "Run Once",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 580,
+        "wires": [
+            [
+                "bd3ab80dbf581949"
+            ]
+        ]
+    },
+    {
+        "id": "bd3ab80dbf581949",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "get symbols",
+        "func": "msg.payload = flow.get(\"tickers\")\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 580,
+        "wires": [
+            [
+                "039b4635ead79834"
+            ]
+        ]
+    },
+    {
+        "id": "039b4635ead79834",
+        "type": "split",
+        "z": "fdbe3e45511a2850",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 410,
+        "y": 580,
+        "wires": [
+            [
+                "badd4baaedb673f2"
+            ]
+        ]
+    },
+    {
+        "id": "65ee7ab87e7410b8",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "single msg.symbol",
+        "func": "flow.set(\"symbol\", msg.payload)\nmsg.crypto = msg.payload.replace(\"/\",\"\")\nmsg.symbol = msg.crypto\nnode.warn(msg.symbol)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 580,
+        "wires": [
+            [
+                "2756c84f08f8539d"
+            ]
+        ]
+    },
+    {
+        "id": "1e6d8a39c4882d24",
+        "type": "alpaca-data-crypto-last-trade",
+        "z": "fdbe3e45511a2850",
+        "conf": "686c79e38465315c",
+        "symbol": "",
+        "name": "",
+        "x": 970,
+        "y": 360,
+        "wires": [
+            [
+                "4e437cdd2afd5122"
+            ]
+        ]
+    },
+    {
+        "id": "2756c84f08f8539d",
+        "type": "alpaca-position-query",
+        "z": "fdbe3e45511a2850",
+        "conf": "0ced618a3a2038f5",
+        "symbol": "",
+        "x": 950,
+        "y": 580,
+        "wires": [
+            [
+                "685e8632fb08150d"
+            ]
+        ]
+    },
+    {
+        "id": "685e8632fb08150d",
+        "type": "switch",
+        "z": "fdbe3e45511a2850",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            },
+            {
+                "t": "empty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 230,
+        "y": 680,
+        "wires": [
+            [
+                "236840b5db280134"
+            ],
+            [
+                "b6936075d11af06d"
+            ]
+        ]
+    },
+    {
+        "id": "b6936075d11af06d",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "no position for symbol",
+        "func": "node.warn(\"no position\")\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "badd4baaedb673f2",
+        "type": "delay",
+        "z": "fdbe3e45511a2850",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 550,
+        "y": 580,
+        "wires": [
+            [
+                "65ee7ab87e7410b8"
+            ]
+        ]
+    },
+    {
+        "id": "083c7dc9698124f9",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "single msg.symbol",
+        "func": "msg.symbol = msg.payload\n//node.warn(msg.symbol)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 360,
+        "wires": [
+            [
+                "1e6d8a39c4882d24"
+            ]
+        ]
+    },
+    {
+        "id": "8282cc458014cf44",
+        "type": "delay",
+        "z": "fdbe3e45511a2850",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 550,
+        "y": 360,
+        "wires": [
+            [
+                "083c7dc9698124f9"
+            ]
+        ]
+    },
+    {
+        "id": "236840b5db280134",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "prepare trade",
+        "func": "msg.symbol = flow.get(\"symbol\")\n\nmsg.side = \"sell\"\n\nif ( msg.payload.side == 'short'){ \n    msg.payload.qty = msg.payload.qty * -1\n    msg.side = 'buy'}\n\n// posible liquidation filters\nmsg.payload.market_value\nmsg.payload.unrealized_plpc\nmsg.payload.qty_available\n\n// for limit trades\nmsg.payload.current_price\n\n    let tradeOrders = {\n        \"symbol\": msg.symbol,\n        \"qty\": msg.payload.qty,\n        \"side\": msg.side,\n        \"type\": \"market\",\n        //  \"extended_hours\": true,\n        //  \"limit_price\": msg.current_price,\n        \"time_in_force\": 'gtc'\n    } // end tradeOrders\n    node.warn(tradeOrders)\n    msg.payload = tradeOrders\n    return msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 660,
+        "wires": [
+            [
+                "54218c4b2cfa8a43"
+            ]
+        ]
+    },
+    {
+        "id": "b89a604c2cac8fbc",
+        "type": "comment",
+        "z": "fdbe3e45511a2850",
+        "name": "Calculate performance",
+        "info": "",
+        "x": 140,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "c4d11d1a49bea69d",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "calculate net trades in strategy",
+        "func": "// get all orders store in postgres table \"orders_paper\". This table is updated every 60 mins\n// in the Global 1 utility tab by default\n\nlet orders = global.get(\"ordersPaper\")\n//node.warn(orders)\n\n// first filter the orders array by the date the strategy started\nconst cutoff = new Date(\"2025-10-30T00:00:00Z\"); // Oct 30, 2025 UTC\n\nconst array1 = orders.filter(order => {\n    if (!order.filled_at) return false;\n    const filledDate = new Date(order.filled_at);\n    return filledDate > cutoff;\n});\n//node.warn(array1);\n\n// then include only the tickers in the \nconst tickerString = flow.get(\"tickers\")\n// turn into array\nconst allowedTickers = tickerString.split(\",\");\n// filter orders\nconst array2 = array1.filter(order =>\n    allowedTickers.includes(order.symbol)\n);\n\nnode.warn(array2);\n\n// then add a field for \"trades\" \nconst array3 = array2.map(order => {\n    const { filled_qty, filled_avg_price, side } = order;\n\n    // validate inputs\n//    if (typeof filled_qty !== \"number\" || typeof filled_avg_price !== \"number\") {\n//        return { ...order, trades: null };\n//    }\n\n    const multiplier = side === \"buy\" ? -1 : 1;\n    const trades = filled_qty * filled_avg_price * multiplier;\n    return { ...order, trades };\n});\n\n// sum all of the trades \n\n// assuming filteredOrders already has a \"trades\" field\nlet totalTrades = array3.reduce((sum, order) => {\n    // guard against missing or invalid trades values\n    if (typeof order.trades !== \"number\" || isNaN(order.trades)) {\n        return sum;\n    }\n    return sum + order.trades;\n}, 0);\n\ntotalTrades = totalTrades.toFixed(2)\nlet pctTotalTrades = totalTrades / Number(flow.get(\"portfolioSize\")) * 100\npctTotalTrades = pctTotalTrades.toFixed(2)\n\nnode.warn(\"Net trades:\" +totalTrades+ \" Pct trades: \" +pctTotalTrades+ \"%\");\nflow.set(\"netTrades\", totalTrades)\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "531e26bd42a9beaf",
+        "type": "inject",
+        "z": "fdbe3e45511a2850",
+        "name": "",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "OTMCall",
+                "vt": "flow"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 85,
+        "y": 840,
+        "wires": [
+            [
+                "c4d11d1a49bea69d"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "b26269dd31a3ac8d",
+        "type": "comment",
+        "z": "fdbe3e45511a2850",
+        "name": "Requires global ordersPaper created in Global 1",
+        "info": "",
+        "x": 480,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "2d66568fc3a40a3c",
+        "type": "comment",
+        "z": "fdbe3e45511a2850",
+        "name": "If strategy includes current positions, add current market value of strategy to Net Trades",
+        "info": "",
+        "x": 340,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "66b5f2de0d37cd7b",
+        "type": "alpaca-position-query",
+        "z": "fdbe3e45511a2850",
+        "conf": "0ced618a3a2038f5",
+        "symbol": "",
+        "x": 230,
+        "y": 960,
+        "wires": [
+            [
+                "c93423452517f78d"
+            ]
+        ]
+    },
+    {
+        "id": "c93423452517f78d",
+        "type": "function",
+        "z": "fdbe3e45511a2850",
+        "name": "get market value",
+        "func": "// include only the tickers in the flow var \"tickers\"  \nlet tickerString = flow.get(\"tickers\")\n\n// split into array\nconst tickers = tickerString.split(\",\");\n// remove \"/\" from each symbol\nconst array1 = tickers.map(t => t.replace(/\\//g, \"\"));\n\n//node.warn(array1);\n\nlet positions = msg.payload\n//node.warn(positions)\n\n// Filter positions by symbols\nconst filteredPositions = positions.filter(pos =>\n    array1.includes(pos.symbol)\n);\n\n//node.warn(filteredPositions);\n\n// Sum the market_value across filteredPositions\nlet totalMarketValue = filteredPositions.reduce((sum, pos) => {\n    const value = parseFloat(pos.market_value);\n    return isNaN(value) ? sum : sum + value;\n}, 0);\n\nlet market = totalMarketValue.toFixed(2)\nlet gainloss = Number(flow.get(\"netTrades\")) + totalMarketValue\nlet pctgainloss = gainloss / Number(flow.get(\"portfolioSize\")) * 100\ngainloss = gainloss.toFixed(2)\npctgainloss = pctgainloss.toFixed(2)\n\nnode.warn(\"Total Market Value: \" + market + \" Total Gain or Loss: \" + gainloss + \" Pct Gain or Loss: \" + pctgainloss+ \"%\");\nglobal.set(\"strategyCryptoGainloss\", gainloss)\nglobal.set(\"strategyCryptoGainlosspct\", pctgainloss)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "891f2a71ec6ca362",
+        "type": "inject",
+        "z": "fdbe3e45511a2850",
+        "name": "Run Once",
+        "props": [],
+        "repeat": "",
+        "crontab": "*/1 4-19 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 85,
+        "y": 960,
+        "wires": [
+            [
+                "66b5f2de0d37cd7b"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "0ced618a3a2038f5",
+        "type": "alpaca-account",
+        "name": "Paper",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": true
+    },
+    {
+        "id": "686c79e38465315c",
+        "type": "alpaca-account",
+        "name": "Live",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": false
+    }
+]

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Trading Charts — D2L1S1 | MachineTrader</title>
+  <meta name="description" content="Live strategy performance dashboard for D2L1S1 on MachineTrader." />
+  <meta property="og:title" content="D2L1S1 — Strategy Performance Dashboard" />
+  <meta property="twitter:title" content="D2L1S1 — Strategy Performance Dashboard" />
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fff8f0',100:'#ffe8cc',200:'#ffd199',300:'#ffb366',400:'#ff9533',500:'#ff6b00',600:'#e05e00',700:'#b84d00',800:'#8f3c00',900:'#662b00',950:'#3d1a00' },
+            accent: { 500:'#489fd9',600:'#3a87be' },
+            mt: { green:'#4dbd90',purple:'#8668ab',blue:'#489fd9',pink:'#fde5e5',lavender:'#dde7ed' },
+            dark: { 900:'#0a0f1a',800:'#111827',700:'#1f2937',600:'#374151' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <!-- Lightweight Charts Library -->
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set','developer_id.dZGVlNj',true);gtag('js',new Date());gtag('config','G-G9L6L77LNM');</script>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1830322441099552');fbq('track','PageView');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+  <style>
+    .comparison-section { background:rgba(17,24,39,0.6); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:2.5rem; max-width:1400px; margin:0 auto; backdrop-filter:blur(12px); }
+    .time-selector { display:flex; gap:0.5rem; align-items:center; background:rgba(255,255,255,0.05); padding:0.5rem; border-radius:10px; }
+    .time-selector-label { color:#9ca3af; font-size:0.875rem; font-weight:600; margin-right:0.5rem; }
+    .time-btn { padding:0.625rem 1.25rem; border:2px solid transparent; background:rgba(255,255,255,0.05); color:#d1d5db; border-radius:8px; cursor:pointer; font-size:0.875rem; font-weight:600; transition:all 0.2s ease; font-family:'Inter',sans-serif; }
+    .time-btn:hover { background:rgba(255,255,255,0.1); transform:translateY(-1px); }
+    .time-btn.active { background:#ff6b00; color:white; border-color:#ff6b00; box-shadow:0 4px 12px rgba(255,107,0,0.3); }
+    .comparison-chart-wrapper { position:relative; height:550px; margin-bottom:2rem; border:1px solid rgba(255,255,255,0.1); border-radius:12px; overflow:hidden; background:#0a0f1a; }
+    #tradingViewChart { width:100%; height:100%; }
+    .comparison-legend { display:flex; justify-content:center; gap:4rem; padding:2rem 0; border-top:1px solid rgba(255,255,255,0.05); }
+    .comparison-legend-item { display:flex; flex-direction:column; align-items:center; gap:0.75rem; padding:1rem 2rem; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:12px; transition:all 0.2s ease; }
+    .comparison-legend-item:hover { background:rgba(255,255,255,0.06); transform:translateY(-2px); }
+    .comparison-legend-label { display:flex; align-items:center; gap:0.625rem; color:#9ca3af; font-size:0.9375rem; font-weight:600; }
+    .comparison-legend-dot { width:14px; height:14px; border-radius:50%; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
+    .comparison-legend-dot.strategy { background:#ef4444; }
+    .comparison-legend-dot.benchmark { background:#3b82f6; }
+    .comparison-legend-value { color:#f3f4f6; font-size:1.5rem; font-weight:800; letter-spacing:-0.025em; }
+    .comparison-legend-value.positive { color:#4dbd90; }
+    .comparison-legend-value.negative { color:#ef4444; }
+    @media (max-width:768px) {
+      .comparison-section { padding:1.5rem; }
+      .comparison-chart-wrapper { height:400px; }
+      .comparison-legend { flex-direction:column; gap:1rem; }
+      .comparison-legend-item { width:100%; }
+      .comparison-legend-value { font-size:1.75rem; }
+      .time-selector { width:100%; flex-wrap:wrap; }
+      .time-btn { flex:1; min-width:calc(50% - 0.25rem); }
+    }
+  </style>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="../images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <input id="password-input" type="password" placeholder="Password" autocomplete="off" class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm" />
+        <button type="submit" class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl">Enter</button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- Navigation -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="../index.html" class="flex items-center gap-3 group">
+          <img src="../images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="../features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="../data-center.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Data Center</a>
+          <a href="../backtests.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Backtests</a>
+          <a href="../about-us.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">About Us</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+          <span class="hamburger-line w-6 h-0.5 bg-white rounded transition-all"></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+        <a href="../features.html" class="text-base font-medium text-gray-400 hover:text-white py-2">Features</a>
+        <a href="../data-center.html" class="text-base font-medium text-gray-400 hover:text-white py-2">Data Center</a>
+        <a href="../backtests.html" class="text-base font-medium text-gray-400 hover:text-white py-2">Backtests</a>
+        <a href="../about-us.html" class="text-base font-medium text-gray-400 hover:text-white py-2">About Us</a>
+        <div class="flex flex-col gap-3 pt-4 border-t border-white/10">
+          <a href="/pricing" class="btn-primary text-center text-base font-semibold px-6 py-3 rounded-full">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="relative pt-32 pb-12 overflow-hidden">
+    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-red-500/8 rounded-full blur-[120px] animate-pulse-slow"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-500/8 rounded-full blur-[100px] animate-pulse-slow animation-delay-2000"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 mb-6">
+        <span class="w-2 h-2 bg-red-400 rounded-full animate-pulse"></span>
+        <span class="text-sm font-medium text-red-200">Live Performance</span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4">
+        <span class="text-gradient">D2L1S1</span> Strategy Performance
+      </h1>
+      <p class="text-lg text-gray-400 max-w-2xl mx-auto">Strategies running on AI Velocity Fund</p>
+    </div>
+  </section>
+
+  <!-- Chart Section -->
+  <section class="pb-20">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="comparison-section">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+          <div>
+            <h2 class="text-2xl font-extrabold text-white tracking-tight mb-1">Strategy vs Benchmark Index</h2>
+            <p class="text-gray-400">Compare your portfolio performance against the market benchmark</p>
+          </div>
+          <div class="time-selector">
+            <span class="time-selector-label">Time Period:</span>
+            <button class="time-btn" onclick="setComparisonPeriod('1D')">1 Day</button>
+            <button class="time-btn" onclick="setComparisonPeriod('1W')">1 Week</button>
+            <button class="time-btn" onclick="setComparisonPeriod('1M')">1 Month</button>
+            <button class="time-btn active" onclick="setComparisonPeriod('ALL')">All</button>
+          </div>
+        </div>
+        <div class="comparison-chart-wrapper">
+          <div id="tradingViewChart"></div>
+        </div>
+        <div class="comparison-legend">
+          <div class="comparison-legend-item">
+            <div class="comparison-legend-label"><span class="comparison-legend-dot strategy"></span> Strategy</div>
+            <div class="comparison-legend-value" id="strategyValue">0%</div>
+          </div>
+          <div class="comparison-legend-item">
+            <div class="comparison-legend-label"><span class="comparison-legend-dot benchmark"></span> SPY (Benchmark Index)</div>
+            <div class="comparison-legend-value" id="benchmarkValue">0%</div>
+          </div>
+        </div>
+        <div class="text-center text-gray-500 text-sm mt-4 py-3 bg-white/[0.02] rounded-lg">💡 Tip: Scroll to zoom, drag to pan, double-click to reset view</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-950 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+        <div class="col-span-2 md:col-span-1">
+          <a href="../index.html" class="flex items-center gap-3 mb-4">
+            <img src="../images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">Automate your trading strategies using our low-code/no-code MachineTrader™ software.</p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="/pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="../data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="../backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="../terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="../cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">© 2022–2026 MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005</div>
+        <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed"><strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading. All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC, member FINRA/SIPC. *Commission-free for U.S. equities.</p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- Scripts -->
+  <script>
+    var strategyDisplayName = 'D2L1S1';
+    var csvPath = '/csvfiles/alpaca_portfolio_history_DanSavage2Live.csv';
+    var spyCsvPath = '/csvfiles/spydata.csv';
+  </script>
+  <script>
+    const EXPECTED_HASH='8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(m){const b=new TextEncoder().encode(m);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+    (async()=>{const ls=document.getElementById('lock-screen'),pc=document.getElementById('page-content'),f=document.getElementById('password-form'),i=document.getElementById('password-input'),e=document.getElementById('password-error');if(sessionStorage.getItem('mt-auth')===EXPECTED_HASH){ls.classList.add('hidden');pc.classList.remove('hidden');}else{i.focus();}f.addEventListener('submit',async(ev)=>{ev.preventDefault();const h=await sha256(i.value);if(h===EXPECTED_HASH){sessionStorage.setItem('mt-auth',EXPECTED_HASH);ls.style.transition='opacity 0.4s ease';ls.style.opacity='0';setTimeout(()=>{ls.classList.add('hidden');pc.classList.remove('hidden');},400);}else{e.classList.remove('hidden');i.classList.add('!border-red-500');i.value='';i.focus();setTimeout(()=>{e.classList.add('hidden');i.classList.remove('!border-red-500');},3000);}});})();
+  </script>
+  <script>
+    // --- Chart Logic (preserved from original) ---
+    console.log('🚀 Chart script loading...');
+    (function(){
+      const COLORS={benchmark:'#3b82f6',strategy:'#ef4444'};
+      let comparisonData=null,currentComparisonPeriod='ALL',chart=null,strategySeries=null,benchmarkSeries=null;
+      function parseCSVLines(t){let l=t.trim().split('\n');if(l.length===1)l=t.trim().split('\r\n');if(l.length===1)l=t.trim().split('\r');return l;}
+      function parseCSVRow(row){const r=[];let c='',q=false;for(let i=0;i<row.length;i++){const ch=row[i];if(ch==='"')q=!q;else if(ch===','&&!q){r.push(c.trim());c='';}else c+=ch;}r.push(c.trim());return r;}
+      function parseDateToTimestamp(d){if(d.includes('-')&&d.split('-')[0].length===4)return Math.floor(new Date(d+'T00:00:00').getTime()/1000);if(d.includes('/')){const p=d.split('/');let y=parseInt(p[2]);if(y<100)y+=2000;return Math.floor(new Date(y,parseInt(p[0])-1,parseInt(p[1])).getTime()/1000);}return Math.floor(new Date(d).getTime()/1000);}
+
+      async function loadComparisonData(){
+        try{
+          if(typeof LightweightCharts==='undefined'){await new Promise(r=>{const ci=setInterval(()=>{if(typeof LightweightCharts!=='undefined'){clearInterval(ci);r();}},100);});}
+          const[sR,spR]=await Promise.all([fetch(csvPath),fetch(spyCsvPath)]);
+          if(!sR.ok)throw new Error('Failed to load strategy data: '+sR.status);
+          if(!spR.ok)throw new Error('Failed to load SPY data: '+spR.status);
+          const[sCsv,spCsv]=await Promise.all([sR.text(),spR.text()]);
+          console.log('✅ Both CSVs loaded');
+          const sLines=parseCSVLines(sCsv),sHeaders=sLines[0].split(',').map(h=>h.trim().replace(/"/g,'')),cumIdx=sHeaders.indexOf('Cumulative %');
+          const sByDate={};
+          for(let i=1;i<sLines.length;i++){const ln=sLines[i].trim();if(!ln)continue;const v=parseCSVRow(ln),ds=v[0],cp=parseFloat(v[cumIdx>=0?cumIdx:7]);if(ds&&!isNaN(cp))sByDate[ds]=cp/100;}
+          const sDates=Object.keys(sByDate).sort();
+          if(sDates.length===0)throw new Error('No valid strategy data');
+          const spLines=parseCSVLines(spCsv),spHeaders=spLines[0].split(',').map(h=>h.trim().replace(/"/g,'')),clIdx=spHeaders.indexOf('Close');
+          const spByDate={};
+          for(let i=1;i<spLines.length;i++){const ln=spLines[i].trim();if(!ln)continue;const v=parseCSVRow(ln),ds=v[0],cl=parseFloat(v[clIdx>=0?clIdx:4]);if(ds&&!isNaN(cl))spByDate[ds]=cl;}
+          let spBase=spByDate[sDates[0]];
+          if(!spBase){const ad=Object.keys(spByDate).sort();for(let i=ad.length-1;i>=0;i--){if(ad[i]<=sDates[0]){spBase=spByDate[ad[i]];break;}}}
+          if(!spBase){const ad=Object.keys(spByDate).sort();spBase=spByDate[ad[0]];}
+          const data=[];
+          for(const ds of sDates){const sv=sByDate[ds],sc=spByDate[ds],spv=sc?(sc-spBase)/spBase:null,ts=parseDateToTimestamp(ds);if(!isNaN(ts)&&spv!==null)data.push({time:ts,strategy:sv,spy:spv});}
+          data.sort((a,b)=>a.time-b.time);
+          const uniq=[],seen=new Set();for(let j=data.length-1;j>=0;j--){if(!seen.has(data[j].time)){seen.add(data[j].time);uniq.unshift(data[j]);}}
+          console.log('✅ Merged data points:',uniq.length);
+          comparisonData=uniq;
+          if(uniq.length>0)initializeChart();else throw new Error('No data after merge');
+        }catch(err){
+          console.error('❌',err);
+          const el=document.getElementById('tradingViewChart');
+          if(el)el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ef4444;font-family:Inter,sans-serif;padding:2rem;text-align:center;">Error: '+err.message+'</div>';
+        }
+      }
+
+      function initializeChart(){
+        if(!comparisonData||comparisonData.length===0)return;
+        const cc=document.getElementById('tradingViewChart');if(!cc)return;
+        if(chart)chart.remove();
+        try{
+          chart=LightweightCharts.createChart(cc,{
+            width:cc.clientWidth,height:cc.clientHeight,
+            layout:{background:{color:'#0a0f1a'},textColor:'#6B7280',fontSize:12,fontFamily:'Inter, sans-serif'},
+            grid:{vertLines:{color:'rgba(255,255,255,0.04)'},horzLines:{color:'rgba(255,255,255,0.04)'}},
+            crosshair:{mode:LightweightCharts.CrosshairMode.Normal,vertLine:{width:1,color:'rgba(255,255,255,0.15)',style:LightweightCharts.LineStyle.Dashed},horzLine:{width:1,color:'rgba(255,255,255,0.15)',style:LightweightCharts.LineStyle.Dashed}},
+            rightPriceScale:{borderColor:'rgba(255,255,255,0.08)',scaleMargins:{top:0.1,bottom:0.1}},
+            timeScale:{borderColor:'rgba(255,255,255,0.08)',timeVisible:true,secondsVisible:false,tickMarkFormatter:(time)=>{const d=new Date(time*1000);return d.toLocaleString('en-US',{timeZone:'America/New_York',month:'short',day:'numeric',year:'numeric'});}},
+            handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:true},
+            handleScale:{axisPressedMouseMove:true,mouseWheel:true,pinch:true}
+          });
+          strategySeries=chart.addLineSeries({color:COLORS.strategy,lineWidth:2,priceFormat:{type:'custom',formatter:(p)=>p.toFixed(2)+'%'}});
+          benchmarkSeries=chart.addLineSeries({color:COLORS.benchmark,lineWidth:2,priceFormat:{type:'custom',formatter:(p)=>p.toFixed(2)+'%'}});
+          chart.subscribeCrosshairMove((param)=>{
+            if(param.time){const sd=param.seriesData.get(strategySeries),bd=param.seriesData.get(benchmarkSeries);if(sd&&bd){document.getElementById('strategyValue').textContent=sd.value.toFixed(2)+'%';document.getElementById('benchmarkValue').textContent=bd.value.toFixed(2)+'%';}}
+            else{updateLegendValues(filterDataByPeriod(comparisonData,currentComparisonPeriod));}
+          });
+          window.addEventListener('resize',()=>{if(chart&&cc)chart.applyOptions({width:cc.clientWidth,height:cc.clientHeight});});
+          updateChartData();
+        }catch(e){console.error('❌ Chart init error:',e);}
+      }
+
+      function filterDataByPeriod(d,p){if(!d||d.length===0)return d;switch(p){case '1D':return d;case '1W':return filterEndOfWeek(d);case '1M':return filterEndOfMonth(d);default:return d;}}
+      function filterEndOfMonth(data){const r=[];let cM=null,cY=null,last=null;data.forEach(p=>{const d=new Date(p.time*1000),m=d.getMonth(),y=d.getFullYear();if(cM!==m||cY!==y){if(last)r.push(last);cM=m;cY=y;last=p;}else last=p;});if(last)r.push(last);return r;}
+      function filterEndOfWeek(data){const r=[];let cW=null,cY=null,last=null;data.forEach(p=>{const d=new Date(p.time*1000),y=d.getFullYear(),w=getWeekNumber(d);if(cW!==w||cY!==y){if(last)r.push(last);cW=w;cY=y;last=p;}else last=p;});if(last)r.push(last);return r;}
+      function getWeekNumber(date){const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));const dn=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-dn);const ys=new Date(Date.UTC(d.getUTCFullYear(),0,1));return Math.ceil((((d-ys)/86400000)+1)/7);}
+      function updateChartData(){if(!comparisonData||!strategySeries||!benchmarkSeries)return;const fd=filterDataByPeriod(comparisonData,currentComparisonPeriod);strategySeries.setData(fd.map(d=>({time:d.time,value:d.strategy*100})));benchmarkSeries.setData(fd.map(d=>({time:d.time,value:d.spy*100})));chart.timeScale().fitContent();updateLegendValues(fd);}
+      function updateLegendValues(data){if(!data||data.length===0)return;const l=data[data.length-1];document.getElementById('strategyValue').textContent=(l.strategy*100).toFixed(2)+'%';document.getElementById('benchmarkValue').textContent=(l.spy*100).toFixed(2)+'%';}
+      window.setComparisonPeriod=function(period){currentComparisonPeriod=period;document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');updateChartData();};
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadComparisonData);else loadComparisonData();
+    })();
+  </script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

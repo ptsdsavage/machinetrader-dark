@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trading on Daily Earnings Calls | MachineTrader</title>
+  <link rel="canonical" href="https://www.machinetrader.io/strategies/trading-on-daily-earnings-calls" />
+  <meta name="description" content="Automated earnings-based stock trading strategy. Node-RED flow documentation with Alpaca API for momentum trading on daily earnings announcements." />
+  <meta property="og:title" content="Trading on Daily Earnings Calls | MachineTrader" />
+  <meta property="og:description" content="Automated earnings-based stock trading with Node-RED and Alpaca API." />
+  <meta property="og:type" content="website" />
+  <meta property="twitter:title" content="Trading on Daily Earnings Calls | MachineTrader" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="google-site-verification" content="google6132bb2f08408978.html" />
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fff8f0',100:'#ffe8cc',200:'#ffd199',300:'#ffb366',400:'#ff9533',500:'#ff6b00',600:'#e05e00',700:'#b84d00',800:'#8f3c00',900:'#662b00',950:'#3d1a00' },
+            accent: { 500:'#489fd9',600:'#3a87be' },
+            mt: { green:'#4dbd90',purple:'#8668ab',blue:'#489fd9',pink:'#fde5e5',lavender:'#dde7ed' },
+            dark: { 900:'#0a0f1a',800:'#111827',700:'#1f2937',600:'#374151' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G9L6L77LNM"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set','developer_id.dZGVlNj',true);gtag('js',new Date());gtag('config','G-G9L6L77LNM');</script>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1830322441099552');fbq('track','PageView');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5DGHXVQ');</script>
+  <style>
+    .strategy-nav a.active { color: #ff6b00; background: rgba(255,107,0,0.1); }
+    .flow-diagram-box { background: #0d1117; border-radius: 0.75rem; padding: 1.5rem; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; line-height: 1.5; border: 1px solid rgba(255,255,255,0.05); }
+    .flow-diagram-box .time { color: #f59e0b; }
+    .flow-diagram-box .action { color: #4ade80; }
+    .flow-diagram-box .arrow { color: #22d3ee; }
+    .timeline { position: relative; padding-left: 2rem; margin: 1.5rem 0; }
+    .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, #489fd9, #4dbd90, #ef4444); border-radius: 3px; }
+    .timeline-item { position: relative; margin-bottom: 1.5rem; padding-left: 1.5rem; }
+    .timeline-item::before { content: ''; position: absolute; left: -2rem; top: 0.4rem; width: 12px; height: 12px; background: #489fd9; border-radius: 50%; border: 3px solid #111827; }
+    .timeline-item.success::before { background: #4dbd90; }
+    .timeline-item.warning::before { background: #f59e0b; }
+    .timeline-item.danger::before { background: #ef4444; }
+    .alert-box { padding: 1rem 1.25rem; border-radius: 0.75rem; margin: 1rem 0; border-left: 4px solid; }
+    .alert-warning { background: rgba(245,158,11,0.08); border-color: #f59e0b; }
+    .alert-danger { background: rgba(239,68,68,0.08); border-color: #ef4444; }
+    .alert-info { background: rgba(72,159,217,0.08); border-color: #489fd9; }
+  </style>
+</head>
+<body class="bg-black text-gray-100 font-sans antialiased">
+
+  <!-- ============ PASSWORD GATE ============ -->
+  <div id="lock-screen" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto px-6">
+      <div class="text-center mb-8">
+        <img src="../images/logo.svg" alt="MachineTrader" class="h-12 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold tracking-tight mb-2 text-white">MachineTrader™</h1>
+        <p class="text-gray-400 text-sm">Enter the password to view this page.</p>
+      </div>
+      <form id="password-form" class="space-y-4">
+        <div class="relative">
+          <input id="password-input" type="password" placeholder="Password" autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition text-sm" />
+        </div>
+        <button type="submit" class="btn-primary w-full text-sm font-semibold px-6 py-3 rounded-xl">Enter</button>
+        <p id="password-error" class="text-red-500 text-xs text-center hidden">Incorrect password. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <div id="page-content" class="hidden">
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="../index.html" class="flex items-center gap-3 group">
+          <img src="../images/logo.svg" alt="MachineTrader" class="h-9 w-auto" />
+          <span class="text-xl font-bold tracking-tight text-white">MachineTrader™</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="../index.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Home</a>
+          <a href="../features.html" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Features</a>
+          <a href="../index.html#how-it-works" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">How It Works</a>
+          <a href="../index.html#pricing" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">Pricing</a>
+          <a href="../index.html#faq" class="nav-link text-sm font-medium text-gray-400 hover:text-white transition">FAQ</a>
+          <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Start Free Trial</a>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden text-gray-400 hover:text-white transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden lg:hidden bg-gray-950/95 backdrop-blur border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-6 py-4 space-y-3">
+        <a href="../index.html" class="block text-sm text-gray-400 hover:text-white transition">Home</a>
+        <a href="../features.html" class="block text-sm text-gray-400 hover:text-white transition">Features</a>
+        <a href="../index.html#how-it-works" class="block text-sm text-gray-400 hover:text-white transition">How It Works</a>
+        <a href="../index.html#pricing" class="block text-sm text-gray-400 hover:text-white transition">Pricing</a>
+        <a href="/pricing" class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full mt-2 inline-block">Start Free Trial</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 pb-20 overflow-hidden">
+    <div class="absolute top-20 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-cyan-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-8">
+        <span>📈</span> Earnings Strategy Documentation
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+        <span class="text-white">Trade on</span>
+        <br />
+        <span class="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">Earnings Calls</span>
+      </h1>
+      <p class="text-lg text-gray-400 max-w-2xl mx-auto mb-6">Node-RED automated trading flow for momentum-based entries on daily earnings announcements.</p>
+      <div class="flex flex-wrap justify-center gap-3 mb-10">
+        <span class="px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300">Node-RED</span>
+        <span class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300">Alpaca API</span>
+        <span class="px-3 py-1.5 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-300">Paper Trading</span>
+      </div>
+      <!-- Section nav -->
+      <div class="strategy-nav flex flex-wrap justify-center gap-2">
+        <a href="#overview" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Overview</a>
+        <a href="#strategy" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Strategy</a>
+        <a href="#schedule" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Schedule</a>
+        <a href="#api-keys" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">API Keys</a>
+        <a href="#controls" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Controls</a>
+        <a href="#architecture" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Architecture</a>
+        <a href="#orders" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Orders</a>
+        <a href="#setup" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition">Setup</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OVERVIEW ============ -->
+  <section id="overview" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+          <span class="text-blue-400">📊</span> Overview
+        </h2>
+        <p class="text-gray-400 mb-6">This trading bot is a Node-RED flow that automatically monitors the stocks reporting calendar and executes momentum-based trades based on their price movement. Trading starts at 4 AM and positions are held until end-of-day liquidation.</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5 text-center">
+            <div class="text-blue-400 font-semibold text-sm mb-1">Entry Signal</div>
+            <div class="text-2xl font-bold text-emerald-400 my-2">±1%</div>
+            <p class="text-gray-500 text-xs">Momentum threshold from 4 AM reference price</p>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5 text-center">
+            <div class="text-blue-400 font-semibold text-sm mb-1">Position Size</div>
+            <div class="text-2xl font-bold text-emerald-400 my-2">$10,000</div>
+            <p class="text-gray-500 text-xs">Fixed dollar amount per trade</p>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5 text-center">
+            <div class="text-blue-400 font-semibold text-sm mb-1">Entries Per Symbol</div>
+            <div class="text-2xl font-bold text-emerald-400 my-2">ONE</div>
+            <p class="text-gray-500 text-xs">No re-entry after initial order placed</p>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5 text-center">
+            <div class="text-blue-400 font-semibold text-sm mb-1">Polling Interval</div>
+            <div class="text-2xl font-bold text-emerald-400 my-2">60s</div>
+            <p class="text-gray-500 text-xs">Quote refresh rate during market hours</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STRATEGY ============ -->
+  <section id="strategy" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-blue-400">🎯</span> Trading Strategy
+        </h2>
+
+        <h3 class="text-lg font-semibold text-white mb-4">Key Design Principles</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5 hover:-translate-y-1 transition-transform">
+            <h4 class="text-blue-400 font-semibold text-sm mb-2">1. ONE Entry Per Symbol</h4>
+            <p class="text-gray-400 text-sm">Places exactly one order per symbol when momentum threshold is met. Holds the position all day regardless of P&amp;L. Eliminates order spam and complex re-entry logic.</p>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5 hover:-translate-y-1 transition-transform">
+            <h4 class="text-blue-400 font-semibold text-sm mb-2">2. Limit Orders for Entry</h4>
+            <p class="text-gray-400 text-sm"><strong class="text-white">Long positions:</strong> Pay the ASK price<br /><strong class="text-white">Short positions:</strong> Pay the BID price<br />Extended hours enabled for pre-market trading.</p>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5 hover:-translate-y-1 transition-transform">
+            <h4 class="text-blue-400 font-semibold text-sm mb-2">3. Market Orders for Exit</h4>
+            <p class="text-gray-400 text-sm">EOD liquidation at 3:55 PM ET uses market orders to guarantee all positions close before market close.</p>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Entry Logic</h3>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm"><code class="text-emerald-300"><span class="text-yellow-400">// Bullish Entry (BUY)</span>
+IF (mid_price - reference_price) / reference_price >= +1%
+AND symbol NOT in enteredSymbols
+THEN place LIMIT BUY @ ASK price
+     mark symbol as entered
+
+<span class="text-yellow-400">// Bearish Entry (SHORT)</span>
+IF (mid_price - reference_price) / reference_price &lt;= -1%
+AND symbol NOT in enteredSymbols
+THEN place LIMIT SELL @ BID price
+     mark symbol as entered</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCHEDULE ============ -->
+  <section id="schedule" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-blue-400">⏰</span> Daily Schedule
+        </h2>
+
+        <div class="timeline mb-8">
+          <div class="timeline-item">
+            <div class="text-blue-400 font-bold text-sm">3:30 AM ET</div>
+            <div class="text-gray-400 text-sm mt-0.5">Fetch today's earnings calendar from NASDAQ API</div>
+          </div>
+          <div class="timeline-item success">
+            <div class="text-emerald-400 font-bold text-sm">4:00 AM ET</div>
+            <div class="text-gray-400 text-sm mt-0.5">Start tracker · Initialize config · Load reference prices · Begin polling</div>
+          </div>
+          <div class="timeline-item">
+            <div class="text-blue-400 font-bold text-sm">4:00 AM – 3:55 PM</div>
+            <div class="text-gray-400 text-sm mt-0.5">Monitor momentum every 60 seconds · Place limit entries when ±1% threshold met</div>
+          </div>
+          <div class="timeline-item warning">
+            <div class="text-yellow-400 font-bold text-sm">3:55 PM ET</div>
+            <div class="text-gray-400 text-sm mt-0.5">EOD Liquidation · Close all positions with market orders</div>
+          </div>
+          <div class="timeline-item danger">
+            <div class="text-red-400 font-bold text-sm">4:00 PM ET</div>
+            <div class="text-gray-400 text-sm mt-0.5">Shutdown · Stop polling · Disable trading · Enter idle state</div>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Flow Diagram</h3>
+        <div class="flow-diagram-box whitespace-pre"><span class="time">3:30 AM</span> <span class="arrow">──►</span> <span class="action">Fetch Earnings Calendar</span>
+    <span class="arrow">│</span>
+<span class="time">4:00 AM</span> <span class="arrow">──►</span> <span class="action">Initialize Tracker</span> <span class="arrow">──►</span> <span class="action">Load Reference Prices</span> <span class="arrow">──►</span> <span class="action">Start Polling</span>
+    <span class="arrow">│</span>
+    <span class="arrow">▼</span>
+<span class="action">┌─────────────────────────────────────────────────────────────────────┐</span>
+<span class="action">│ POLLING LOOP (Every 60 seconds)                                     │</span>
+<span class="action">│                                                                     │</span>
+<span class="action">│ [Check Time] ──► Is it 3:55 PM? ──► YES ──► [EOD Liquidation]       │</span>
+<span class="action">│       │                                                             │</span>
+<span class="action">│       NO ──► Is it 4:00 PM? ──► YES ──► [Shutdown]                  │</span>
+<span class="action">│       │                                                             │</span>
+<span class="action">│       NO ──► [Fetch Quotes] ──► [Check Momentum] ──► [Entry?]       │</span>
+<span class="action">└─────────────────────────────────────────────────────────────────────┘</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ API KEYS ============ -->
+  <section id="api-keys" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+          <span class="text-blue-400">🔑</span> API Key Configuration
+        </h2>
+        <p class="text-gray-400 mb-6">The flow uses <strong class="text-white">separate API keys</strong> for trading and data operations:</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div class="bg-black/30 rounded-xl p-5 border-l-4 border-blue-500">
+            <h4 class="text-blue-400 font-semibold mb-3">🔵 Trading API Keys</h4>
+            <p class="text-gray-500 text-sm mb-3">Used for orders, positions, account</p>
+            <div class="space-y-1 text-sm font-mono">
+              <div class="text-yellow-300">global.get("apiKeyLive")</div>
+              <div class="text-yellow-300">global.get("apiSecretLive")</div>
+            </div>
+            <hr class="border-white/5 my-3" />
+            <p class="text-gray-500 text-xs"><strong class="text-gray-400">Endpoints:</strong><br />• POST /v2/orders<br />• GET /v2/positions<br />• GET /v2/orders?status=all</p>
+          </div>
+          <div class="bg-black/30 rounded-xl p-5 border-l-4 border-emerald-500">
+            <h4 class="text-emerald-400 font-semibold mb-3">🟢 Data API Keys (SIP Feed)</h4>
+            <p class="text-gray-500 text-sm mb-3">Used for real-time quotes and bars</p>
+            <div class="space-y-1 text-sm font-mono">
+              <div class="text-yellow-300">global.get("apiDataKeyLive")</div>
+              <div class="text-yellow-300">global.get("apiDataSecretLive")</div>
+            </div>
+            <hr class="border-white/5 my-3" />
+            <p class="text-gray-500 text-xs"><strong class="text-gray-400">Endpoints:</strong><br />• GET /v2/stocks/bars/latest<br />• GET /v2/stocks/quotes/latest?feed=sip</p>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Setup Code</h3>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm mb-4"><code class="text-emerald-300"><span class="text-yellow-400">// Run this in a function node once, or add to Node-RED settings.js</span>
+
+<span class="text-blue-300">// Trading API keys</span>
+global.set('apiKeyLive', 'YOUR_TRADING_KEY');
+global.set('apiSecretLive', 'YOUR_TRADING_SECRET');
+
+<span class="text-emerald-400">// Data API keys (SIP feed)</span>
+global.set('apiDataKeyLive', 'YOUR_DATA_KEY');
+global.set('apiDataSecretLive', 'YOUR_DATA_SECRET');
+
+return msg;</code></pre>
+
+        <div class="alert-box alert-info">
+          <div class="flex items-start gap-3">
+            <span class="text-xl">💡</span>
+            <div>
+              <strong class="text-white">Why separate keys?</strong><br />
+              <span class="text-gray-400 text-sm">Alpaca allows different subscription tiers for trading vs data. The SIP feed provides consolidated market data and may require a separate subscription.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTROLS ============ -->
+  <section id="controls" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+          <span class="text-blue-400">🎮</span> Manual Controls
+        </h2>
+        <p class="text-gray-400 mb-6">The flow includes several inject nodes for manual operation:</p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-8">
+          <div class="px-4 py-3 rounded-xl bg-emerald-500/20 text-emerald-300 text-center text-sm font-semibold">▶️ Start Tracker</div>
+          <div class="px-4 py-3 rounded-xl bg-red-500/20 text-red-300 text-center text-sm font-semibold">⏹️ Stop Tracker</div>
+          <div class="px-4 py-3 rounded-xl bg-cyan-500/20 text-cyan-300 text-center text-sm font-semibold">📊 Show Status</div>
+          <div class="px-4 py-3 rounded-xl bg-yellow-500/20 text-yellow-300 text-center text-sm font-semibold">🔄 Reset Entries</div>
+          <div class="px-4 py-3 rounded-xl bg-red-500/20 text-red-300 text-center text-sm font-semibold">💰 Liquidate All</div>
+          <div class="px-4 py-3 rounded-xl bg-blue-500/20 text-blue-300 text-center text-sm font-semibold">📅 Fetch Earnings</div>
+          <div class="px-4 py-3 rounded-xl bg-blue-500/20 text-blue-300 text-center text-sm font-semibold">📋 Fetch Orders</div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Button</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Action</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">When to Use</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4 font-semibold">Start Tracker</td>
+                <td class="py-3 px-4">Initialize config, reset entries, load reference prices, begin polling</td>
+                <td class="py-3 px-4">Manual start or testing</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4 font-semibold">Stop Tracker</td>
+                <td class="py-3 px-4">Halt polling, disable trading</td>
+                <td class="py-3 px-4">Emergency stop or end of day</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4 font-semibold">Show Status</td>
+                <td class="py-3 px-4">Display current state, entered symbols, and pending symbols</td>
+                <td class="py-3 px-4">Monitor progress during the day</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4 font-semibold">Reset Entries</td>
+                <td class="py-3 px-4">Clear enteredSymbols object (allows re-entry)</td>
+                <td class="py-3 px-4">New trading day or testing</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4 font-semibold">Liquidate All</td>
+                <td class="py-3 px-4">Close all open positions immediately with market orders</td>
+                <td class="py-3 px-4">Emergency exit or manual EOD</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4 font-semibold">Fetch Earnings</td>
+                <td class="py-3 px-4">Load earnings calendar from NASDAQ API</td>
+                <td class="py-3 px-4">Manual refresh or testing</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4 font-semibold">Fetch Orders</td>
+                <td class="py-3 px-4">Retrieve all orders placed today from Alpaca</td>
+                <td class="py-3 px-4">Audit and verification</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ARCHITECTURE ============ -->
+  <section id="architecture" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-blue-400">🏗️</span> Flow Architecture
+        </h2>
+
+        <h3 class="text-lg font-semibold text-white mb-3">State Management</h3>
+        <p class="text-gray-400 text-sm mb-4">The flow uses Node-RED's <code class="px-2 py-0.5 rounded bg-white/5 text-blue-300 text-xs">flow</code> context for state:</p>
+        <div class="overflow-x-auto mb-8">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Variable</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Type</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Description</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-blue-300 text-xs">config</code></td>
+                <td class="py-3 px-4">Object</td>
+                <td class="py-3 px-4">Trading parameters, API keys, timing settings</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-blue-300 text-xs">running</code></td>
+                <td class="py-3 px-4">Boolean</td>
+                <td class="py-3 px-4">Polling loop active flag</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-blue-300 text-xs">tradingEnabled</code></td>
+                <td class="py-3 px-4">Boolean</td>
+                <td class="py-3 px-4">Allow new entries flag</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-blue-300 text-xs">symbols</code></td>
+                <td class="py-3 px-4">Array</td>
+                <td class="py-3 px-4">Stock symbols to track (from earnings calendar)</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-blue-300 text-xs">referenceData</code></td>
+                <td class="py-3 px-4">Object</td>
+                <td class="py-3 px-4">Reference prices from 4 AM for momentum calculation</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-blue-300 text-xs">enteredSymbols</code></td>
+                <td class="py-3 px-4">Object</td>
+                <td class="py-3 px-4">Tracks which symbols have been entered</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">enteredSymbols Structure</h3>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm mb-8"><code class="text-emerald-300">{
+    "AAPL": {
+        action: "buy",
+        qty: 50,
+        limitPrice: 200.50,
+        time: "2026-01-30T08:15:00.000Z"
+    },
+    "TSLA": {
+        action: "short",
+        qty: 25,
+        limitPrice: 400.25,
+        time: "2026-01-30T09:30:00.000Z"
+    }
+}</code></pre>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Configuration Constants</h3>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm"><code class="text-emerald-300">const config = {
+    <span class="text-yellow-400">// Trading thresholds</span>
+    MOMENTUM_THRESHOLD: 0.01,   <span class="text-emerald-500">// 1% move triggers entry</span>
+    POSITION_SIZE: 10000,        <span class="text-emerald-500">// $ per position</span>
+    POLL_INTERVAL: 60000,        <span class="text-emerald-500">// 60 seconds</span>
+
+    <span class="text-yellow-400">// EOD timing (Eastern Time)</span>
+    EOD_LIQUIDATE_HOUR: 15,      <span class="text-emerald-500">// 3:55 PM</span>
+    EOD_LIQUIDATE_MINUTE: 55,
+    EOD_SHUTDOWN_HOUR: 16,       <span class="text-emerald-500">// 4:00 PM</span>
+    EOD_SHUTDOWN_MINUTE: 0,
+
+    <span class="text-yellow-400">// API Configuration</span>
+    ALPACA_BASE_URL: "https://paper-api.alpaca.markets",
+    ALPACA_DATA_URL: "https://data.alpaca.markets"
+};</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ORDERS ============ -->
+  <section id="orders" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-blue-400">📝</span> Order Types
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5">
+            <h4 class="text-blue-400 font-semibold mb-3">Entry Orders (Limit + Extended Hours)</h4>
+            <pre class="text-xs overflow-x-auto"><code class="text-emerald-300">{
+  symbol: "AAPL",
+  qty: "50",
+  side: "buy",
+  type: "limit",
+  limit_price: "200.50",
+  time_in_force: "day",
+  extended_hours: true
+}</code></pre>
+          </div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-5">
+            <h4 class="text-blue-400 font-semibold mb-3">Exit Orders (Market)</h4>
+            <pre class="text-xs overflow-x-auto"><code class="text-emerald-300">{
+  symbol: "AAPL",
+  qty: "50",
+  side: "sell",
+  type: "market",
+  time_in_force: "day"
+}</code></pre>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mb-3">API Endpoints Used</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Endpoint</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Method</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">API Keys</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Purpose</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-xs text-emerald-300">/v2/stocks/bars/latest</code></td>
+                <td class="py-3 px-4">GET</td>
+                <td class="py-3 px-4">Data</td>
+                <td class="py-3 px-4">Reference prices (4 AM baseline)</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-xs text-emerald-300">/v2/stocks/quotes/latest?feed=sip</code></td>
+                <td class="py-3 px-4">GET</td>
+                <td class="py-3 px-4">Data</td>
+                <td class="py-3 px-4">Real-time quotes (bid/ask)</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-xs text-emerald-300">/v2/orders</code></td>
+                <td class="py-3 px-4">POST</td>
+                <td class="py-3 px-4">Trading</td>
+                <td class="py-3 px-4">Place entry/exit orders</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-xs text-emerald-300">/v2/positions</code></td>
+                <td class="py-3 px-4">GET</td>
+                <td class="py-3 px-4">Trading</td>
+                <td class="py-3 px-4">Fetch positions for liquidation</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4"><code class="text-xs text-emerald-300">/v2/orders?status=all</code></td>
+                <td class="py-3 px-4">GET</td>
+                <td class="py-3 px-4">Trading</td>
+                <td class="py-3 px-4">View today's order history</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SETUP ============ -->
+  <section id="setup" class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <span class="text-blue-400">🚀</span> Installation &amp; Setup
+        </h2>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Prerequisites</h3>
+        <ul class="list-disc list-inside text-gray-400 text-sm space-y-2 mb-6">
+          <li>Node-RED installed (<code class="px-2 py-0.5 rounded bg-white/5 text-blue-300 text-xs">npm install -g node-red</code>)</li>
+          <li>Alpaca paper trading account</li>
+          <li>Separate trading and data API keys from Alpaca</li>
+        </ul>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Import Flow</h3>
+        <ol class="list-decimal list-inside text-gray-400 text-sm space-y-2 mb-6">
+          <li>Open Node-RED (<code class="px-2 py-0.5 rounded bg-white/5 text-blue-300 text-xs">http://localhost:1880</code>)</li>
+          <li>Menu → Import → Select file</li>
+          <li>Choose <code class="px-2 py-0.5 rounded bg-white/5 text-blue-300 text-xs">earnings_simple_tracker_flows.json</code></li>
+          <li>Click "Deploy"</li>
+        </ol>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Configure API Keys</h3>
+        <p class="text-gray-400 text-sm mb-3">Create a function node and run once:</p>
+        <pre class="bg-black/40 border border-white/5 rounded-xl p-5 overflow-x-auto text-sm mb-6"><code class="text-emerald-300">global.set('apiKeyLive', 'YOUR_TRADING_KEY');
+global.set('apiSecretLive', 'YOUR_TRADING_SECRET');
+global.set('apiDataKeyLive', 'YOUR_DATA_KEY');
+global.set('apiDataSecretLive', 'YOUR_DATA_SECRET');
+return msg;</code></pre>
+
+        <h3 class="text-lg font-semibold text-white mb-3">Daily Workflow</h3>
+        <div class="timeline mb-6">
+          <div class="timeline-item">
+            <div class="text-blue-400 font-bold text-sm">Automatic (Cron)</div>
+            <div class="text-gray-400 text-sm mt-0.5">3:30 AM — Earnings calendar fetched automatically</div>
+          </div>
+          <div class="timeline-item success">
+            <div class="text-emerald-400 font-bold text-sm">Automatic (Cron)</div>
+            <div class="text-gray-400 text-sm mt-0.5">4:00 AM — Tracker auto-starts, loads reference prices</div>
+          </div>
+          <div class="timeline-item">
+            <div class="text-blue-400 font-bold text-sm">Monitoring</div>
+            <div class="text-gray-400 text-sm mt-0.5">4 AM – 4 PM — Monitor via "Show Status" and debug sidebar</div>
+          </div>
+          <div class="timeline-item warning">
+            <div class="text-yellow-400 font-bold text-sm">Automatic</div>
+            <div class="text-gray-400 text-sm mt-0.5">3:55 PM — All positions liquidated automatically</div>
+          </div>
+        </div>
+
+        <div class="alert-box alert-danger">
+          <div class="flex items-start gap-3">
+            <span class="text-xl">⚠️</span>
+            <div>
+              <strong class="text-white">Disclaimer</strong><br />
+              <span class="text-gray-400 text-sm">This is for <strong class="text-white">educational and paper trading purposes only</strong>. Uses Alpaca's paper trading environment. No real money is at risk. Always test thoroughly before considering live trading.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPARISON ============ -->
+  <section class="border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 py-16">
+      <div class="bg-gray-900/60 border border-white/10 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+          <span class="text-blue-400">📊</span> Flow Comparison
+        </h2>
+        <p class="text-gray-400 mb-6">How this simplified flow differs from more complex approaches:</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Feature</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Complex Flow</th>
+                <th class="text-left py-3 px-4 text-gray-400 font-semibold">Simple Tracker ✓</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Entry Orders</td>
+                <td class="py-3 px-4">Limit (0.1% from market)</td>
+                <td class="py-3 px-4">Limit (pay ask/bid)</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Extended Hours</td>
+                <td class="py-3 px-4">Post-liquidation only</td>
+                <td class="py-3 px-4">All entries</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Entries Per Symbol</td>
+                <td class="py-3 px-4">Multiple (on each signal)</td>
+                <td class="py-3 px-4"><strong class="text-emerald-400">ONE per day</strong></td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Exit Strategy</td>
+                <td class="py-3 px-4">Profit target + Stop loss</td>
+                <td class="py-3 px-4">EOD liquidation only</td>
+              </tr>
+              <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Complexity</td>
+                <td class="py-3 px-4">High (many conditions)</td>
+                <td class="py-3 px-4"><strong class="text-emerald-400">Low (simple rules)</strong></td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4">Order Volume</td>
+                <td class="py-3 px-4">High (repeated orders)</td>
+                <td class="py-3 px-4"><strong class="text-emerald-400">Low (one per symbol)</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="border-t border-white/5 py-24 text-center">
+    <div class="max-w-3xl mx-auto px-6">
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-6 text-white">Ready to Trade Earnings Automatically?</h2>
+      <p class="text-gray-400 text-lg mb-10">Deploy earnings-based strategies with MachineTrader's low-code platform.</p>
+      <a href="/pricing" class="btn-primary text-lg font-semibold px-10 py-4 rounded-full inline-flex items-center gap-2">
+        Start Free Trial
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-gray-950 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+        <div class="col-span-2 md:col-span-1">
+          <a href="../index.html" class="flex items-center gap-2 mb-4">
+            <img src="../images/logo.svg" alt="MachineTrader" class="h-8 w-auto" />
+            <span class="text-lg font-bold text-white">MachineTrader™</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">Automate your trading strategies using our low-code/no-code MachineTrader™ software.</p>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../features.html" class="hover:text-white transition">Features</a></li>
+            <li><a href="/pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="../data-center.html" class="hover:text-white transition">Data Center</a></li>
+            <li><a href="../trading-flows/index.html" class="hover:text-white transition">Trading Scripts</a></li>
+            <li><a href="../backtests.html" class="hover:text-white transition">Backtests</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../about-us.html" class="hover:text-white transition">About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-brand-500 uppercase mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm text-gray-500">
+            <li><a href="../privacy-policy.html" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="../terms-of-service.html" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="../cookie-policy.html" class="hover:text-white transition">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500">© 2022–2026 MachineTrader™. All Rights Reserved. · 30 Wall Street, 8th Floor, New York, NY 10005</div>
+        <div class="flex items-center gap-6">
+          <a href="mailto:info@machinetrader.io" class="text-gray-500 hover:text-white transition text-sm">info@machinetrader.io</a>
+        </div>
+      </div>
+    </div>
+    <div class="bg-black border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 leading-relaxed">
+          <strong class="text-gray-500">Disclaimer:</strong> MachineTrader provides technology for automated trading. All trading involves risk. Past performance is not indicative of future results. MachineTrader is not a registered broker-dealer or investment advisor. Securities trading is offered through Alpaca Securities LLC, member FINRA/SIPC. *Commission-free for U.S. equities.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- end #page-content -->
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    const EXPECTED_HASH = '8b32a1ee1c55f72d3dd33bdc6cc54b873d7307fe1972855b1cb2d2d11181222f';
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    (async () => {
+      const lockScreen = document.getElementById('lock-screen');
+      const pageContent = document.getElementById('page-content');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (sessionStorage.getItem('mt-auth') === EXPECTED_HASH) {
+        lockScreen.classList.add('hidden');
+        pageContent.classList.remove('hidden');
+      } else { input.focus(); }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const hash = await sha256(input.value);
+        if (hash === EXPECTED_HASH) {
+          sessionStorage.setItem('mt-auth', EXPECTED_HASH);
+          lockScreen.style.transition = 'opacity 0.4s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => { lockScreen.classList.add('hidden'); pageContent.classList.remove('hidden'); }, 400);
+        } else {
+          error.classList.remove('hidden'); input.classList.add('!border-red-500'); input.value = ''; input.focus();
+          setTimeout(() => { error.classList.add('hidden'); input.classList.remove('!border-red-500'); }, 3000);
+        }
+      });
+    })();
+  </script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
